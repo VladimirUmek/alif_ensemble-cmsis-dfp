@@ -295,11 +295,11 @@ static void pm_display_wakeup_reason(void)
 }
 
 /**
-  @fn           int main()
+  @fn           int main(void)
   @brief        Application Entry : Testapp for supported power modes.
   @return       exit code
 */
-int main()
+int main(void)
 {
     PM_SLEEP_TYPE   selectedSleepType = PM_SLEEP_TYPE_NORMAL_SLEEP;
     PM_RESET_STATUS last_reset_reason;
@@ -312,16 +312,79 @@ int main()
     int8_t          ch;
     uint32_t        delay_count = 0;
 
-    /* Log Retargeting Initialization */
-#if defined(RTE_Compiler_IO_STDOUT_User)
-    ret = stdout_init();
-    if(ret != ARM_DRIVER_OK)
+    /* Get the last reason for the reboot */
+    last_reset_reason = pm_get_subsystem_reset_status();
+
+    /* Initialize the SE services */
+    se_services_port_init();
+
+#if defined(M55_HE)
+    /*
+     * When RTSS_HE boots from STOP mode, HFXO may not be initialized.
+     * For the UART to work with 38.4 in HFXO, it requires the init call.
+     */
+    if(last_reset_reason == PM_RESET_STATUS_POR_OR_SOC_OR_HOST_RESET
+            && (NVIC_GetPendingIRQ(LPRTC_IRQ_IRQn)
+                    || NVIC_GetPendingIRQ(LPGPIO_IRQ4_IRQn)))
     {
-        while(1)
+        error_code = SERVICES_pll_initialize(se_services_s_handle,
+                                             &service_error_code);
+        if(error_code)
         {
+            while(1);
         }
     }
 #endif
+
+    /* Get the current run configuration from SE */
+    error_code = SERVICES_get_run_cfg(se_services_s_handle,
+                                      &runp,
+                                      &service_error_code);
+    if(error_code)
+    {
+        printf("\r\nSE: get_run_cfg error = %d\n", error_code);
+        while(1);
+    }
+
+#if defined(M55_HP)
+    runp.memory_blocks = SRAM2_MASK | SRAM3_MASK | MRAM_MASK;
+#else
+    runp.memory_blocks = SRAM4_1_MASK | SRAM4_2_MASK
+                         | SRAM5_1_MASK | SRAM5_2_MASK;
+#endif
+
+    /* Set the new run configuration */
+    error_code = SERVICES_set_run_cfg(se_services_s_handle,
+                                      &runp,
+                                      &service_error_code);
+    if(error_code)
+    {
+        printf("\r\nSE: set_run_cfg error = %d\n", error_code);
+        while(1);
+    }
+
+#if defined(M55_HE)
+    /*The below code is only required if UART clock source is 38.4MHz */
+    error_code = SERVICES_clocks_select_osc_source(se_services_s_handle,
+                                                   OSCILLATOR_SOURCE_XTAL,
+                                                   OSCILLATOR_TARGET_PERIPH_CLOCKS,
+                                                   &service_error_code);
+    if(error_code)
+    {
+        while(1);
+    }
+
+    /* enable the HFOSC clock */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
+                           /*clock_enable_t*/ CLKEN_HFOSC,
+                           /*bool enable   */ true,
+                                              &service_error_code);
+    if(error_code)
+    {
+        while(1);
+    }
+#endif
+    /* Log Retargeting Initialization */
 
 #if defined(RTE_Compiler_IO_STDIN_User)
     ret = stdin_init();
@@ -333,11 +396,15 @@ int main()
     }
 #endif
 
-    /* Initialize the SE services */
-    se_services_port_init();
-
-    /* Get the last reason for the reboot */
-    last_reset_reason = pm_get_subsystem_reset_status();
+#if defined(RTE_Compiler_IO_STDOUT_User)
+    ret = stdout_init();
+    if(ret != ARM_DRIVER_OK)
+    {
+        while(1)
+        {
+        }
+    }
+#endif
 
     /* If it is POR, UART will take some time to show up */
     if((PM_RESET_STATUS_POR_OR_SOC_OR_HOST_RESET == last_reset_reason)
@@ -413,12 +480,6 @@ int main()
 
         case PM_SLEEP_TYPE_NORMAL_SLEEP:
 
-            /* Get the current off configuration from SE */
-            error_code = SERVICES_get_run_cfg(se_services_s_handle, &runp,
-                                              &service_error_code);
-            if(error_code)
-                printf("SE: get_run_cfg error = %d\n", error_code);
-
             ret = set_rtc(sleepDuration);
             if( ret != ARM_DRIVER_OK)
                 return ret;
@@ -462,11 +523,18 @@ int main()
         case PM_SLEEP_TYPE_SUBSYS_OFF:
 
             /* Get the current off configuration from SE */
-            error_code = SERVICES_get_off_cfg(se_services_s_handle, &offp,
+            error_code = SERVICES_get_off_cfg(se_services_s_handle,
+                                              &offp,
                                               &service_error_code);
             if(error_code)
-                printf("SE: get_off_cfg error = %d\n", error_code);
+            {
+                printf("\r\nSE: get_off_cfg error = %d\n", error_code);
+                while(1);
+            }
 
+            offp.power_domains = PD0;
+            offp.aon_clk_src   = CLK_SRC_LFXO;
+            offp.stby_clk_src  = CLK_SRC_HFXO;
             offp.ewic_cfg      = EWIC_RTC_A | EWIC_VBAT_GPIO;
             offp.wakeup_events = WE_LPRTC | WE_LPGPIO4;
             offp.vtor_address  = SCB->VTOR;
@@ -490,12 +558,20 @@ int main()
                 printf("\r\nHP TCM Retention is not possible \n");
                 continue;
             }
+            else
+            {
+                offp.memory_blocks = MRAM_MASK;
+            }
 #endif
 
-            error_code = SERVICES_set_off_cfg(se_services_s_handle, &offp,
+            error_code = SERVICES_set_off_cfg(se_services_s_handle,
+                                              &offp,
                                               &service_error_code);
             if(error_code)
-                printf("SE: set_off_cfg error = %d\n", error_code);
+            {
+                printf("\r\nSE: set_off_cfg error = %d\n", error_code);
+                while(1);
+            }
 
             /* Enable RTC as a wakeup source */
             ret = set_rtc(sleepDuration);
@@ -538,6 +614,18 @@ int main()
             break;
         }
     }
+
+#if defined(M55_HE)
+    /* enable the HFOSC clock */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
+                           /*clock_enable_t*/ CLKEN_HFOSC,
+                           /*bool enable   */ false,
+                                              &service_error_code);
+    if(error_code)
+    {
+        while(1);
+    }
+#endif
 
     return 0;
 }

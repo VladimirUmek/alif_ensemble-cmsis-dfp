@@ -171,38 +171,38 @@ void led_demo_Thread(void *pvParameters)
     ret2 = gpioDrv6->PowerControl(LED1_R, ARM_POWER_FULL);
     if ((ret1 != ARM_DRIVER_OK) || (ret2 != ARM_DRIVER_OK)) {
         printf("ERROR: Failed to powered full\n");
-        return;
+        goto error_uninitialize;
     }
     ret1 = gpioDrv7->PowerControl(LED0_G, ARM_POWER_FULL);
     ret2 = gpioDrv6->PowerControl(LED1_G, ARM_POWER_FULL);
     if ((ret1 != ARM_DRIVER_OK) || (ret2 != ARM_DRIVER_OK)) {
         printf("ERROR: Failed to powered full\n");
-        return;
+        goto error_uninitialize;
     }
     ret1 = gpioDrv12->PowerControl(LED0_B, ARM_POWER_FULL);
     ret2 = gpioDrv6->PowerControl(LED1_B, ARM_POWER_FULL);
     if ((ret1 != ARM_DRIVER_OK) || (ret2 != ARM_DRIVER_OK)) {
         printf("ERROR: Failed to powered full\n");
-        return;
+        goto error_uninitialize;
     }
 
     ret1 = gpioDrv12->SetDirection(LED0_R, GPIO_PIN_DIRECTION_OUTPUT);
     ret2 = gpioDrv6->SetDirection(LED1_R, GPIO_PIN_DIRECTION_OUTPUT);
     if ((ret1 != ARM_DRIVER_OK) || (ret2 != ARM_DRIVER_OK)) {
         printf("ERROR: Failed to configure\n");
-        return;
+        goto error_power_off;
     }
     ret1 = gpioDrv7->SetDirection(LED0_G, GPIO_PIN_DIRECTION_OUTPUT);
     ret2 = gpioDrv6->SetDirection(LED1_G, GPIO_PIN_DIRECTION_OUTPUT);
     if ((ret1 != ARM_DRIVER_OK) || (ret2 != ARM_DRIVER_OK)) {
         printf("ERROR: Failed to configure\n");
-        return;
+        goto error_power_off;
     }
     ret1 = gpioDrv12->SetDirection(LED0_B, GPIO_PIN_DIRECTION_OUTPUT);
     ret2 = gpioDrv6->SetDirection(LED1_B, GPIO_PIN_DIRECTION_OUTPUT);
     if ((ret1 != ARM_DRIVER_OK) || (ret2 != ARM_DRIVER_OK)) {
         printf("ERROR: Failed to configure\n");
-        return;
+        goto error_power_off;
     }
 
     while (1)

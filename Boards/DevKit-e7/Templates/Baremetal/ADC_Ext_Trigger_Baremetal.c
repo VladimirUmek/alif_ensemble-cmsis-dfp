@@ -22,10 +22,23 @@
  *              - Converted digital value are stored in user provided memory
  *                address.
  *              ADC configurations for Demo testApp:
- *              Single channel scan(Default scan)
+ *              Single channel scan(Default scan ADC12)
  *              - GPIO pin P1_4 are connected to Regulated DC Power supply.
  *                DC Power supply:
  *                - +ve connected to P1_4 (ADC2 channel 0) at 1.0V
+ *                - -ve connect to GND.
+ *              Differential input
+ *              -ADC12
+ *                GPIO pin P1_4 and P1_5 are connected to Regulated DC Power supply.
+ *                2 channel DC Power supply:
+ *                - +ve connected to P1_4 (ADC122 channel 0) at 1.0V and
+ *                  +ve connected to P1_5 (ADC122 channel 1) at 0.4V
+ *                - -ve connect to GND.
+ *              -ADC24
+                  GPIO pin P1_4 and P1_5 are connected to Regulated DC Power supply.
+ *                2 channel DC Power supply:
+ *                - +ve connected to P0_0 (ADC122 channel 0) at 1.0V and
+ *                  +ve connected to P0_4 (ADC122 channel 1) at 0.5V
  *                - -ve connect to GND.
  * @bug      None.
  * @Note     None.
@@ -38,6 +51,7 @@
 #include "pinconf.h"
 
 #include "se_services_port.h"
+#include "RTE_Components.h"
 #if defined(RTE_Compiler_IO_STDOUT)
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
@@ -68,16 +82,56 @@ extern ARM_DRIVER_ADC Driver_ADC24;
 static ARM_DRIVER_ADC *ADCdrv = &Driver_ADC24;
 #endif
 
-#define MAX_NUM_THRESHOLDS       (6)
 #define NUM_CHANNELS      8
-
-/* store comparator result */
-uint32_t comp_value[MAX_NUM_THRESHOLDS] = {0};
 
 /* Demo purpose adc_sample*/
 uint32_t adc_sample[NUM_CHANNELS];
 
 volatile uint32_t num_samples = 0;
+
+/**
+ * @fn      static int32_t pinmux_config(void)
+ * @brief   ADC external trigger pinmux configuration
+ * @retval  execution status.
+ */
+static int32_t pinmux_config(void)
+{
+    int32_t ret = 0U;
+
+    if (ADC_INSTANCE == ADC12)
+    {
+        /* ADC122 channel 0 */
+        ret = pinconf_set(PORT_1, PIN_4, PINMUX_ALTERNATE_FUNCTION_7,
+                          PADCTRL_READ_ENABLE);
+        if(ret)
+        {
+            printf("ERROR: Failed to configure PINMUX \r\n");
+            return ret;
+        }
+    }
+
+    if (ADC_INSTANCE == ADC24)
+    {
+        /* ADC24 channel 0 */
+        ret = pinconf_set(PORT_0, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
+                          PADCTRL_READ_ENABLE);
+        if(ret)
+        {
+            printf("ERROR: Failed to configure PINMUX \r\n");
+            return ret;
+        }
+        /* ADC24 channel 0 */
+        ret = pinconf_set(PORT_0, PIN_4, PINMUX_ALTERNATE_FUNCTION_7,
+                          PADCTRL_READ_ENABLE);
+        if(ret)
+        {
+            printf("ERROR: Failed to configure PINMUX \r\n");
+            return ret;
+        }
+    }
+
+    return ret;
+}
 
 /*
  * @func   : void adc_conversion_callback(uint32_t event, uint8_t channel, uint32_t sample_output)
@@ -123,8 +177,7 @@ static void utimer_compare_mode_app(void)
     uint32_t count_array[3];
 
     /*
-     * utimer channel 5 is configured for utimer compare mode (driver A, double buffer is enabled).
-     * observe driver A output signal from P1_2.
+     * utimer channel 0 is configured for utimer compare mode (driver A).
      */
     /*
      * System CLOCK frequency (F)= 400Mhz
@@ -228,18 +281,29 @@ void adc_ext_trigger_demo()
     /* Initialize the SE services */
     se_services_port_init();
 
-    /* enable the HFOSC clock */
+    /* enable the 160 MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                            /*clock_enable_t*/ CLKEN_CLK_160M,
                            /*bool enable   */ true,
                                               &service_error_code);
-    if (error_code)
-        printf("SE: clk enable = %d\n", error_code);
+    if(error_code)
+    {
+        printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
 
     printf("\r\n >>> ADC demo starting up!!! <<< \r\n");
 
     version = ADCdrv->GetVersion();
     printf("\r\n ADC version api:%X driver:%X...\r\n",version.api, version.drv);
+
+    /* PINMUX */
+    ret = pinmux_config();
+    if(ret != 0)
+    {
+        printf("Error in pin-mux configuration\n");
+        return;
+    }
 
     /* Initialize ADC driver */
     ret = ADCdrv->Initialize(adc_conversion_callback);
@@ -301,13 +365,16 @@ error_uninitialize:
     {
         printf("\r\n Error: ADC Uninitialize failed.\r\n");
     }
-    /* disable the HFOSC clock */
+    /* disable the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                            /*clock_enable_t*/ CLKEN_CLK_160M,
                            /*bool enable   */ false,
                                               &service_error_code);
-    if (error_code)
-        printf("SE: clk enable = %d\n", error_code);
+    if(error_code)
+    {
+        printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
+    }
 
     printf("\r\n ADC demo exiting...\r\n");
 }

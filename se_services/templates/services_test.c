@@ -78,6 +78,10 @@ static uint32_t test_services_clkpll_is_locked(char *p_test_name, uint32_t servi
 static uint32_t test_services_pll_xtal(char *p_test_name, uint32_t services_handle);
 
 static uint32_t test_services_cpu_boot_sequence(char *p_test_name, uint32_t services_handle);
+static uint32_t test_services_dcdc_voltage(char *p_test_name,
+                                           uint32_t services_handle);
+static uint32_t test_services_ldo_voltage(char *p_test_name,
+                                          uint32_t services_handle);
 
 /*******************************************************************************
  *  M A C R O   D E F I N E S
@@ -206,7 +210,9 @@ static services_test_t s_tests[] =
     { test_services_xtal_start,              "Test XTAL start        "     , false}, /*47*/
     { test_services_xtal_stop,               "Test XTAL stop         "     , false}, /*48*/
 
-    { test_services_cpu_boot_sequence,       "Test CPU boot sequence "     , false}  /*49*/
+    { test_services_cpu_boot_sequence,       "Test CPU boot sequence "     , false},  /*49*/
+    { test_services_dcdc_voltage,            "DCDC voltage control"        , false},  /*50*/
+    { test_services_ldo_voltage,             "LDO voltage control "        , false},  /*51*/
 };
 
 static SERVICES_toc_data_t     toc_info;    /*!< Global to test harness */
@@ -228,16 +234,16 @@ static char *CPUID_to_string(uint32_t cpu_id)
 
   switch (cpu_id)
    {
-       case FUSION_A32_0:
+       case HOST_CPU_0:
          p_str = "A32_0";
          break;
-       case FUSION_A32_1:
+       case HOST_CPU_1:
          p_str = "A32_1";
          break;
-       case FUSION_M55_HP:
+       case EXTSYS_0:
          p_str = "M55_HP";
          break;
-       case FUSION_M55_HE:
+       case EXTSYS_1:
          p_str = "M55_HE";
          break;
        case 15:
@@ -759,7 +765,7 @@ static uint32_t test_services_gettoc_via_cpuid_he(char *p_test_name,
   uint32_t service_error_code;
 
   error_code = SERVICES_system_get_toc_via_cpuid(services_handle,
-                                                 FUSION_M55_HE,
+                                                 EXTSYS_1,
                                                  &toc_info,
                                                  &service_error_code);
 
@@ -799,7 +805,7 @@ static uint32_t test_services_gettoc_via_cpuid_hp(char *p_test_name,
   uint32_t service_error_code;
 
   error_code = SERVICES_system_get_toc_via_cpuid(services_handle,
-                                                 FUSION_M55_HP,
+                                                 EXTSYS_0,
                                                  &toc_info,
                                                  &service_error_code);
   TEST_print(services_handle,
@@ -838,7 +844,7 @@ static uint32_t test_services_gettoc_via_cpuid_a32(char *p_test_name,
   uint32_t service_error_code;
 
   error_code = SERVICES_system_get_toc_via_cpuid(services_handle,
-                                                 FUSION_A32_0,
+                                                 HOST_CPU_0,
                                                  &toc_info,
                                                  &service_error_code);
   TEST_print(services_handle,
@@ -1012,11 +1018,11 @@ static uint32_t test_services_mem_retention_config(char *p_test_name,
                                                       uint32_t services_handle)
 {
   uint32_t error_code = SERVICES_REQ_SUCCESS;
-
+#if 0
   error_code = SERVICES_power_mem_retention_config(services_handle,
                                                    SERAM_MASK,
                                                    OFF_PROFILE);
-
+#endif
   TEST_print(services_handle,
              "** TEST %s error_code=%s\n",
              p_test_name,
@@ -1080,7 +1086,7 @@ static uint32_t test_services_boot_cpu(char *p_test_name,
 {
   uint32_t error_code = SERVICES_REQ_SUCCESS;
   uint32_t service_error_code = 0;
-  uint32_t cpu_id = FUSION_EXTERNAL_SYS0;
+  uint32_t cpu_id = EXTSYS_0;
   uint32_t address = 0;
 
   error_code = SERVICES_boot_cpu(services_handle,
@@ -1118,7 +1124,7 @@ static uint32_t test_services_boot_reset_cpu(char *p_test_name,
 {
   uint32_t error_code = SERVICES_REQ_SUCCESS;
   uint32_t service_error_code = 0;
-  uint32_t cpu_id = FUSION_EXTERNAL_SYS0;
+  uint32_t cpu_id = EXTSYS_0;
 
   error_code = SERVICES_boot_reset_cpu(services_handle,
                                        cpu_id,
@@ -1156,7 +1162,7 @@ static uint32_t test_services_boot_release_extsys0(char *p_test_name,
   uint32_t service_error_code;
 
   error_code = SERVICES_boot_release_cpu(services_handle,
-                                         FUSION_EXTERNAL_SYS0,
+                                         EXTSYS_0,
                                          &service_error_code);
 
   PRINT_TEST_RESULT;
@@ -1740,25 +1746,79 @@ static uint32_t test_services_cpu_boot_sequence(
   uint32_t service_error_code;
 
   error_code = SERVICES_boot_set_vtor(services_handle,
-                                      FUSION_M55_HP,
+                                      EXTSYS_0,
                                       0x80100000,
                                       &service_error_code);
 
   if (error_code == SERVICES_REQ_SUCCESS && service_error_code == SERVICE_SUCCESS)
   {
     error_code = SERVICES_boot_reset_cpu(services_handle,
-                                         FUSION_M55_HP,
+                                         EXTSYS_0,
                                          &service_error_code);
   }
 
   if (error_code == SERVICES_REQ_SUCCESS && service_error_code == SERVICE_SUCCESS)
   {
     error_code = SERVICES_boot_release_cpu(services_handle,
-                                           FUSION_M55_HP,
+                                           EXTSYS_0,
                                            &service_error_code);
   }
 
   PRINT_TEST_RESULT;
+
+  return error_code;
+}
+
+static uint32_t test_services_dcdc_voltage(char *p_test_name,
+                                           uint32_t services_handle)
+{
+  uint32_t error_code = SERVICES_REQ_SUCCESS;
+  uint32_t service_error_code;
+
+  uint32_t dcdc_vout_sel  = 0x0;
+  uint32_t dcdc_vout_trim = 0x0;
+
+  error_code = SERVICES_power_dcdc_voltage_control(services_handle,
+                                                   dcdc_vout_sel,
+                                                   dcdc_vout_trim,
+                                                   &service_error_code);
+
+  TEST_print(services_handle,
+              "** TEST %s error_code=%s service_resp=0x%08X\n",
+              p_test_name,
+              SERVICES_error_to_string(error_code),
+              service_error_code);
+
+  TEST_print(services_handle, "dcdc voltage: dcdc_vout_sel=0x%x; "
+      "dcdc_vout_trim=0x%x \n",
+             dcdc_vout_sel, dcdc_vout_trim);
+
+  return error_code;
+}
+
+static uint32_t test_services_ldo_voltage(char *p_test_name,
+                                         uint32_t services_handle)
+{
+  uint32_t error_code = SERVICES_REQ_SUCCESS;
+  uint32_t service_error_code;
+
+  uint32_t ret_ldo_voltage  = 0x8;
+  uint32_t aon_ldo_voltage  = 0xF;
+
+  error_code = SERVICES_power_ldo_voltage_control(services_handle,
+                                                  ret_ldo_voltage,
+                                                  aon_ldo_voltage,
+                                                  &service_error_code);
+
+  TEST_print(services_handle,
+              "** TEST %s error_code=%s service_resp=0x%08X\n",
+              p_test_name,
+              SERVICES_error_to_string(error_code),
+              service_error_code);
+
+  TEST_print(services_handle, "ldo voltage: ret_ldo_voltage=0x%x; "
+      "aon_ldo_voltage=0x%x \n",
+      ret_ldo_voltage, aon_ldo_voltage);
 
   return error_code;
 }

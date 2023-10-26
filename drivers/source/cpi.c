@@ -20,7 +20,7 @@
 #include "cpi.h"
 
 /**
-  \fn          void cpi_start_capture(LPCPI_Type *cpi, CPI_MODE_SELECT mode)
+  \fn          void cpi_start_capture(CPI_Type *cpi, CPI_MODE_SELECT mode)
   \brief       Capture frame in snapshot/ continuous capture mode.
                    -Set CAM_CTRL = 0—prepare for soft reset
                    -Set CAM_CTRL = 0x100—activate soft reset
@@ -33,7 +33,7 @@
   \param[in]   mode     Select to capture one frame and stop/ or to capture video frames continuously
   \return      none.
 */
-void cpi_start_capture(LPCPI_Type *cpi, CPI_MODE_SELECT mode)
+void cpi_start_capture(CPI_Type *cpi, CPI_MODE_SELECT mode)
 {
     cpi->CAM_CTRL = 0;
     cpi->CAM_CTRL |= CAM_CTRL_SW_RESET;
@@ -51,13 +51,13 @@ void cpi_start_capture(LPCPI_Type *cpi, CPI_MODE_SELECT mode)
 }
 
 /**
-  \fn           void cpi_set_config(LPCPI_Type *cpi, cpi_cfg_info_t *info)
+  \fn           void cpi_set_config(CPI_Type *cpi, cpi_cfg_info_t *info)
   \brief        Configure the cpi with given information.
   \param[in]    cpi    Pointer to CPI register map
   \param[in]    info   Pointer to cpi configuration structure.
   \return       none
 */
-void cpi_set_config(LPCPI_Type *cpi, cpi_cfg_info_t *info)
+void cpi_set_config(CPI_Type *cpi, cpi_cfg_info_t *info)
 {
     cpi->CAM_CFG = (info->sensor_info.interface | (info->sensor_info.vsync_wait << 4) | (info->sensor_info.vsync_mode << 5) |
                     (info->rw_roundup << 8) | (info->sensor_info.pixelclk_pol << 12) | (info->sensor_info.hsync_pol << 13) |

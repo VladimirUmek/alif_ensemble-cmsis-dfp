@@ -10,10 +10,10 @@
 
 /**************************************************************************//**
  * @file     DPHY_init.c
- * @author   Prasanna Ravi
- * @email    prasanna.ravi@alifsemi.com
+ * @author   Prasanna Ravi and Chandra Bhushan Singh
+ * @email    prasanna.ravi@alifsemi.com and chandrabhushan.singh@alifsemi.com
  * @version  V1.0.0
- * @date     24-Feb-2022
+ * @date     28-Sep-2023
  * @brief    Driver for MIPI DPHY.
  * @bug      None.
  * @Note     None.
@@ -30,6 +30,10 @@
 #include "RTE_Components.h"
 #include CMSIS_device_header
 #include "power.h"
+
+#if (RTE_MIPI_DSI)
+#include "display.h"
+#endif
 
 #if (RTE_MIPI_CSI2)
 #include "csi.h"
@@ -526,10 +530,6 @@ static void DPHY_DSI_Write_Mask (uint16_t address,
 */
 static void DPHY_PowerEnable (void)
 {
-    enable_cgu_clk100m();
-
-    enable_cgu_clk38p4m();
-
     enable_mipi_dphy_power();
 
     disable_mipi_dphy_isolation();
@@ -571,10 +571,6 @@ static void DPHY_PowerDisable (void)
 
     enable_mipi_dphy_isolation();
 
-    disable_cgu_clk38p4m();
-
-    disable_cgu_clk100m();
-
 }
 
 /**
@@ -590,6 +586,7 @@ static int32_t DPHY_ConfigurePLL(uint32_t clock_frequency)
     uint8_t pll_p = 0;
     uint8_t vco_ctrl = 0;
     uint8_t range = 0;
+    pll_config_t pll_config;
 
 #if (RTE_MIPI_DSI)
     uint8_t pll_n = RTE_MIPI_DSI_PLL_INPUT_DIV_FACTOR_N;
@@ -616,51 +613,50 @@ static int32_t DPHY_ConfigurePLL(uint32_t clock_frequency)
 
     pll_m = ((frequency_in_mhz * pll_n * pll_p * 2) / DPHY_FCLKIN_MHZ);
 
-    enable_dphy_pll_shadow_control();
-
     set_dphy_pll_clksel(DPHY_PLL_CLKSEL_CLOCK_GENERAT);
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_28, (uint8_t)pll_m, 0, 8);
+    enable_dphy_pll_shadow_clear();
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_29, (uint8_t)(pll_m >> 8), 0, 2);
+    sys_busy_loop_us(1);
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_30, 0x1, 0, 1);
+    disable_dphy_pll_shadow_clear();
 
-    /*According to HW specification setting Input Frequency Division Ratio by N - 1*/
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_27, (pll_n - 1), 3, 4);
+    pll_config.pll_gmp_ctrl = DPHY_GMP_CNTRL;
+    pll_config.pll_m = pll_m;
+    pll_config.pll_n = (pll_n - 1);
+    pll_config.pll_cpbias_ctrl = DPHY_CPBIAS_CNTRL;
+    pll_config.pll_int_ctrl = DPHY_INT_CNTRL;
+    pll_config.pll_prop_ctrl = DPHY_PROP_CNTRL;
+    pll_config.pll_vco_ctrl = vco_ctrl;
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_27, 0x1, 7, 1);
+    set_dphy_pll_configuration(&pll_config);
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_30, vco_ctrl, 1, 6);
+    sys_busy_loop_us(1);
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_30, 0x1, 7, 1);
+    enable_dphy_updatepll();
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_1, DPHY_CPBIAS_CNTRL, 0, 7);
+    sys_busy_loop_us(1);
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_5, DPHY_GMP_CNTRL, 0, 2);
-
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_5, DPHY_INT_CNTRL, 2, 6);
-
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_17, DPHY_PROP_CNTRL, 0, 6);
+    disable_dphy_updatepll();
 
     DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_17, 0x1, 7, 1);
 
     DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_PLL_17, 0x1, 6, 1);
 
-    DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_CB_3, DPHY_CB_VREF_MPLL_REG_REL_RW, 0, 3);
-
     return ARM_DRIVER_OK;
 }
 
 /**
-  \fn          int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY_CLK_MODE clk_mode)
+  \fn          int32_t DPHY_MasterSetup (uint32_t clock_frequency,  uint8_t n_lanes,
+                                         DPHY_CLK_MODE clk_mode)
   \brief       MIPI DPHY Tx startup sequence.
   \param[in]   clock_frequency DPHY clock frequency.
   \param[in]   n_lanes number of lanes.
   \param[in]   clk_mode select DPHY clock mode \ref DPHY_CLK_MODE.
   \return      \ref execution_status
 */
-static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY_CLK_MODE clk_mode)
+static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes,
+                                 DPHY_CLK_MODE clk_mode)
 {
     uint32_t bitrate_mbps = (clock_frequency * 2)/1000000;
     uint8_t hsfreqrange = 0;
@@ -676,7 +672,6 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
     hsfreqrange = frequency_range[range].hsfreqrange;
 
     dsi_set_active_lanes((DSI_Type *)DSI_BASE, n_lanes - 1);
-
 
     MIPI_DSI_DPHY_Rst(DISABLE);
 
@@ -712,22 +707,22 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
     if(bitrate_mbps <= 1000)
     {
         DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_SLEW_5,
-                               (uint8_t)DPHY_LESS_THEN_1GBPS_SR_OSC_FREQ_TARGET,
-                               0, 8);
+                            (uint8_t)DPHY_LESS_THEN_1GBPS_SR_OSC_FREQ_TARGET,
+                            0, 8);
         DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_SLEW_6,
-                               (uint8_t)(DPHY_LESS_THEN_1GBPS_SR_OSC_FREQ_TARGET >> 8),
-                               0, 4);
+                            (uint8_t)(DPHY_LESS_THEN_1GBPS_SR_OSC_FREQ_TARGET >> 8),
+                            0, 4);
         DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_SLEW_7, 0x1, 4, 1);
         DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_SLEW_7, 0x1, 0, 1);
     }
     else if ((bitrate_mbps > 1000) && (bitrate_mbps <= 1500))
     {
         DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_SLEW_5,
-                               (uint8_t)DPHY_MORE_THEN_1GBPS_SR_OSC_FREQ_TARGET,
-                               0, 8);
+                            (uint8_t)DPHY_MORE_THEN_1GBPS_SR_OSC_FREQ_TARGET,
+                            0, 8);
         DPHY_DSI_Write_Mask(dphy4txtester_DIG_RDWR_TX_SLEW_6,
-                               (uint8_t)(DPHY_MORE_THEN_1GBPS_SR_OSC_FREQ_TARGET >> 8),
-                               0, 4);
+                            (uint8_t)(DPHY_MORE_THEN_1GBPS_SR_OSC_FREQ_TARGET >> 8),
+                            0, 4);
     }
 
     cfgclkfreqrange = (DPHY_FCFG_CLOCK_MHZ - 17) * 4;
@@ -741,9 +736,7 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
 
     unset_tx_dphy_basedir((1U << n_lanes) - 1);
 
-
     unset_tx_dphy_forcerxmode((1U << n_lanes) - 1);
-
 
     sys_busy_loop_us(1);
 
@@ -757,7 +750,6 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
 
     MIPI_DSI_DPHY_Rst(ENABLE);
 
-
     while(MIPI_DSI_DPHY_PLL_Lock() != (DSI_PLL_STATUS) DPHY_PLL_STATUS_PLL_LOCK)
     {
         if(lp_count++ < 1000000)
@@ -770,7 +762,6 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
         }
     }
 
-
     if(clk_mode == DPHY_CLK_MODE_NON_CONTINUOUS)
     {
         stopstate_check |= DPHY_STOPSTATE_CLOCK;
@@ -778,8 +769,6 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
 
     stopstate_check |= (n_lanes == 1 ? (DPHY_STOPSTATE_LANE0) :
                                              (DPHY_STOPSTATE_LANE0) | (DPHY_STOPSTATE_LANE1) );
-
-
 
     lp_count = 0;
     while(MIPI_DSI_DPHY_Stopstate() != stopstate_check)
@@ -801,12 +790,16 @@ static int32_t DPHY_MasterSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY
 
 #if (RTE_MIPI_DSI)
 /**
-  \fn          int32_t DSI_DPHY_Initialize (uint32_t frequency)
+  \fn          int32_t DSI_DPHY_Initialize (uint32_t frequency,  uint8_t n_lanes,
+                                            DPHY_CLK_MODE clk_mode)
   \brief       Initialize MIPI DSI DPHY Interface.
   \param[in]   frequency to configure DPHY PLL.
+  \param[in]   n_lanes number of lanes.
+  \param[in]   clk_mode select DPHY clock mode \ref DPHY_CLK_MODE.
   \return      \ref execution_status
   */
-int32_t DSI_DPHY_Initialize (uint32_t frequency)
+int32_t DSI_DPHY_Initialize (uint32_t frequency,  uint8_t n_lanes,
+                             DPHY_CLK_MODE clk_mode)
 {
     int32_t ret = ARM_DRIVER_OK;
 
@@ -820,7 +813,7 @@ int32_t DSI_DPHY_Initialize (uint32_t frequency)
         DPHY_PowerEnable();
     }
 
-    ret = DPHY_MasterSetup(frequency, RTE_MIPI_DSI_N_LANES, RTE_MIPI_DSI_NON_CONTINUOUS_CLOCK_MODE);
+    ret = DPHY_MasterSetup(frequency, n_lanes, clk_mode);
     if(ret != ARM_DRIVER_OK)
     {
         return ret;
@@ -938,14 +931,13 @@ static int32_t DPHY_SlaveSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY_
 
     MIPI_CSI2_DPHY_Rst(ENABLE);
 
-
     if(clk_mode == DPHY_CLK_MODE_NON_CONTINUOUS)
     {
         stopstate_check |= DPHY_STOPSTATE_CLOCK;
     }
 
     stopstate_check |= (n_lanes == 1 ? (DPHY_STOPSTATE_LANE0) :
-                                             (DPHY_STOPSTATE_LANE0) | (DPHY_STOPSTATE_LANE1) );
+                                                (DPHY_STOPSTATE_LANE0) | (DPHY_STOPSTATE_LANE1) );
 
     while(MIPI_CSI2_DPHY_Stopstate() != stopstate_check)
     {
@@ -965,14 +957,16 @@ static int32_t DPHY_SlaveSetup (uint32_t clock_frequency, uint8_t n_lanes, DPHY_
 }
 
 /**
-  \fn          int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE clk_mode)
+  \fn          int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes,
+                                             DPHY_CLK_MODE clk_mode)
   \brief       Initialize MIPI CSI2 DPHY Interface.
   \param[in]   frequency to configure DPHY PLL.
   \param[in]   n_lanes number of lanes.
   \param[in]   clk_mode select DPHY clock mode \ref DPHY_CLK_MODE.
   \return      \ref execution_status
   */
-int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE clk_mode)
+int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes,
+                              DPHY_CLK_MODE clk_mode)
 {
     int32_t ret = ARM_DRIVER_OK;
     uint32_t pixclk, htotal, vtotal;
@@ -993,6 +987,15 @@ int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE
     {
 #if (RTE_MIPI_DSI)
 
+        DISPLAY_PANEL_DEVICE *display_panel;
+
+        display_panel = Get_Display_Panel();
+
+        if(display_panel == NULL)
+        {
+            return ARM_DRIVER_ERROR_PARAMETER;
+        }
+
         /* LCD Manufacturer provides the Frame timing values
          *     HTOTAL = WIDTH + HSYNC + HFP + HBP
          *     VTOTAL = HEIGHT + VSYNC + VFP + VBP
@@ -1001,15 +1004,15 @@ int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE
          * Calculate the pixel clock divider
          *     PIXCLK_DIV = CDC200_PIXCLK_SOURCE / PIXCLK
          */
-        htotal = (RTE_PANEL_HSYNC_TIME
-                  + RTE_PANEL_HBP_TIME
-                  + RTE_PANEL_HFP_TIME
-                  + RTE_PANEL_HACTIVE_TIME);
+        htotal = (display_panel->hsync_time
+                  + display_panel->hbp_time
+                  + display_panel->hfp_time
+                  + display_panel->hactive_time);
 
-        vtotal = (RTE_PANEL_VSYNC_LINE
-                  + RTE_PANEL_VBP_LINE
-                  + RTE_PANEL_VFP_LINE
-                  + RTE_PANEL_VACTIVE_LINE);
+        vtotal = (display_panel->vsync_line
+                  + display_panel->vbp_line
+                  + display_panel->vfp_line
+                  + display_panel->vactive_line);
 
         pixclk = (htotal * vtotal * RTE_CDC200_DPI_FPS);
 
@@ -1026,12 +1029,13 @@ int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE
 
 #if (RTE_MIPI_DSI_ILI9806E_PANEL)
         /*Checking LCD Panel supports MIPI DSI DPHY data rate*/
-        if((dsi_freq * 2) > (RTE_ILI9806E_PANEL_MAX_BITRATE_MBPS * 1000000))
+        if((dsi_freq * 2) > (display_panel->dsi_info->max_bitrate * 1000000))
         {
             return ARM_DRIVER_ERROR_PARAMETER;
         }
 #endif
-        ret = DSI_DPHY_Initialize(dsi_freq);
+        ret = DSI_DPHY_Initialize(dsi_freq, display_panel->dsi_info->n_lanes,
+                                  display_panel->dsi_info->clk_mode);
         if(ret != ARM_DRIVER_OK)
         {
             return ret;

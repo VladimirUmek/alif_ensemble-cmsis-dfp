@@ -13,17 +13,20 @@
  * @version  : V1.0.0
  * @date     : 21-AUG-2023
  * @brief    : Baremetal demo application code for ADC driver temperature sensor
- *              - Internal input of temperature  in analog signal corresponding
+ *              - Internal input of temperature in analog signal corresponding
  *                output is digital value.
  *              - Converted digital value are stored in user provided memory
  *                address.
+ *              - That converted value is passed to the function to get the
+ *                temperature of the board from the TSENS
+ *                 - use get_temperature (uint32_t adc_value) function
+ *                   and pass the temperature sensor value
  *
  *            Hardware Connection:
  *            Common temperature sensor is internally connected to ADC12 6th channel
  *            of each instance.
  *            no hardware setup required.
- * @bug      : None.
- * @Note     : None.
+ * @Note     : Shift the bits in the converted value to match a 12-bit format.
  ******************************************************************************/
 
 /* System Includes */
@@ -32,30 +35,24 @@
 
 /* include for ADC Driver */
 #include "Driver_ADC.h"
+#include "temperature.h"
+
+#include "se_services_port.h"
 #include "RTE_Components.h"
 #if defined(RTE_Compiler_IO_STDOUT)
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
 
-
 /* single shot conversion scan use ARM_ADC_SINGLE_SHOT_CH_CONV*/
-/* continuous conversion scan use ARM_ADC_CONTINOUS_CH_CONV */
 
-//#define ADC_CONVERSION    ARM_ADC_SINGLE_SHOT_CH_CONV
-#define ADC_CONVERSION    ARM_ADC_CONTINOUS_CH_CONV
+#define ADC_CONVERSION    ARM_ADC_SINGLE_SHOT_CH_CONV
 
 /* Instance for ADC12 */
 extern ARM_DRIVER_ADC Driver_ADC122;
 static ARM_DRIVER_ADC *ADCdrv = &Driver_ADC122;
 
-#define TEMPERATURE_SENSOR                  ARM_ADC_CHANNEL_6
-#define COMP_A_THLD_VALUE                   (0X00)                                                /* Comparator A threshold value */
-#define COMP_B_THLD_VALUE                   (0x00)                                                /* Comparator B threshold value */
-
+#define TEMPERATURE_SENSOR       ARM_ADC_CHANNEL_6
 #define NUM_CHANNELS             (8)
-
-/* store comparator result */
-uint32_t comp_value[6] = {0};
 
 /* Demo purpose adc_sample*/
 uint32_t adc_sample[NUM_CHANNELS];
@@ -76,173 +73,133 @@ static void adc_conversion_callback(uint32_t event, uint8_t channel, uint32_t sa
         /* Store the value for the respected channels */
         adc_sample[channel] = sample_output;
     }
-    if (event & ARM_ADC_COMPARATOR_THRESHOLD_ABOVE_A)
-    {
-        comp_value[0] += 1;
-    }
-    if (event & ARM_ADC_COMPARATOR_THRESHOLD_ABOVE_B)
-    {
-        comp_value[1] += 1;
-    }
-    if (event & ARM_ADC_COMPARATOR_THRESHOLD_BELOW_A)
-    {
-        comp_value[2] += 1;
-    }
-    if (event & ARM_ADC_COMPARATOR_THRESHOLD_BELOW_B)
-    {
-        comp_value[3] += 1;
-    }
-    if(event & ARM_ADC_COMPARATOR_THRESHOLD_BETWEEN_A_B)
-    {
-        comp_value[4] += 1;
-    }
-    if(event & ARM_ADC_COMPARATOR_THRESHOLD_OUTSIDE_A_B)
-    {
-        comp_value[5] += 1;
-    }
 }
 
 /**
- *    @func         : void TSENS_demo()
- *    @brief        : Tsens demo
- *                  - test to verify the temperature sensor of adc.
- *                  - Internal input of temperature  in analog signal corresponding
- *                    output is digital value.
- *                  - converted value is the allocated user memory address.
- *    @return       : NONE
+ *    @func   : void adc_tsens_demo()
+ *    @brief  : adc temperature sensor demo
+ *             - test to verify the temperature sensor of adc.
+ *             - Internal input of temperature  in analog signal corresponding
+ *               output is digital value.
+ *             - converted value is the allocated user memory address.
+ *    @return : NONE
 */
-void TSENS_demo()
+void adc_tsens_demo()
 {
-
-    uint32_t events   = 0;
-    uint32_t ret      = 0;
+    float    temp;
+    uint32_t service_error_code;
+    int32_t  ret                = 0;
+    uint32_t error_code         = SERVICES_REQ_SUCCESS;
     ARM_DRIVER_VERSION version;
-    ARM_ADC_CAPABILITIES capabilities;
 
-    printf("\r\n >>> ADC demo starting up!!! <<< \r\n");
+    /* Initialize the SE services */
+    se_services_port_init();
+
+    /* enable the 160 MHz clock */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
+                           /*clock_enable_t*/ CLKEN_CLK_160M,
+                           /*bool enable   */ true,
+                                              &service_error_code);
+    if(error_code)
+    {
+        printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
+
+    printf("\t\t\n >>> ADC demo starting up!!! <<< \r\n");
 
     version = ADCdrv->GetVersion();
     printf("\r\n ADC version api:%X driver:%X...\r\n",version.api, version.drv);
 
     /* Initialize ADC driver */
     ret = ADCdrv->Initialize(adc_conversion_callback);
-    if(ret != ARM_DRIVER_OK){
+    if (ret != ARM_DRIVER_OK){
         printf("\r\n Error: ADC init failed\n");
         return;
     }
 
     /* Power control ADC */
     ret = ADCdrv->PowerControl(ARM_POWER_FULL);
-    if(ret != ARM_DRIVER_OK){
+    if (ret != ARM_DRIVER_OK){
         printf("\r\n Error: ADC Power up failed\n");
         goto error_uninitialize;
     }
 
-#if (ADC_CONVERSION == ARM_ADC_SINGLE_SHOT_CH_CONV)
-
     /* set conversion mode */
     ret = ADCdrv->Control(ARM_ADC_CONVERSION_MODE_CTRL, ADC_CONVERSION);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC Comparator failed\n");
+    if (ret != ARM_DRIVER_OK){
+        printf("\r\n Error: ADC select conversion mode failed\n");
         goto error_poweroff;
     }
 
     /* set initial channel */
     ret = ADCdrv->Control(ARM_ADC_CHANNEL_INIT_VAL, TEMPERATURE_SENSOR);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC channel failed\n");
-        goto error_poweroff;
-    }
-#endif
-
-#if (ADC_CONVERSION == ARM_ADC_CONTINOUS_CH_CONV)
-
-    /* set conversion mode */
-    ret = ADCdrv->Control(ARM_ADC_CONVERSION_MODE_CTRL, ADC_CONVERSION);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC set conversion mode failed\n");
+    if (ret != ARM_DRIVER_OK){
+        printf("\r\n Error: ADC channel init failed\n");
         goto error_poweroff;
     }
 
-    /* set channel */
-    ret = ADCdrv->Control(ARM_ADC_CHANNEL_INIT_VAL, TEMPERATURE_SENSOR);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC set initial channel failed\n");
-        goto error_poweroff;
-    }
-#endif
-
-    /* set comparator a value */
-    ret = ADCdrv->Control(ARM_ADC_COMPARATOR_A, COMP_A_THLD_VALUE);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC set Comparator A  threshold failed\n");
-        goto error_poweroff;
-    }
-
-    /* set comparator b value */
-    ret = ADCdrv->Control(ARM_ADC_COMPARATOR_B, COMP_B_THLD_VALUE);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC set Comparator B threshold failed\n");
-        goto error_poweroff;
-    }
-
-    /* select the threshold comparison */
-    ret = ADCdrv->Control(ARM_ADC_THRESHOLD_COMPARISON, ARM_ADC_ABOVE_A_AND_ABOVE_B);
-    if(ret != ARM_DRIVER_OK){
-        printf("\r\n Error: ADC Threshold comparison failed\n");
-        goto error_poweroff;
-    }
-
-    printf(">>> Allocated memory buffer Address is 0x%X <<<\n",(uint32_t)adc_sample);
+    printf(">>> Allocated memory buffer Address is 0x%X <<<\n",(uint32_t)(adc_sample + TEMPERATURE_SENSOR));
     /* Start ADC */
     ret = ADCdrv->Start();
-    if(ret != ARM_DRIVER_OK){
+    if (ret != ARM_DRIVER_OK){
         printf("\r\n Error: ADC Start failed\n");
         goto error_poweroff;
     }
 
     /* wait for timeout */
-    if (ADC_CONVERSION == ARM_ADC_CONTINOUS_CH_CONV)
-    {
-        while(!(num_samples == 1000));
+    while (!(num_samples == 1));
+
+    temp = (float)get_temperature(adc_sample[TEMPERATURE_SENSOR]);
+    if (temp == ARM_DRIVER_ERROR){
+        printf("\r\n Error: Temperature is outside range\n");
+        goto error_poweroff;
     }
     else
     {
-        /* single shot conversion */
-        while(!(num_samples == 1));
+        printf("\n Current temp %.1f°C\n",temp);
     }
 
     /* Stop ADC */
     ret = ADCdrv->Stop();
-    if(ret != ARM_DRIVER_OK){
+    if (ret != ARM_DRIVER_OK){
         printf("\r\n Error: ADC Stop failed\n");
         goto error_poweroff;
     }
 
-    printf("\n >>> ADC conversion completed \n");
-    printf(" Converted value are stored in user allocated memory address.\n");
+    printf("\n Temperature Reading completed \n");
     printf("\n ---END--- \r\n wait forever >>> \n");
     while(1);
 
 error_poweroff:
 
-        /* Power off ADC peripheral */
-        ret = ADCdrv->PowerControl(ARM_POWER_OFF);
-        if(ret != ARM_DRIVER_OK)
-        {
-            printf("\r\n Error: ADC Power OFF failed.\r\n");
-        }
+    /* Power off ADC peripheral */
+    ret = ADCdrv->PowerControl(ARM_POWER_OFF);
+    if (ret != ARM_DRIVER_OK)
+    {
+        printf("\r\n Error: ADC Power OFF failed.\r\n");
+    }
 
 error_uninitialize:
 
-        /* Un-initialize ADC driver */
-        ret = ADCdrv->Uninitialize();
-        if(ret != ARM_DRIVER_OK)
-        {
-            printf("\r\n Error: ADC Uninitialize failed.\r\n");
-        }
+    /* Un-initialize ADC driver */
+    ret = ADCdrv->Uninitialize();
+    if(ret != ARM_DRIVER_OK)
+    {
+        printf("\r\n Error: ADC Uninitialize failed.\r\n");
+    }
+    /* disable the 160 MHz clock */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
+                           /*clock_enable_t*/ CLKEN_CLK_160M,
+                           /*bool enable   */ false,
+                                              &service_error_code);
+    if(error_code)
+    {
+        printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
+    }
 
-        printf("\r\n ADC demo exiting...\r\n");
+    printf("\r\n ADC demo exiting...\r\n");
 }
 
 /* Define main entry point.  */
@@ -259,6 +216,6 @@ int main()
     }
     #endif
     /* Enter the demo Application.  */
-    TSENS_demo();
+    adc_tsens_demo();
     return 0;
 }

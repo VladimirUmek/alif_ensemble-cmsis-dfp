@@ -89,7 +89,7 @@ typedef struct _SPI_SS_MASTER_SW_CONFIG {
 /** \brief Resources for a SPI instance. */
 typedef struct _SPI_RESOURCES
 {
-    LPSPI_Type                  *regs;              /**< Pointer to regs                                  */
+    SPI_Type                    *regs;              /**< Pointer to regs                                  */
     ARM_SPI_SignalEvent_t       cb_event;           /**< Pointer to call back function                    */
     ARM_SPI_STATUS              status;             /**< SPI driver status                                */
     SPI_DRIVER_STATE            state;              /**< SPI driver state                                 */

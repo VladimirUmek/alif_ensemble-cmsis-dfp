@@ -112,5 +112,27 @@ static inline void analog_config_cmp_reg2(void)
     *((volatile uint32_t *)CMP_REG2_BASE) = CMP_REG2_VAL;
 }
 
+/**
+  \fn     static inline void enable_cmp_periph_clk(void)
+  \brief  Enable CMP Control register.
+  \param  none.
+  \return none.
+ */
+static inline void enable_cmp_periph_clk(void)
+{
+    CLKCTL_PER_SLV->CMP_CTRL |= CMP_CTRL_CMP0_CLKEN;
+}
+
+/**
+  \fn     static inline void disable_cmp_periph_clk(void)
+  \brief  Disable CMP Control register.
+  \param  none.
+  \return none.
+ */
+static inline void disable_cmp_periph_clk(void)
+{
+    CLKCTL_PER_SLV->CMP_CTRL &= ~CMP_CTRL_CMP0_CLKEN;
+}
+
 #endif /* ANALOG_CONFIG_H_ */
 

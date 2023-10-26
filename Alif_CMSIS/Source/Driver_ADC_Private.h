@@ -19,9 +19,6 @@
 #include "adc.h"
 #include "sys_ctrl_adc.h"
 
-/* ADC control */
-#define ADC_CTRL_BASE                      ADC120_BASE
-
 typedef enum {
     ADC_FLAG_DRV_INIT_DONE    = (1U << 0),  /* ADC Driver is Initialized */
     ADC_FLAG_DRV_POWER_DONE   = (1U << 1),  /* ADC Driver is Powered     */
@@ -31,7 +28,7 @@ typedef enum {
 typedef struct _ADC_RESOURCES
 {
     ARM_ADC_SignalEvent_t   cb_event;                  /* ADC APPLICATION CALLBACK EVENT                       */
-    ADC120_Type             *regs;                     /* ADC register base address                            */
+    ADC_Type                *regs;                     /* ADC register base address                            */
     conv_info_t             conv;                      /* ADC conversion information                           */
     ADC_INSTANCE            drv_instance;              /* ADC Driver instances                                 */
     IRQn_Type               intr_done0_irq_num;        /* ADC avg sample ready interrupt number                */
@@ -49,34 +46,15 @@ typedef struct _ADC_RESOURCES
     uint32_t                sample_width;              /* ADC sample width                                     */
     uint32_t                shift_n_bit;               /* ADC number of bits to shift                          */
     uint32_t                shift_left_or_right;       /* ADC shift bit left or right                          */
-    uint32_t                reg1_value;                /* ADC Common Analog configuration for all ADC instance */
+    bool                    differential_enable;       /* ADC12 differential enable                            */
+    bool                    comparator_enable;         /* ADC12 comparator enable                              */
+    bool                    vcm_rdiv_en;               /* ADC12 Voltage common mode enable                     */
+    uint8_t                 comparator_bias;           /* ADC12 comparator bias                                */
     uint32_t                pga_enable;                /* ADC Programmable gain amplifier(PGA) enable          */
     uint32_t                pga_value;                 /* ADC Programmable gain amplifier(PGA)                 */
     uint32_t                bias;                      /* ADC24 bias control value                             */
     uint32_t                output_rate;               /* ADC24 output rate                                    */
 }ADC_RESOURCES;
-
-/*
- * @func           : void ADC_Config(ADC_RESOURCES *ADC, uint32_t confg_value)
- * @brief          : set the ADC configuration
- * @parameter[1]   : ADC    : Pointer to the ADC register map
- * @parameter[2]   : confg_value : to set comparator enable, comparator bias, differential enable and
-                                   VCM resistive divider.
- * @return         : NONE
- */
-static inline void ADC_Config(ADC_RESOURCES *ADC, uint32_t confg_value)
-{
-    volatile ADC120_Type *config = (volatile ADC120_Type *)ADC_CTRL_BASE;
-
-    /* assigning value to the register for enabling each ADC instances*/
-    config->ADC_REG1 |= confg_value;
-
-    /* Check any instances differential mode is enabled or not */
-    if (config->ADC_REG1 & ADC_DIFFERENTIAL_ENABLE_MSK)
-    {
-        ADC->conv.differential_status = ADC_DIFFERENTIAL_ENABLE;
-    }
-}
 
 /**
  * @fn       : void AdcCoreClkControl(const ADC_RESOURCES *ADC, bool enable)
@@ -89,7 +67,7 @@ static inline void ADC_Core_Clk_Control(const ADC_RESOURCES *ADC, bool enable)
 {
     switch (ADC->drv_instance)
     {
-        case ADC_INSTANCE_0:
+        case ADC_INSTANCE_ADC12_0:
         {
             if (enable)
             {
@@ -101,7 +79,7 @@ static inline void ADC_Core_Clk_Control(const ADC_RESOURCES *ADC, bool enable)
             }
             break;
         }
-        case ADC_INSTANCE_1:
+        case ADC_INSTANCE_ADC12_1:
         {
             if (enable)
             {
@@ -113,7 +91,7 @@ static inline void ADC_Core_Clk_Control(const ADC_RESOURCES *ADC, bool enable)
             }
             break;
         }
-        case ADC_INSTANCE_2:
+        case ADC_INSTANCE_ADC12_2:
         {
             if (enable)
             {
@@ -125,7 +103,7 @@ static inline void ADC_Core_Clk_Control(const ADC_RESOURCES *ADC, bool enable)
             }
         break;
         }
-        case ADC24_INSTANCE:
+        case ADC_INSTANCE_ADC24_0:
         {
             if (enable)
             {

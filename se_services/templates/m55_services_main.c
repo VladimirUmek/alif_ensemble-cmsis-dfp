@@ -22,7 +22,6 @@
 #include "mhu_driver.h"
 #include "services_lib_interface.h"
 #include "RTE_Components.h"
-#include CMSIS_device_header
 
 /*******************************************************************************
  *  M A C R O   D E F I N E S
@@ -37,6 +36,10 @@
 #else
 #define CPU_STRING "<unknown>"
 #endif
+
+#if defined(RTE_Compiler_IO_STDOUT)
+#include "retarget_stdout.h"
+#endif  /* RTE_Compiler_IO_STDOUT */
 
 /**
  * Test parameters
@@ -95,37 +98,6 @@ extern void SERVICES_test(uint32_t services_handle);
 /*******************************************************************************
  *  C O D E
  ******************************************************************************/
-
-/**
- * ARM CLANG methods to ensure no semi hosting happens otherwise you are
- * land of Hardfaults.
- */
-
-//#define DISABLE_PRINTF
-
-#ifdef DISABLE_PRINTF
-    #define printf(fmt, ...) (0)
-#if __ARMCC_VERSION >= 6000000
-__asm(".global __use_no_semihosting\n\t");
-
-void _sys_exit(int return_code) {
-   while (1);
-   (void)return_code;
-}
-
-void _ttywrch(int ch)
-{
-  (void)ch;
-}
-
-char *_sys_command_string(char *ch)
-{
-  (void)ch;
-
-  return (char*)NULL;
-}
-#endif
-#endif
 
 /**
  * @brief MHU0 TX IRQ handler
@@ -207,6 +179,16 @@ static void mhu_initialize(void)
  */
 int main(void)
 {
+  #if defined(RTE_Compiler_IO_STDOUT_User)
+   int32_t ret;
+   ret = stdout_init();
+   if(ret != 0)
+   {
+       while(1)
+       {
+       }
+   }
+   #endif
   SERVICES_print("[SE SERVICES] %s Test harness - STARTS\n", CPU_STRING);
   
   /**

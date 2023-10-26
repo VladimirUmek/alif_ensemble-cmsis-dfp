@@ -23,7 +23,7 @@
  *                  - single channel scan
  *                2) Continuous conversion
  *                  - single channel scan
- *                  - Continuous scan
+ *                  - Multiple channel scan
  *
  *              Hardware setup:
  *              - GPIO port are reserved for ADC12 instance 0 input:
@@ -54,20 +54,25 @@
  *                P0_2 (+ve input ) and P0_6 (-ve input) channel 2
  *                P0_3 (+ve input ) and P0_7 (-ve input) channel 2
  *
- *              Single channel Scan (selective channel scan)
+ *              Single shot Scan (selective channel scan)
  *              - User can select the particular channel using
  *                 ARM_ADC_CHANNEL_#, where # denotes the channel number.
  *
- *              Continuous channel Scan (Multiple channel scan)
- *              - it rotate through all the ADC channels and
- *                 continuously stores the value in given memory buffer.
- *              - User can skip channels using ARM_ADC_MASK_CHANNEL_# macro.
+ *              Continuous Scan
+ *              - Single shot scan
+ *              - User can select the particular channel using
+ *                ARM_ADC_CHANNEL_#, where # denotes the channel number.
+ *
+ *              - Continuous channel scan
+ *                - it rotate through all the ADC channels and
+ *                  continuously stores the value in given memory buffer.
+ *                  User can skip channels using ARM_ADC_MASK_CHANNEL_# macro.
  *
  *              Comparator
  *              - comparing channels for both the scan for below threshold
- *                • Above / below threshold A
- *                • Above / below threshold B
- *                • Between/outside threshold A and B
+ *                " Above / below threshold A
+ *                " Above / below threshold B
+ *                " Between/outside threshold A and B
  *
  *              ADC configurations for Demo testApp:
  *                Single channel scan(Default scan)
@@ -80,6 +85,19 @@
  *                - Used ADC instance 2,all channels(0-5) are connected to dc supply
  *                - channel 2 and 4 are masked using MASK_CHANNEL macro.
  *                - GND both dc supply channel -ve
+ *              Differential input
+ *              -ADC12
+ *                GPIO pin P1_4 and P1_5 are connected to Regulated DC Power supply.
+ *                2 channel DC Power supply:
+ *                - +ve connected to P1_4 (ADC122 channel 0) at 1.0V and
+ *                  +ve connected to P1_5 (ADC122 channel 1) at 0.4V
+ *                - -ve connect to GND.
+ *              -ADC24
+                  GPIO pin P1_4 and P1_5 are connected to Regulated DC Power supply.
+ *                2 channel DC Power supply:
+ *                - +ve connected to P0_0 (ADC122 channel 0) at 1.0V and
+ *                  +ve connected to P0_4 (ADC122 channel 1) at 0.5V
+ *                - -ve connect to GND.
  * @bug      : None.
  * @Note     : None.
  ******************************************************************************/
@@ -90,6 +108,10 @@
 
 /* include for ADC Driver */
 #include "Driver_ADC.h"
+
+/* PINMUX include */
+#include "pinconf.h"
+
 #include "se_services_port.h"
 #include "RTE_Components.h"
 #if defined(RTE_Compiler_IO_STDOUT)
@@ -145,6 +167,180 @@ uint32_t comp_value[MAX_NUM_THRESHOLD] = {0};
 uint32_t adc_sample[NUM_CHANNELS];
 
 volatile uint32_t num_samples = 0;
+
+/**
+ * @fn      static int32_t pinmux_config(void)
+ * @brief   ADC pinmux configuration
+ * @retval  execution status.
+ */
+static int32_t pinmux_config(void)
+{
+    int32_t ret = 0U;
+
+    if (ADC_INSTANCE == ADC12)
+    {
+        if (ADC_SCAN == ARM_ADC_SINGLE_CH_SCAN)
+        {
+            /* ADC122 channel 0 */
+            ret = pinconf_set(PORT_1, PIN_4, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+        }
+
+        if (ADC_SCAN == ARM_ADC_MULTIPLE_CH_SCAN)
+        {
+            /* ADC122 channel 0 */
+            ret = pinconf_set(PORT_1, PIN_4, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+
+            /* ADC122 channel 1 */
+            ret = pinconf_set(PORT_1, PIN_5, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC122 channel 2 */
+            ret = pinconf_set(PORT_1, PIN_6, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC122 channel 3 */
+            ret = pinconf_set(PORT_1, PIN_7, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE );
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC122 channel 4 */
+            ret = pinconf_set(PORT_2, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC122 channel 5 */
+            ret = pinconf_set(PORT_2, PIN_1, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+        }
+    }
+
+    if (ADC_INSTANCE == ADC24)
+    {
+
+        if (ADC_SCAN == ARM_ADC_SINGLE_CH_SCAN)
+        {
+            /* ADC24 channel 0 */
+            ret = pinconf_set(PORT_0, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC24 channel 0 */
+            ret = pinconf_set(PORT_0, PIN_4, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+        }
+
+        if (ADC_SCAN == ARM_ADC_MULTIPLE_CH_SCAN)
+        {
+            /* ADC24 channel 0 */
+            ret = pinconf_set(PORT_0, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC24 channel 0 */
+            ret = pinconf_set(PORT_0, PIN_4, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+
+            /* ADC24 channel 1 */
+            ret = pinconf_set(PORT_0, PIN_1, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC24 channel 1 */
+            ret = pinconf_set(PORT_0, PIN_5, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+
+            /* ADC24 channel 2 */
+            ret = pinconf_set(PORT_0, PIN_2, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC24 channel 2 */
+            ret = pinconf_set(PORT_0, PIN_6, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC24 channel 1 */
+            ret = pinconf_set(PORT_0, PIN_3, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+            /* ADC24 channel 1 */
+            ret = pinconf_set(PORT_0, PIN_7, PINMUX_ALTERNATE_FUNCTION_7,
+                              PADCTRL_READ_ENABLE);
+            if(ret)
+            {
+                printf("ERROR: Failed to configure PINMUX \r\n");
+                return ret;
+            }
+        }
+    }
+
+    return ret;
+}
 
 /*
  * @func   : void adc_conversion_callback(uint32_t event, uint8_t channel, uint32_t sample_output)
@@ -216,6 +412,14 @@ void ADC_demo()
 
     version = ADCdrv->GetVersion();
     printf("\r\n ADC version api:%X driver:%X...\r\n",version.api, version.drv);
+
+    /* PINMUX */
+    ret = pinmux_config();
+    if(ret != 0)
+    {
+        printf("Error in pin-mux configuration\n");
+        return;
+    }
 
     /* Initialize ADC driver */
     ret = ADCdrv->Initialize(adc_conversion_callback);

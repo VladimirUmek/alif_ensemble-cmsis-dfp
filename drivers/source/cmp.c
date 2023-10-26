@@ -16,7 +16,7 @@
   @param[in]   cmp    Pointer to the CMP register map
   @return      none
 */
-void cmp_irq_handler(CMP0_Type *cmp)
+void cmp_irq_handler(CMP_Type *cmp)
 {
     /* clear the interrupt before re-starting */
     if(cmp->CMP_INTERRUPT_STATUS == 1)

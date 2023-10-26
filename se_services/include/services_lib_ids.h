@@ -69,6 +69,7 @@ typedef enum
   SERVICE_SYSTEM_MGMT_GET_DEVICE_REVISION_DATA,                       /**< SERVICE_SYSTEM_MGMT_GET_DEVICE_REVISION_DATA*/
   SERVICE_SYSTEM_MGMT_SET_CAPABILITIES_DEBUG,                         /**< SERVICE_SYSTEM_MGMT_SET_CAPABILITIES_DEBUG */
   SERVICE_SYSTEM_MGMT_READ_OTP,                                       /**< SERVICE_SYSTEM_MGMT_OTP_READ               */
+  SERVICE_SYSTEM_MGMT_WRITE_OTP,                                      /**< SERVICE_SYSTEM_MGMT_OTP_WRITE              */
   SERVICE_SYSTEM_MGMT_END    = 299,                                   /**< SERVICE_SYSTEM_MGMT_END                    */
 
   /**
@@ -83,6 +84,8 @@ typedef enum
   SERVICE_POWER_M55_HP_VTOR_SAVE_REQ_ID,                              /**< SERVICE_POWER_M55_HP_VTOR_SAVE_REQ_ID      */
   SERVICE_POWER_GLOBAL_STANDBY_REQ_ID,                                /**< SERVICE_POWER_GLOBAL_STANDBY_REQ_ID        */
   SERVICE_POWER_MEMORY_POWER_REQ_ID,                                  /**< SERVICE_POWER_MEMORY_POWER_REQ_ID          */
+  SERVICE_POWER_DCDC_VOLTAGE_REQ_ID,                                  /**< SERVICE_POWER_DCDC_VOLTAGE_REQ_ID          */
+  SERVICE_POWER_LDO_VOLTAGE_REQ_ID,                                   /**< SERVICE_POWER_LDO_VOLTAGE_REQ_ID           */
   SERVICE_POWER_GET_RUN_REQ_ID,                                       /**< SERVICE_POWER_GET_RUN_REQ_ID               */
   SERVICE_POWER_SET_RUN_REQ_ID,                                       /**< SERVICE_POWER_SET_RUN_REQ_ID               */
   SERVICE_POWER_GET_OFF_REQ_ID,                                       /**< SERVICE_POWER_GET_OFF_REQ_ID               */

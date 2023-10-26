@@ -299,10 +299,10 @@ uint32_t SERVICES_system_get_device_data(uint32_t services_handle,
 }
 
 /**
- * @fn  uint32_t SERVICES_system_read_otp     (uint32_t services_handle,
- *                                             uint32_t otp_offset,
- *                                             uint32_t *otp_value_word,
- *                                             uint32_t *error_code)
+ * @fn  uint32_t SERVICES_system_read_otp(uint32_t services_handle,
+ *                                        uint32_t otp_offset,
+ *                                        uint32_t *otp_value_word,
+ *                                        uint32_t *error_code)
  * @brief read OTP data
  * @param services_handle
  * @param otp_offset
@@ -310,21 +310,52 @@ uint32_t SERVICES_system_get_device_data(uint32_t services_handle,
  * @param error_code
  * @return
  */
-uint32_t SERVICES_system_read_otp     (uint32_t services_handle,
-                                       uint32_t otp_offset,
-                                       uint32_t *otp_value_word,
-                                       uint32_t *error_code)
+uint32_t SERVICES_system_read_otp(uint32_t services_handle,
+                                  uint32_t otp_offset,
+                                  uint32_t *otp_value_word,
+                                  uint32_t *error_code)
 {
-  read_otp_data_t *p_svc = (read_otp_data_t *)
-      SERVICES_prepare_packet_buffer(sizeof(read_otp_data_t));
+  otp_data_t *p_svc = (otp_data_t *)
+      SERVICES_prepare_packet_buffer(sizeof(otp_data_t));
   uint32_t return_code;
 
  p_svc->send_offset = otp_offset;
  return_code = SERVICES_send_request(services_handle,
                                      SERVICE_SYSTEM_MGMT_READ_OTP,
                                      NULL);
- *otp_value_word = p_svc->resp_otp_word;
+ *otp_value_word = p_svc->otp_word;
  *error_code = p_svc->resp_error_code;
 
+  return return_code;
+}
+
+/**
+ * @fn  uint32_t SERVICES_system_write_otp(uint32_t services_handle,
+ *                                         uint32_t otp_offset,
+ *                                         uint32_t otp_value_word,
+ *                                         uint32_t *error_code)
+ * @brief read OTP data
+ * @param services_handle
+ * @param otp_offset
+ * @param otp_value_word
+ * @param error_code
+ * @return
+ */
+uint32_t SERVICES_system_write_otp(uint32_t services_handle,
+                                   uint32_t otp_offset,
+                                   uint32_t otp_value_word,
+                                   uint32_t *error_code)
+{
+  otp_data_t *p_svc = (otp_data_t *)
+      SERVICES_prepare_packet_buffer(sizeof(otp_data_t));
+  uint32_t return_code;
+
+ p_svc->send_offset = otp_offset;
+ p_svc->otp_word = otp_value_word;
+ return_code = SERVICES_send_request(services_handle,
+                                     SERVICE_SYSTEM_MGMT_WRITE_OTP,
+                                     NULL);
+
+ *error_code = p_svc->resp_error_code;
   return return_code;
 }

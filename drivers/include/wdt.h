@@ -28,12 +28,9 @@ typedef struct {                                    /*!< (@ 0x40100000) WDT_HP_C
     const volatile uint32_t WDT_WDOGMIS;            /*!< (@ 0x00000014) Watchdog Interrupt Status Register                         */
     const volatile uint32_t RESERVED[762];
     volatile uint32_t       WDT_WDOGLOCK;           /*!< (@ 0x00000C00) Watchdog Lock Register                                     */
-    const volatile uint32_t RESERVED1[191];
-    volatile uint32_t       WDT_WDOGITCR;           /*!< (@ 0x00000F00) Watchdog Integration Test Control Register                 */
-    volatile  uint32_t      WDT_WDOGITOP;           /*!< (@ 0x00000F04) Watchdog Integration Test Output Set Register              */
-    const volatile uint32_t RESERVED2[50];
+    const volatile uint32_t RESERVED1[243];
     const volatile uint32_t WDT_WDOGPERIPHID4;      /*!< (@ 0x00000FD0) Reserved                                                   */
-    const volatile uint32_t RESERVED3[3];
+    const volatile uint32_t RESERVED2[3];
     const volatile uint32_t WDT_WDOGPERIPHID0;      /*!< (@ 0x00000FE0) Reserved                                                   */
     const volatile uint32_t WDT_WDOGPERIPHID1;      /*!< (@ 0x00000FE4) Reserved                                                   */
     const volatile uint32_t WDT_WDOGPERIPHID2;      /*!< (@ 0x00000FE8) Reserved                                                   */

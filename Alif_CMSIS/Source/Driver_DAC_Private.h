@@ -43,7 +43,7 @@ typedef enum {
  */
 typedef struct _DAC_resources
 {
-    DAC120_Type         *regs;         /* DAC register address */
+    DAC_Type            *regs;         /* DAC register address */
     DAC_DRIVER_STATE     flags;        /* DAC Driver Flags */
     DAC_INSTANCE         instance;     /* DAC Driver instance */
     uint16_t             bypass_val;   /* DAC input data in bypass mode */

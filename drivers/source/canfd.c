@@ -30,7 +30,7 @@
   \param[in]   len   : Length of message
   \return      none
 */
-static void canfd_copy_tx_buf(uint32_t* dest, uint32_t* src, const uint8_t len)
+static void canfd_copy_tx_buf(volatile uint32_t* dest, uint32_t* src, const uint8_t len)
 {
     uint8_t  iter           = 0U;
     uint8_t  rem            = 0U;
@@ -295,7 +295,7 @@ void canfd_set_err_warn_limit(CANFD_Type* canfd, const uint8_t ewl)
 void canfd_send(CANFD_Type* canfd, const canfd_tx_info_t tx_header,
                           const uint8_t *data, const uint8_t size)
 {
-    tbuf_regs_t* tx_msg = (tbuf_regs_t*)((uint8_t*)canfd + CANFD_TX_MSG_BUFFER_OFFSET);
+    volatile tbuf_regs_t* tx_msg = (volatile tbuf_regs_t*)canfd->CANFD_TBUF;
 
     /* Primary buffer is selected */
     canfd->CANFD_TCMD &= ~CANFD_TCMD_TX_BUFFER_SELECT;
@@ -312,7 +312,7 @@ void canfd_send(CANFD_Type* canfd, const canfd_tx_info_t tx_header,
     /* Copies tx data if it is a data frame*/
     if(tx_header.rtr == 0U)
     {
-        canfd_copy_tx_buf((uint32_t*)tx_msg->data, (uint32_t*)data, size);
+        canfd_copy_tx_buf((volatile uint32_t*)tx_msg->data, (uint32_t*)data, size);
     }
 
     /* Enables primary buffer transmission */
@@ -330,7 +330,7 @@ void canfd_send(CANFD_Type* canfd, const canfd_tx_info_t tx_header,
 void canfd_receive(CANFD_Type* canfd, canfd_transfer_t *dest_data)
 {
     uint8_t iter = 0U;
-    rbuf_regs_t* rx_msg = (rbuf_regs_t*)((uint8_t*)canfd + CANFD_RX_MSG_BUFFER_OFFSET);
+    volatile rbuf_regs_t* rx_msg = (volatile rbuf_regs_t*)canfd->CANFD_RBUF;
 
     dest_data->rx_header.id            = (rx_msg->can_id & (~CANFD_MSG_ESI_Msk));
     dest_data->rx_header.esi           = ((rx_msg->can_id >> CANFD_MSG_ESI_Pos) & 1U);

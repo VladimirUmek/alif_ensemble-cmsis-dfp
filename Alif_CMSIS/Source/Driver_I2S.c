@@ -21,6 +21,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "Driver_I2S_Private.h"
+#include "Driver_SAI_EX.h"
 
 #define ARM_SAI_DRV_VERSION    ARM_DRIVER_VERSION_MAJOR_MINOR(3, 0) /*!< I2S Driver Version */
 
@@ -230,6 +231,32 @@ __STATIC_INLINE int32_t I2S_DMA_EnableMono(DMA_PERIPHERAL_CONFIG *dma_periph)
 
     /* Enable I2S mono feature */
     status = dma_drv->Control(&dma_periph->dma_handle, ARM_DMA_I2S_MONO_MODE, 0);
+    if(status)
+    {
+        return ARM_DRIVER_ERROR;
+    }
+
+    return ARM_DRIVER_OK;
+}
+
+/**
+  \fn          int32_t I2S_DMA_Usermcode(DMA_PERIPHERAL_CONFIG *dma_periph,
+                                         uint32_t dma_mcode)
+  \brief       Use Custom Microcode for I2S
+  \param[in]   dma_periph  Pointer to DMA resources
+  \param[in]   dma_mcode  Pointer to DMA microcode
+  \return      \ref        execution_status
+*/
+__STATIC_INLINE int32_t I2S_DMA_Usermcode(DMA_PERIPHERAL_CONFIG *dma_periph,
+                                          uint32_t dma_mcode)
+{
+    int32_t        status;
+    ARM_DRIVER_DMA *dma_drv = dma_periph->dma_drv;
+
+    /* Use User provided custom microcode */
+    status = dma_drv->Control(&dma_periph->dma_handle,
+                              ARM_DMA_USER_PROVIDED_MCODE,
+                              dma_mcode);
     if(status)
     {
         return ARM_DRIVER_ERROR;
@@ -1030,6 +1057,26 @@ static int32_t I2S_Control(uint32_t control, uint32_t arg1,
         I2S->drv_status.status_b.rx_busy = 0U;
 
         return ARM_DRIVER_OK;
+#if I2S_DMA_ENABLE
+    case ARM_SAI_USE_CUSTOM_DMA_MCODE_TX:
+        if(!arg1)
+            return ARM_DRIVER_ERROR_PARAMETER;
+
+        /* Use User Defined microcode for DMA */
+        if(I2S_DMA_Usermcode(&I2S->dma_cfg->dma_tx, arg1))
+            return ARM_DRIVER_ERROR;
+        else
+            return ARM_DRIVER_OK;
+    case ARM_SAI_USE_CUSTOM_DMA_MCODE_RX:
+        if(!arg1)
+            return ARM_DRIVER_ERROR_PARAMETER;
+
+        /* Use User Defined microcode for DMA */
+        if(I2S_DMA_Usermcode(&I2S->dma_cfg->dma_rx, arg1))
+            return ARM_DRIVER_ERROR;
+        else
+            return ARM_DRIVER_OK;
+#endif
     case ARM_SAI_MASK_SLOTS_TX:
     case ARM_SAI_MASK_SLOTS_RX:
     default:

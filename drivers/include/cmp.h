@@ -19,7 +19,7 @@ extern "C"
 #include <stdint.h>
 
 /**
- @brief struct CMP0_Type:- Register map for Analog Comparator
+ @brief struct CMP_Type:- Register map for Analog Comparator
  */
 typedef struct {                                     /*!< CMP Structure                                             */
     volatile uint32_t  CMP_COMP_REG1;                /*!< (@ 0x00000000) Comparator Register 1                      */
@@ -31,7 +31,7 @@ typedef struct {                                     /*!< CMP Structure         
     volatile const  uint32_t  RESERVED[2];
     volatile uint32_t  CMP_INTERRUPT_STATUS;         /*!< (@ 0x00000020) CMP Interrupt Status and Clear Register    */
     volatile uint32_t  CMP_INTERRUPT_MASK;           /*!< (@ 0x00000024) CMP Interrupt Mask Register                */
-}CMP0_Type;                                          /*!< Size = 40 (0x28)                                          */
+}CMP_Type;                                           /*!< Size = 40 (0x28)                                          */
 
 #define CMP0_ENABLE                    (1U << 28)    /* To enable the Comp0                                         */
 #define CMP1_ENABLE                    (1U << 29)    /* To enable the Comp1                                         */
@@ -54,116 +54,116 @@ typedef struct {                                     /*!< CMP Structure         
 #define LPCMP_MSK_CTRL_VAL             (0xFEU << 24) /* Mask all LPCMP configuration value                          */
 
 /**
-  @fn          void cmp_enable_interrupt(CMP0_Type *cmp)
+  @fn          void cmp_enable_interrupt(CMP_Type *cmp)
   @brief       Enable the interrupts for the CMP instance.
   @param[in]   cmp     Pointer to the CMP register map
   @return      none
 */
-static inline void cmp_enable_interrupt(CMP0_Type *cmp)
+static inline void cmp_enable_interrupt(CMP_Type *cmp)
 {
     cmp->CMP_INTERRUPT_MASK = 0;
 }
 
 /**
-  @fn          void cmp_disable_interrupt(CMP0_Type *cmp)
+  @fn          void cmp_disable_interrupt(CMP_Type *cmp)
   @brief       Disable the interrupts for the CMP instance.
   @param[in]   cmp     Pointer to the CMP register map
   @return      none
 */
-static inline void cmp_disable_interrupt(CMP0_Type *cmp)
+static inline void cmp_disable_interrupt(CMP_Type *cmp)
 {
     cmp->CMP_INTERRUPT_MASK = CMP_INT_MASK;
 }
 
 /**
-  @fn          void cmp_get_interrupt_status(CMP0_Type *cmp)
+  @fn          void cmp_get_interrupt_status(CMP_Type *cmp)
   @brief       Get the interrupt status of CMP instance.
   @param[in]   cmp     Pointer to the CMP register map
   @return      Interrupt status
 */
-static inline uint32_t cmp_get_interrupt_status(CMP0_Type *cmp)
+static inline uint32_t cmp_get_interrupt_status(CMP_Type *cmp)
 {
     return cmp->CMP_INTERRUPT_STATUS;
 }
 
 /**
-  @fn          void cmp_clear_interrupt(CMP0_Type *cmp)
+  @fn          void cmp_clear_interrupt(CMP_Type *cmp)
   @brief       Clear the interrupts for the CMP instance.
   @param[in]   cmp     Pointer to the CMP register map
   @return      none
 */
-static inline void cmp_clear_interrupt(CMP0_Type *cmp)
+static inline void cmp_clear_interrupt(CMP_Type *cmp)
 {
     cmp->CMP_INTERRUPT_STATUS = CMP_INTERRUPT_CLEAR;
 }
 
 /**
-  @fn          void cmp_clear_config(CMP0_Type *cmp)
+  @fn          void cmp_clear_config(CMP_Type *cmp)
   @brief       Clear the CMP configuration.
   @param[in]   cmp     Pointer to the CMP register map
   @return      none
 */
-static inline void cmp_clear_config(CMP0_Type *cmp)
+static inline void cmp_clear_config(CMP_Type *cmp)
 {
     cmp->CMP_COMP_REG1 = 0U;
 }
 
 /**
-  @fn          void cmp_set_polarity_ctrl(CMP0_Type *cmp, uint32_t arg)
+  @fn          void cmp_set_polarity_ctrl(CMP_Type *cmp, uint32_t arg)
   @brief       If polarity control is Enable, invert result of the CMP.
   @param[in]   cmp     Pointer to the CMP register map
   @param[in]   arg     ENABLE/DISABLE the polarity control bit.
   @return      none
 */
-static inline void cmp_set_polarity_ctrl(CMP0_Type *cmp, uint32_t arg)
+static inline void cmp_set_polarity_ctrl(CMP_Type *cmp, uint32_t arg)
 {
     cmp->CMP_POLARITY_CTRL = arg;
 }
 
 /**
-  @fn          void cmp_set_window_ctrl(CMP0_Type *cmp, uint32_t arg)
+  @fn          void cmp_set_window_ctrl(CMP_Type *cmp, uint32_t arg)
   @brief       Select one of the 4 inputs which will control the windowing
                (gating) function.
   @param[in]   cmp    Pointer to the CMP register map
   @param[in]   arg    4 input events inputs to control the processing window.
   @return      none
 */
-static inline void cmp_set_window_ctrl(CMP0_Type *cmp, uint32_t arg)
+static inline void cmp_set_window_ctrl(CMP_Type *cmp, uint32_t arg)
 {
     cmp->CMP_WINDOW_CTRL = (CMP_WINDOW_CONTROL_ENABLE | arg << 8);
 }
 
 /**
-  @fn          void cmp_set_filter_ctrl(CMP0_Type *cmp, uint32_t arg)
+  @fn          void cmp_set_filter_ctrl(CMP_Type *cmp, uint32_t arg)
   @brief       CMP Filter sets the filter taps.
   @param[in]   cmp  Pointer to the CMP register map
   @param[in]   arg  Number of filter taps, 2–8 taps.
   @return      none
 */
-static inline void cmp_set_filter_ctrl(CMP0_Type *cmp, uint32_t arg)
+static inline void cmp_set_filter_ctrl(CMP_Type *cmp, uint32_t arg)
 {
     cmp->CMP_FILTER_CTRL = (CMP_FILTER_CONTROL_ENABLE | arg << 8);
 }
 
 /**
-  @fn          void cmp_set_prescaler_ctrl(CMP0_Type *cmp, uint32_t arg)
+  @fn          void cmp_set_prescaler_ctrl(CMP_Type *cmp, uint32_t arg)
   @brief       CMP prescaler sets the clocking rate for filtering
   @param[in]   cmp  Pointer to the CMP register map
   @param[in]   arg  Number of clocks between updating taps with new comparator input.
   @return      none
 */
-static inline void cmp_set_prescaler_ctrl(CMP0_Type *cmp, uint32_t arg)
+static inline void cmp_set_prescaler_ctrl(CMP_Type *cmp, uint32_t arg)
 {
     cmp->CMP_PRESCALER_CTRL = arg;
 }
 
 /**
-  @fn          void cmp_irq_handler(CMP0_Type *cmp) ;
+  @fn          void cmp_irq_handler(CMP_Type *cmp) ;
   @brief       Handle interrupts for the CMP instance.
   @param[in]   cmp     Pointer to the CMP register map
   @return      none
 */
-void cmp_irq_handler(CMP0_Type *cmp);
+void cmp_irq_handler(CMP_Type *cmp);
 
 #ifdef __cplusplus
 }

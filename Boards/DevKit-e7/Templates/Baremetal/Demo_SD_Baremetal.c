@@ -18,7 +18,9 @@
  * @Note     None
  ******************************************************************************/
 /* System Includes */
+#include "RTE_Device.h"
 #include "stdio.h"
+#include "se_services_port.h"
 
 /* include for SD Driver */
 #include "sd.h"
@@ -28,8 +30,8 @@
 #include "RTE_Components.h"
 #if defined(RTE_Compiler_IO_STDOUT)
 #include "retarget_stdout.h"
+#include "Driver_Common.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
-
 
 #define BAREMETAL_SD_TEST_RAW_SECTOR 0x2000     //start reading and writing raw data from partition sector
 volatile unsigned char sdbuffer[512*4] __attribute__((section("sd_dma_buf"))) __attribute__((aligned(32)));
@@ -52,21 +54,19 @@ void BareMetalSDTest(uint32_t startSec, uint32_t EndSector){
     pinconf_set(PORT_7, PIN_0, PINMUX_ALTERNATE_FUNCTION_6, PADCTRL_READ_ENABLE); //cmd
     pinconf_set(PORT_7, PIN_1, PINMUX_ALTERNATE_FUNCTION_6, PADCTRL_READ_ENABLE); //clk
     pinconf_set(PORT_5, PIN_0, PINMUX_ALTERNATE_FUNCTION_7, PADCTRL_READ_ENABLE); //d0
-#ifdef SDMMC_4BIT_MODE
+#if RTE_SDC_BUS_WIDTH == SDMMC_4_BIT_MODE
     pinconf_set(PORT_5, PIN_1, PINMUX_ALTERNATE_FUNCTION_7, PADCTRL_READ_ENABLE); //d1
     pinconf_set(PORT_5, PIN_2, PINMUX_ALTERNATE_FUNCTION_7, PADCTRL_READ_ENABLE); //d2
     pinconf_set(PORT_5, PIN_3, PINMUX_ALTERNATE_FUNCTION_6, PADCTRL_READ_ENABLE); //d3
 #endif
-#ifdef SDMMC_8BIT_MODE
+#if RTE_SDC_BUS_WIDTH == SDMMC_8_BIT_MODE
     pinconf_set(PORT_5, PIN_4, PINMUX_ALTERNATE_FUNCTION_6, PADCTRL_READ_ENABLE); //d4
     pinconf_set(PORT_5, PIN_5, PINMUX_ALTERNATE_FUNCTION_5, PADCTRL_READ_ENABLE); //d5
     pinconf_set(PORT_5, PIN_6, PINMUX_ALTERNATE_FUNCTION_5, PADCTRL_READ_ENABLE); //d6
     pinconf_set(PORT_5, PIN_7, PINMUX_ALTERNATE_FUNCTION_5, PADCTRL_READ_ENABLE); //d7
 #endif
 
-
-
-    if(p_SD_Driver->disk_initialize(1) != SD_DRV_STATUS_OK){
+    if(p_SD_Driver->disk_initialize(1, RTE_SDC_BUS_WIDTH, RTE_SDC_DMA_SELECT) != SD_DRV_STATUS_OK){
         printf("SD initialization failed...\n");
         goto error;
     }
@@ -97,6 +97,8 @@ error:
 
 int main()
 {
+    uint32_t  service_error_code;
+    uint32_t  error_code = SERVICES_REQ_SUCCESS;
     #if defined(RTE_Compiler_IO_STDOUT_User)
     int32_t ret;
     ret = stdout_init();
@@ -107,8 +109,37 @@ int main()
         }
     }
     #endif
+
+    /* Initialize the SE services */
+    se_services_port_init();
+
+    /* Enable SDMMC Clocks */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
+    if(error_code){
+        printf("SE: SDMMC 100MHz clock enable = %d\n", error_code);
+        return 0;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_USB, true, &service_error_code);
+    if(error_code){
+        printf("SE: SDMMC 20MHz clock enable = %d\n", error_code);
+        return 0;
+    }
+
     /* Enter the Baremetal demo Application.  */
     BareMetalSDTest(BAREMETAL_SD_TEST_RAW_SECTOR, BAREMETAL_SD_TEST_RAW_SECTOR+0x200);
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, false, &service_error_code);
+    if(error_code){
+        printf("SE: SDMMC 100MHz clock disable = %d\n", error_code);
+        return 0;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_USB, false, &service_error_code);
+    if(error_code){
+        printf("SE: SDMMC 20MHz clock disable = %d\n", error_code);
+        return 0;
+    }
 
     return 0;
 }

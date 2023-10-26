@@ -27,9 +27,7 @@
 #include "stdio.h"
 #endif
 
-#ifdef SDMMC_ADMA2_MODE
 static adma2_desc_t adma_desc_tbl[32] __attribute__((section("sd_dma_buf"))) __attribute__((aligned(32)));
-#endif
 
 /**
   \fn          static uint8_t get_cmd_rsp_type(uint8_t Cmd)
@@ -144,7 +142,7 @@ SDMMC_HC_STATUS hc_send_cmd(sd_handle_t *pHsd, sd_cmd_t *pCmd){
 
 #ifdef SDMMC_PRINTF_DEBUG
     printf("CMD: 0x%04x, ARG: 0x%08x, XFER: 0x%04x Resp01: %08x, Resp23: %08x, Resp45: %08x, Resp67: %08x\n",
-            cmd,pCmd->arg,pCmd->xfer_mode,pHsd->regs->SDMMC_RESP01_R,pHsd->regs_base->SDMMC_RESP23_R,pHsd->regs_base->SDMMC_RESP45_R,pHsd->regs_base->SDMMC_RESP67_R);
+            cmd,pCmd->arg,pCmd->xfer_mode,pHsd->regs->SDMMC_RESP01_R,pHsd->regs->SDMMC_RESP23_R,pHsd->regs->SDMMC_RESP45_R,pHsd->regs->SDMMC_RESP67_R);
 #endif
 
     if(timeout_cnt == SDMMC_MAX_TIMEOUT_16)
@@ -289,7 +287,6 @@ SDMMC_HC_STATUS hc_config_dma(sd_handle_t *pHsd, uint8_t dmaMask){
     return SDMMC_HC_STATUS_OK;
 }
 
-#ifdef SDMMC_4BIT_MODE
 /**
   \fn           SDMMC_HC_STATUS hc_set_bus_width(sd_handle_t *pHsd, uint8_t buswidth)
   \brief        Configure required bit for communication for Host and Card
@@ -308,12 +305,12 @@ SDMMC_HC_STATUS hc_set_bus_width(sd_handle_t *pHsd, uint8_t buswidth){
 
     regs = pHsd->regs->SDMMC_HOST_CTRL1_R;
 
-    if(buswidth == SDMMC_1_BIT_WIDTH)
-        regs = regs | SDMMC_1_BIT_WIDTH;
-    else if(buswidth == SDMMC_4_BIT_WIDTH)
-        regs = regs | SDMMC_4_BIT_WIDTH | SDMMC_HOST_CTRL1_HIGH_SPEED_MODE_EN;
+    if(buswidth == SDMMC_1_BIT_WIDTH_Msk)
+        regs = regs | SDMMC_1_BIT_WIDTH_Msk;
+    else if(buswidth == SDMMC_4_BIT_WIDTH_Msk)
+        regs = regs | SDMMC_4_BIT_WIDTH_Msk | SDMMC_HOST_CTRL1_HIGH_SPEED_MODE_EN;
     else
-        regs = regs | SDMMC_8_BIT_WIDTH | SDMMC_HOST_CTRL1_HIGH_SPEED_MODE_EN;
+        regs = regs | SDMMC_8_BIT_WIDTH_Msk | SDMMC_HOST_CTRL1_HIGH_SPEED_MODE_EN;
 
     pHsd->regs->SDMMC_HOST_CTRL1_R = regs;
 
@@ -335,8 +332,6 @@ SDMMC_HC_STATUS hc_set_bus_width(sd_handle_t *pHsd, uint8_t buswidth){
 
     return SDMMC_HC_STATUS_OK;
 }
-
-#endif
 
 /**
   \fn           void hc_config_interrupt(sd_handle_t *pHsd)
@@ -881,36 +876,36 @@ SDMMC_HC_STATUS hc_dma_config(sd_handle_t *pHsd, uint32_t buff, uint32_t sector,
     hc_set_blk_cnt(pHsd, blk_cnt);
 
     /* Configure DMA buffer */
-#ifdef SDMMC_ADMA2_MODE
+    if(pHsd->dma_mode == SDMMC_HOST_CTRL1_ADMA2_MODE){
 
-    uint32_t desc_num = 0;
-    uint32_t total_desc = 0, bytes_per_desc;
+        uint32_t desc_num = 0;
+        uint32_t total_desc = 0, bytes_per_desc;
 
-    bytes_per_desc = blk_cnt * SDMMC_BLK_SIZE_512_Msk;
+        bytes_per_desc = blk_cnt * SDMMC_BLK_SIZE_512_Msk;
 
-    if(bytes_per_desc > SDMMC_ADMA2_DESC_MAX_LEN){
+        if(bytes_per_desc > SDMMC_ADMA2_DESC_MAX_LEN){
 
-        total_desc = bytes_per_desc / SDMMC_ADMA2_DESC_MAX_LEN;
-        if(bytes_per_desc % SDMMC_ADMA2_DESC_MAX_LEN)
-            total_desc += 1;
+            total_desc = bytes_per_desc / SDMMC_ADMA2_DESC_MAX_LEN;
+            if(bytes_per_desc % SDMMC_ADMA2_DESC_MAX_LEN)
+                total_desc += 1;
+        }
+
+        do{
+            adma_desc_tbl[desc_num].addr = buff + (desc_num * SDMMC_ADMA2_DESC_MAX_LEN);
+            adma_desc_tbl[desc_num].len  = bytes_per_desc;
+            adma_desc_tbl[desc_num].attr = SDMMC_ADMA2_DESC_TRAN | SDMMC_ADMA2_DESC_VALID;
+        }while(desc_num++ < total_desc);
+
+        adma_desc_tbl[desc_num - 1].attr |= SDMMC_ADMA2_DESC_END;
+#ifdef SDMMC_PRINTF_DEBUG
+        printf("ADMA Desc: 0x%x, addr: 0x%x, Len: 0x%x, Attr: 0x%x\n",(uint32_t)&adma_desc_tbl[0],adma_desc_tbl[0].addr,adma_desc_tbl[0].len,adma_desc_tbl[0].attr);
+#endif
+
+        pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal((&adma_desc_tbl[0]));
     }
 
-    do{
-        adma_desc_tbl[desc_num].addr = buff + (desc_num * SDMMC_ADMA2_DESC_MAX_LEN);
-        adma_desc_tbl[desc_num].len  = bytes_per_desc;
-        adma_desc_tbl[desc_num].attr = SDMMC_ADMA2_DESC_TRAN | SDMMC_ADMA2_DESC_VALID;
-    }while(desc_num++ < total_desc);
-
-    adma_desc_tbl[desc_num - 1].attr |= SDMMC_ADMA2_DESC_END;
-#ifdef SDMMC_PRINTF_DEBUG
-    printf("ADMA Desc: 0x%x, addr: 0x%x, Len: 0x%x, Attr: 0x%x\n",(uint32_t)&adma_desc_tbl[0],adma_desc_tbl[0].addr,adma_desc_tbl[0].len,adma_desc_tbl[0].attr);
-#endif
-
-    pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal((&adma_desc_tbl[0]));
-
-#else
-    pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal(buff);
-#endif
+    else
+        pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal(buff);
 
     return SDMMC_HC_STATUS_OK;
 }
@@ -1024,7 +1019,7 @@ SDMMC_HC_STATUS hc_check_xfer_done(sd_handle_t *pHsd, uint32_t timeout_cnt){
     pHsd->regs->SDMMC_HOST_CTRL1_R ^= SDMMC_HOST_CTRL1_LED_ON; //led caution off
 #ifdef SDMMC_PRINTF_SD_STATE_DEBUG
     printf("PSTATE REG:0x%08x\tAUTO_CMD_STAT:0x%04hx\tERROR_INT_STAT_R:0x%x\n",
-        pHsd->regs->SDMMC_PSTATE_REG,pHsd->regs_base->SDMMC_AUTO_CMD_STAT_R,
+        pHsd->regs->SDMMC_PSTATE_REG,pHsd->regs->SDMMC_AUTO_CMD_STAT_R,
         (uint8_t)pHsd->regs->SDMMC_ERROR_INT_STAT_R);
 #endif
 

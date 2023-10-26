@@ -52,6 +52,8 @@
 
 /* PINMUX Driver */
 #include "pinconf.h"
+#include "Driver_GPIO.h"
+
 #include "RTE_Components.h"
 #if defined(RTE_Compiler_IO_STDOUT)
 #include "retarget_stdout.h"
@@ -95,7 +97,7 @@ typedef enum _I3C_CB_EVENT{
 */
 int32_t hardware_init(void)
 {
-    /* for I3C_D instance,
+    /* for I3C_D(PORT_7 PIN_6(SDA)/PIN_7(SCL)) instance,
      *  for I3C in I3C mode (not required for I3C in I2C mode)
      *  GPIO voltage level(flex) has to be change to 1.8-V power supply.
      *
@@ -104,20 +106,51 @@ int32_t hardware_init(void)
      *    0x0: I/O pin will be used with a 3.3-V power supply
      *    0x1: I/O pin will be used with a 1.8-V power supply
      */
-#define GPIO_CTRL_BASE   (0x1A609000)
 
-    uint32_t *p_gpio_flex = (uint32_t *)(GPIO_CTRL_BASE);
-    *p_gpio_flex = 1;
+    /* Configure GPIO flex I/O pins to 1.8-V:
+     *  P7_6 and P7_7 pins are part of GPIO flex I/O pins,
+     *   so we can use any one of the pin to configure flex I/O.
+     */
+#define GPIO7_PORT          7
+
+    extern  ARM_DRIVER_GPIO ARM_Driver_GPIO_(GPIO7_PORT);
+    ARM_DRIVER_GPIO *gpioDrv = &ARM_Driver_GPIO_(GPIO7_PORT);
+
+    int32_t  ret = 0;
+    uint32_t arg = 0;
+
+    ret = gpioDrv->Initialize(PIN_6, NULL);
+    if (ret != ARM_DRIVER_OK)
+    {
+        printf("ERROR: Failed to initialize GPIO \n");
+        return ARM_DRIVER_ERROR;
+    }
+
+    ret = gpioDrv->PowerControl(PIN_6, ARM_POWER_FULL);
+    if (ret != ARM_DRIVER_OK)
+    {
+        printf("ERROR: Failed to powered full GPIO \n");
+        return ARM_DRIVER_ERROR;
+    }
+
+    /* select control argument as flex 1.8-V */
+    arg = ARM_GPIO_FLEXIO_VOLT_1V8;
+    ret = gpioDrv->Control(PIN_6, ARM_GPIO_CONFIG_FLEXIO, &arg);
+    if (ret != ARM_DRIVER_OK)
+    {
+        printf("ERROR: Failed to control GPIO Flex \n");
+        return ARM_DRIVER_ERROR;
+    }
 
     /* I3C_SDA_D */
     pinconf_set(PORT_7, PIN_6, PINMUX_ALTERNATE_FUNCTION_6,
                 PADCTRL_READ_ENABLE | PADCTRL_DRIVER_DISABLED_PULL_UP | \
-                PADCTRL_OUTPUT_DRIVE_STRENGTH_04_MILI_AMPS);
+                PADCTRL_OUTPUT_DRIVE_STRENGTH_4MA);
 
     /* I3C_SCL_D */
     pinconf_set(PORT_7, PIN_7, PINMUX_ALTERNATE_FUNCTION_6,
                 PADCTRL_READ_ENABLE | PADCTRL_DRIVER_DISABLED_PULL_UP | \
-                PADCTRL_OUTPUT_DRIVE_STRENGTH_04_MILI_AMPS);
+                PADCTRL_OUTPUT_DRIVE_STRENGTH_4MA);
 
     return ARM_DRIVER_OK;
 }

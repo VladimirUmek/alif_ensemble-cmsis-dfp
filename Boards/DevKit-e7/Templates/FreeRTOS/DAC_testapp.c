@@ -42,6 +42,7 @@
 /* Project Includes */
 /* include for DAC Driver */
 #include "Driver_DAC.h"
+#include "pinconf.h"
 
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"
@@ -99,6 +100,31 @@ TaskHandle_t dac_xHandle = NULL;
 /* DAC maximum resolution is 12-bit */
 #define DAC_MAX_INPUT_VALUE   (0xFFF)
 
+#define ERROR    -1
+#define SUCCESS   0
+
+/**
+ * @fn          void dac_pinmux_config(void)
+ * @brief       Initialize the pinmux for DAC output
+ * @return      status
+*/
+int32_t dac_pinmux_config(void)
+{
+    int32_t status;
+
+    /* Configure DAC0 output */
+    status = pinconf_set(PORT_2, PIN_2, PINMUX_ALTERNATE_FUNCTION_7, PADCTRL_OUTPUT_DRIVE_STRENGTH_2MA);
+    if(status)
+        return ERROR;
+
+    /* Configure DAC1 output */
+    status = pinconf_set(PORT_2, PIN_3, PINMUX_ALTERNATE_FUNCTION_7, PADCTRL_OUTPUT_DRIVE_STRENGTH_2MA);
+    if(status)
+        return ERROR;
+
+    return SUCCESS;
+}
+
 /**
  @fn           void dac_demo_Thread_entry()
  @brief        DAC demo :
@@ -118,6 +144,13 @@ void dac_demo_Thread_entry()
     ARM_DRIVER_VERSION version;
 
     printf("\r\n >>> DAC demo starting up!!! <<< \r\n");
+
+    /* Configure the DAC output pins */
+    if(dac_pinmux_config())
+    {
+        printf("DAC pinmux failed\n");
+        return;
+    }
 
     version = DACdrv->GetVersion();
     printf("\r\n DAC version api:%X driver:%X...\r\n",version.api, version.drv);

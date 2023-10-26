@@ -34,6 +34,7 @@ extern "C"
 #include <stdbool.h>
 #include "cpi.h"
 #include "csi.h"
+#include "DPHY_init.h"
 
 /****** CAMERA_SENSOR used for registering camera sensor *****/
 #define CAMERA_SENSOR(sensor) \
@@ -44,18 +45,10 @@ CAMERA_SENSOR_DEVICE *Get_Camera_Sensor(void) \
 
 /****** LPCAMERA_SENSOR used for registering low power camera sensor *****/
 #define LPCAMERA_SENSOR(sensor) \
-CAMERA_SENSOR_DEVICE *Get_Lpcamera_Sensor(void) \
+CAMERA_SENSOR_DEVICE *Get_LPCamera_Sensor(void) \
 { \
     return &sensor; \
 } \
-
-/**
-\brief CSI clock mode
-*/
-typedef enum _CSI_CLOCK_MODE {
-    CSI_CLOCK_MODE_CONTINUOUS,       /* High speed clock drive continuously on clock lane */
-    CSI_CLOCK_MODE_NON_CONTINUOUS    /* Clock will be in high speed mode only on data transmission */
-} CSI_CLOCK_MODE;
 
 /**
 \brief CPI information structure
@@ -88,7 +81,7 @@ typedef struct _CSI_OVERRIDE_CPI_COLOR {
 typedef struct _CSI_INFO {
     uint32_t                frequency;                /* CSI clock frequency */
     CSI_DATA_TYPE           dt;                       /* CSI data type */
-    CSI_CLOCK_MODE          clk_mode;                 /* CSI Clock mode */
+    DPHY_CLK_MODE           clk_mode;                 /* CSI Clock mode */
     CSI_N_LANES             n_lanes;                  /* CSI number of data lanes */
     CSI_VC_ID               vc_id;                    /* CSI virtual channel ID */
     CSI_OVERRIDE_CPI_COLOR  cpi_cfg;                  /* CSI override CPI color mode */
@@ -118,7 +111,7 @@ typedef struct _CAMERA_SENSOR_DEVICE {
 
 /** Get CPI/LPCPI sensor information */
 CAMERA_SENSOR_DEVICE *Get_Camera_Sensor(void);
-CAMERA_SENSOR_DEVICE *Get_Lpcamera_Sensor(void);
+CAMERA_SENSOR_DEVICE *Get_LPCamera_Sensor(void);
 
 #ifdef  __cplusplus
 }

@@ -38,9 +38,9 @@
 /*Audio samples */
 #include "i2s_samples.h"
 
-void DAC_Init ();
-void ADC_Init ();
-void Receiver ();
+void DAC_Init (void);
+void ADC_Init (void);
+void Receiver (void);
 
 /* 1 to send the data stream continuously , 0 to send data only once */
 #define REPEAT_TX 1
@@ -65,27 +65,26 @@ void Receiver ();
 
 #define NUM_SAMPLES                 40000
 
-uint32_t    buf_len2 = 0;
-volatile int32_t event_flag = 0;
+static volatile  uint32_t event_flag = 0;
 
 /* Buffer for ADC samples */
-uint32_t sample_buf[NUM_SAMPLES];
+static uint32_t sample_buf[NUM_SAMPLES];
 
-uint32_t wlen = 24;
-uint32_t sampling_rate = 48000;        /* 48Khz audio sampling rate */
+static uint32_t wlen = 24;
+static uint32_t sampling_rate = 48000;        /* 48Khz audio sampling rate */
 
 extern ARM_DRIVER_SAI ARM_Driver_SAI_(I2S_DAC);
-ARM_DRIVER_SAI *i2s_dac = &ARM_Driver_SAI_(I2S_DAC);
+static ARM_DRIVER_SAI *i2s_dac = &ARM_Driver_SAI_(I2S_DAC);
 
 extern ARM_DRIVER_SAI ARM_Driver_SAI_(I2S_ADC);
-ARM_DRIVER_SAI *i2s_adc = &ARM_Driver_SAI_(I2S_ADC);
+static ARM_DRIVER_SAI *i2s_adc = &ARM_Driver_SAI_(I2S_ADC);
 
 /**
   \fn          void dac_callback(uint32_t event)
   \brief       Callback routine from the i2s driver
   \param[in]   event: Event for which the callback has been called
 */
-void dac_callback(uint32_t event)
+static void dac_callback(uint32_t event)
 {
     if(event & ARM_SAI_EVENT_SEND_COMPLETE)
     {
@@ -99,7 +98,7 @@ void dac_callback(uint32_t event)
   \brief       Initialize the pinmux for DAC
   \return      status
 */
-int32_t dac_pinmux_config(void)
+static int32_t dac_pinmux_config(void)
 {
     int32_t status;
 
@@ -140,15 +139,18 @@ int32_t dac_pinmux_config(void)
 }
 
 /**
-  \fn          void DAC_Init()
+  \fn          void DAC_Init(void)
   \brief       DAC thread for master transmission
   \param[in]   None
 */
-void DAC_Init()
+void DAC_Init(void)
 {
     ARM_DRIVER_VERSION   version;
     ARM_SAI_CAPABILITIES cap;
     int32_t              status;
+#ifdef DAC_PREDEFINED_SAMPLES
+    uint32_t             buf_len2 = 0;
+#endif
 
     /* Configure the dac pins */
     if(dac_pinmux_config())
@@ -296,7 +298,7 @@ error_initialize:
   \brief       Callback routine from the i2s driver
   \param[in]   event Event for which the callback has been called
 */
-void adc_callback(uint32_t event)
+static void adc_callback(uint32_t event)
 {
     if(event & ARM_SAI_EVENT_RECEIVE_COMPLETE)
     {
@@ -316,7 +318,7 @@ void adc_callback(uint32_t event)
   \brief       Initialize the pinmux for ADC
   \return      status
 */
-int32_t adc_pinmux_config(void)
+static int32_t adc_pinmux_config(void)
 {
     int32_t  status;
 
@@ -339,11 +341,11 @@ int32_t adc_pinmux_config(void)
 }
 
 /**
-  \fn          void ADC_Thread()
+  \fn          void ADC_Thread(void)
   \brief       ADC Thread to initialize ADC
   \param[in]   None
 */
-void ADC_Init()
+void ADC_Init(void)
 {
     ARM_DRIVER_VERSION   version;
     ARM_SAI_CAPABILITIES cap;
@@ -398,11 +400,11 @@ void ADC_Init()
 }
 
 /**
-  \fn          void Receiver()
+  \fn          void Receiver(void)
   \brief       Function performing reception from mic
   \param[in]   None
 */
-void Receiver()
+void Receiver(void)
 {
     int32_t  status;
 
@@ -430,7 +432,12 @@ void Receiver()
     }
 }
 
-int main()
+/**
+  \fn          int main(void)
+  \brief       Application Main
+  \return      int application exit status
+*/
+int main(void)
 {
     #if defined(RTE_Compiler_IO_STDOUT_User)
     int32_t ret;

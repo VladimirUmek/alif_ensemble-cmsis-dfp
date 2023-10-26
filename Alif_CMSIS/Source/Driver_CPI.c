@@ -709,7 +709,7 @@ static CPI_CONFIG config =
 /* CPI Device Resource */
 static CPI_RESOURCES CPI_CTRL =
 {
-    .regs             = (LPCPI_Type *) CPI_BASE,
+    .regs             = (CPI_Type *) CPI_BASE,
     .irq_num          = CAM_IRQ_IRQn,
     .irq_priority     = RTE_CPI_IRQ_PRI,
     .drv_instance     = CPI_INSTANCE_CPI0,
@@ -811,7 +811,7 @@ static CPI_CONFIG cnfg =
     /* LPCPI Device Resource */
 static CPI_RESOURCES LPCPI_CTRL =
 {
-    .regs             = (LPCPI_Type *) LPCPI_BASE,
+    .regs             = (CPI_Type *) LPCPI_BASE,
     .irq_num          = LPCPI_IRQ_IRQn,
     .irq_priority     = RTE_LPCPI_IRQ_PRI,
     .drv_instance     = CPI_INSTANCE_LPCPI,
@@ -821,7 +821,7 @@ static CPI_RESOURCES LPCPI_CTRL =
 /* wrapper functions for LPCPI */
 static int32_t LPCPI_Initialize(ARM_CPI_SignalEvent_t cb_event)
 {
-    lpcpi_sensor = Get_Lpcamera_Sensor();
+    lpcpi_sensor = Get_LPCamera_Sensor();
     return CPIx_Initialize(&LPCPI_CTRL, lpcpi_sensor, cb_event);
 }
 

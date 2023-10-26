@@ -17,7 +17,7 @@
 #ifndef _I2S_SAMPLES_H_
 #define _I2S_SAMPLES_H_
 
-uint32_t hello_samples_24bit_48khz[] = {
+static const uint32_t hello_samples_24bit_48khz[] = {
 0xfff200,
 0xfff100,
 0xfff100,

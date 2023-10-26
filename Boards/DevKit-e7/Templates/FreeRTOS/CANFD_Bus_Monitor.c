@@ -178,7 +178,7 @@ static int32_t pinmux_config(void)
     /* pinmux configurations for CANFD pins */
     ret_val = pinconf_set(PORT_7, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
                          (PADCTRL_READ_ENABLE | PADCTRL_SCHMITT_TRIGGER_ENABLE |
-                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS));
+                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA));
     if(ret_val)
     {
         printf("ERROR: Failed to configure PINMUX for CANFD Rx \r\n");
@@ -186,7 +186,7 @@ static int32_t pinmux_config(void)
     }
 
     ret_val = pinconf_set(PORT_7, PIN_1, PINMUX_ALTERNATE_FUNCTION_7,
-                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS |
+                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA |
                           PADCTRL_SCHMITT_TRIGGER_ENABLE));
     if(ret_val)
     {
@@ -231,7 +231,7 @@ void cb_unit_event(uint32_t event)
     {
         /* Communication error occurred */
         xResult = xTaskNotifyFromISR(canfd_xHandle, CANFD_ERROR,
-                           eSetBits, &xHigherPriorityTaskWoken);
+                                     eSetBits, &xHigherPriorityTaskWoken);
 
         if(xResult == pdTRUE)
         {
@@ -262,7 +262,7 @@ void cb_object_event(uint32_t obj_idx, uint32_t event)
 
             /* Rx Success - Notify the task*/
             xResult = xTaskNotifyFromISR(canfd_xHandle, CANFD_RX_SUCCESS,
-                               eSetBits, &xHigherPriorityTaskWoken);
+                                         eSetBits, &xHigherPriorityTaskWoken);
 
             if(xResult == pdTRUE)
             {
@@ -276,7 +276,7 @@ void cb_object_event(uint32_t obj_idx, uint32_t event)
  * @fn      void canfd_lom_demo_task(void* pvParameters)
  * @brief   CANFD Listen only mode Demo
  * @note    none.
- * @param   none
+ * @param   pvParameters : Task parameter
  * @retval  none
  */
 void canfd_lom_demo_task(void *pvParameters)
@@ -298,7 +298,10 @@ void canfd_lom_demo_task(void *pvParameters)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk enable = %d\n", error_code);
+        return;
+    }
 
     /* Enables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
@@ -306,7 +309,11 @@ void canfd_lom_demo_task(void *pvParameters)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
+
 
     printf("*** CANFD Listen only mode Demo app is starting ***\n");
 
@@ -357,7 +364,8 @@ void canfd_lom_demo_task(void *pvParameters)
     }
     /* Setting bit rate for CANFD */
     ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_NOMINAL,
-              CANFD_NOMINAL_BITRATE, CANFD_NOMINAL_BITTIME_SEGMENTS);
+                                         CANFD_NOMINAL_BITRATE,
+                                         CANFD_NOMINAL_BITTIME_SEGMENTS);
     if(ret_val != ARM_DRIVER_OK)
     {
        printf("ERROR: Failed to set CANFD Nominal Bitrate\r\n");
@@ -367,7 +375,8 @@ void canfd_lom_demo_task(void *pvParameters)
     if(can_capabilities.fd_mode == 1U)
     {
         ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_FD_DATA,
-                  CANFD_FAST_BITRATE, CANFD_FAST_BITTIME_SEGMENTS);
+                                             CANFD_FAST_BITRATE,
+                                             CANFD_FAST_BITTIME_SEGMENTS);
         if(ret_val != ARM_DRIVER_OK)
         {
            printf("ERROR: Failed to set CANFD Fast Bitrate\r\n");
@@ -392,8 +401,10 @@ void canfd_lom_demo_task(void *pvParameters)
        goto power_off_canfd;
     }
     /* Setting Object filter of CANFD */
-    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id, ARM_CAN_FILTER_ID_EXACT_ADD,
-                              CANFD_OBJECT_FILTER_CODE, CANFD_OBJECT_FILTER_MASK);
+    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id,
+                                              ARM_CAN_FILTER_ID_EXACT_ADD,
+                                              CANFD_OBJECT_FILTER_CODE,
+                                              CANFD_OBJECT_FILTER_MASK);
     if(ret_val == ARM_DRIVER_ERROR_SPECIFIC)
     {
        printf("ERROR: No free Filter available\r\n");
@@ -449,7 +460,10 @@ uninitialise_canfd:
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk disable = %d\n", error_code);
+        return;
+    }
 
     /* Disables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
@@ -457,7 +471,10 @@ uninitialise_canfd:
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
+    }
 
     printf("*** CANFD Listen only Mode Demo is ended ***\r\n");
 
@@ -523,7 +540,7 @@ void canfd_check_error(void)
         {
             /*  Reading arrived CANFD Message */
             if(CANFD_instance->MessageRead(rx_obj_id, &rx_msg_header,
-                                rx_data, rx_msg_size) != ARM_DRIVER_OK)
+                                           rx_data, rx_msg_size) != ARM_DRIVER_OK)
             {
                 printf("Error: Message reception failed\r\n");
             }
@@ -568,7 +585,7 @@ void canfd_process_rx_message(void)
     {
         /*  Reading arrived CANFD Message */
         if(CANFD_instance->MessageRead(rx_obj_id, &rx_msg_header,
-                            rx_data, rx_msg_size) != ARM_DRIVER_OK)
+                                       rx_data, rx_msg_size) != ARM_DRIVER_OK)
         {
             printf("Error: Message reception failed\r\n");
             return;

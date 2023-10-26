@@ -15,242 +15,56 @@
 #include <stdbool.h>
 
 /**
-  * @brief LPPDM (LPPDM)
+  * @brief PDM_PDM_CHANNEL_CFG [PDM_CHANNEL_CFG] ([0..7])
   */
+typedef struct {
+  volatile uint32_t  PDM_CH_FIR_COEF_0;            /*!< (@ 0x00000000) Channel (n) FIR Filter Coefficient 0 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_1;            /*!< (@ 0x00000004) Channel (n) FIR Filter Coefficient 1 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_2;            /*!< (@ 0x00000008) Channel (n) FIR Filter Coefficient 2 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_3;            /*!< (@ 0x0000000C) Channel (n) FIR Filter Coefficient 3 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_4;            /*!< (@ 0x00000010) Channel (n) FIR Filter Coefficient 4 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_5;            /*!< (@ 0x00000014) Channel (n) FIR Filter Coefficient 5 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_6;            /*!< (@ 0x00000018) Channel (n) FIR Filter Coefficient 6 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_7;            /*!< (@ 0x0000001C) Channel (n) FIR Filter Coefficient 7 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_8;            /*!< (@ 0x00000020) Channel (n) FIR Filter Coefficient 8 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_9;            /*!< (@ 0x00000024) Channel (n) FIR Filter Coefficient 9 Register              */
+  volatile uint32_t  PDM_CH_FIR_COEF_10;           /*!< (@ 0x00000028) Channel (n) FIR Filter Coefficient 10 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_11;           /*!< (@ 0x0000002C) Channel (n) FIR Filter Coefficient 11 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_12;           /*!< (@ 0x00000030) Channel (n) FIR Filter Coefficient 12 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_13;           /*!< (@ 0x00000034) Channel (n) FIR Filter Coefficient 13 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_14;           /*!< (@ 0x00000038) Channel (n) FIR Filter Coefficient 14 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_15;           /*!< (@ 0x0000003C) Channel (n) FIR Filter Coefficient 15 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_16;           /*!< (@ 0x00000040) Channel (n) FIR Filter Coefficient 16 Register             */
+  volatile uint32_t  PDM_CH_FIR_COEF_17;           /*!< (@ 0x00000044) Channel (n) FIR Filter Coefficient 17 Register             */
+  volatile const  uint32_t  RESERVED[14];
+  volatile uint32_t  PDM_CH_IIR_COEF_SEL;          /*!< (@ 0x00000080) Channel (n) IIR Filter Coefficient Selection Register      */
+  volatile uint32_t  PDM_CH_PHASE;                 /*!< (@ 0x00000084) Channel (n) Phase Control Register                         */
+  volatile uint32_t  PDM_CH_GAIN;                  /*!< (@ 0x00000088) Channel (n) Gain Control Register                          */
+  volatile uint32_t  PDM_CH_PKDET_TH;              /*!< (@ 0x0000008C) Channel (n) Peak Detector Threshold Register               */
+  volatile uint32_t  PDM_CH_PKDET_ITV;             /*!< (@ 0x00000090) Channel (n) Peak Detector Interval Register                */
+  volatile const  uint32_t  PDM_CH_PKDET_STAT;     /*!< (@ 0x00000094) Channel (n) Peak Detector Status Register                  */
+  volatile const  uint32_t  RESERVED1[26];
+} PDM_PDM_CHANNEL_CFG_Type;                        /*!< Size = 256 (0x100)                                                        */
 
-typedef struct {                                   /*!< (@ 0x43002000) LPPDM Structure                                            */
-  volatile uint32_t  PDM_CTL0;                     /*!< (@ 0x00000000) PDM Audio Control Register 0                               */
-  volatile uint32_t  PDM_CTL1;                     /*!< (@ 0x00000004) PDM Audio Control Register 1                               */
-  volatile uint32_t  PDM_FIFO_WATERMARK_H;         /*!< (@ 0x00000008) FIFO Watermark Register                                    */
-  volatile const  uint32_t  PDM_FIFO_STAT;         /*!< (@ 0x0000000C) FIFO Status Register                                       */
-  volatile const  uint32_t  PDM_ERROR_IRQ;         /*!< (@ 0x00000010) FIFO Error Interrupt Status Register                       */
-  volatile const  uint32_t  PDM_WARN_IRQ;          /*!< (@ 0x00000014) FIFO Warning Interrupt Status Register                     */
-  volatile const  uint32_t  PDM_AUDIO_DETECT_IRQ;  /*!< (@ 0x00000018) Audio Detection Interrupt Status Register                  */
-  volatile uint32_t  PDM_IRQ_ENABLE;               /*!< (@ 0x0000001C) Interrupt Enable Register                                  */
-  volatile uint32_t  PDM_CH0_CH1_AUDIO_OUT;        /*!< (@ 0x00000020) Channels 0 and 1 Audio Output Register                     */
-  volatile uint32_t  PDM_CH2_CH3_AUDIO_OUT;        /*!< (@ 0x00000024) Channels 2 and 3 Audio Output Register                     */
-  volatile uint32_t  PDM_CH4_CH5_AUDIO_OUT;        /*!< (@ 0x00000028) Channels 4 and 5 Audio Output Register                     */
-  volatile uint32_t  PDM_CH6_CH7_AUDIO_OUT;        /*!< (@ 0x0000002C) Channels 6 and 7 Audio Output Register                     */
+/**
+  * @brief PDM (PDM)
+  */
+typedef struct {                                         /*!< (@ 0x43002000) PDM Structure                                              */
+  volatile uint32_t  PDM_CTL0;                           /*!< (@ 0x00000000) PDM Audio Control Register 0                               */
+  volatile uint32_t  PDM_CTL1;                           /*!< (@ 0x00000004) PDM Audio Control Register 1                               */
+  volatile uint32_t  PDM_FIFO_WATERMARK_H;               /*!< (@ 0x00000008) FIFO Watermark Register                                    */
+  volatile const  uint32_t  PDM_FIFO_STAT;               /*!< (@ 0x0000000C) FIFO Status Register                                       */
+  volatile const  uint32_t  PDM_ERROR_IRQ;               /*!< (@ 0x00000010) FIFO Error Interrupt Status Register                       */
+  volatile const  uint32_t  PDM_WARN_IRQ;                /*!< (@ 0x00000014) FIFO Warning Interrupt Status Register                     */
+  volatile const  uint32_t  PDM_AUDIO_DETECT_IRQ;        /*!< (@ 0x00000018) Audio Detection Interrupt Status Register                  */
+  volatile uint32_t  PDM_IRQ_ENABLE;                     /*!< (@ 0x0000001C) Interrupt Enable Register                                  */
+  volatile uint32_t  PDM_CH0_CH1_AUDIO_OUT;              /*!< (@ 0x00000020) Channels 0 and 1 Audio Output Register                     */
+  volatile uint32_t  PDM_CH2_CH3_AUDIO_OUT;              /*!< (@ 0x00000024) Channels 2 and 3 Audio Output Register                     */
+  volatile uint32_t  PDM_CH4_CH5_AUDIO_OUT;              /*!< (@ 0x00000028) Channels 4 and 5 Audio Output Register                     */
+  volatile uint32_t  PDM_CH6_CH7_AUDIO_OUT;              /*!< (@ 0x0000002C) Channels 6 and 7 Audio Output Register                     */
   volatile const  uint32_t  RESERVED[4];
-  volatile uint32_t  PDM_CH0_FIR_COEF_0;           /*!< (@ 0x00000040) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_1;           /*!< (@ 0x00000044) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_2;           /*!< (@ 0x00000048) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_3;           /*!< (@ 0x0000004C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_4;           /*!< (@ 0x00000050) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_5;           /*!< (@ 0x00000054) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_6;           /*!< (@ 0x00000058) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_7;           /*!< (@ 0x0000005C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_8;           /*!< (@ 0x00000060) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_9;           /*!< (@ 0x00000064) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH0_FIR_COEF_10;          /*!< (@ 0x00000068) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_11;          /*!< (@ 0x0000006C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_12;          /*!< (@ 0x00000070) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_13;          /*!< (@ 0x00000074) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_14;          /*!< (@ 0x00000078) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_15;          /*!< (@ 0x0000007C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_16;          /*!< (@ 0x00000080) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH0_FIR_COEF_17;          /*!< (@ 0x00000084) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED1[14];
-  volatile uint32_t  PDM_CH0_IIR_COEF_SEL;         /*!< (@ 0x000000C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH0_PHASE;                /*!< (@ 0x000000C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH0_GAIN;                 /*!< (@ 0x000000C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH0_PKDET_TH;             /*!< (@ 0x000000CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH0_PKDET_ITV;            /*!< (@ 0x000000D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH0_PKDET_STAT;    /*!< (@ 0x000000D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED2[26];
-  volatile uint32_t  PDM_CH1_FIR_COEF_0;           /*!< (@ 0x00000140) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_1;           /*!< (@ 0x00000144) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_2;           /*!< (@ 0x00000148) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_3;           /*!< (@ 0x0000014C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_4;           /*!< (@ 0x00000150) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_5;           /*!< (@ 0x00000154) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_6;           /*!< (@ 0x00000158) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_7;           /*!< (@ 0x0000015C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_8;           /*!< (@ 0x00000160) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_9;           /*!< (@ 0x00000164) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH1_FIR_COEF_10;          /*!< (@ 0x00000168) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_11;          /*!< (@ 0x0000016C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_12;          /*!< (@ 0x00000170) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_13;          /*!< (@ 0x00000174) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_14;          /*!< (@ 0x00000178) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_15;          /*!< (@ 0x0000017C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_16;          /*!< (@ 0x00000180) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH1_FIR_COEF_17;          /*!< (@ 0x00000184) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED3[14];
-  volatile uint32_t  PDM_CH1_IIR_COEF_SEL;         /*!< (@ 0x000001C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH1_PHASE;                /*!< (@ 0x000001C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH1_GAIN;                 /*!< (@ 0x000001C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH1_PKDET_TH;             /*!< (@ 0x000001CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH1_PKDET_ITV;            /*!< (@ 0x000001D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH1_PKDET_STAT;    /*!< (@ 0x000001D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED4[26];
-  volatile uint32_t  PDM_CH2_FIR_COEF_0;           /*!< (@ 0x00000240) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_1;           /*!< (@ 0x00000244) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_2;           /*!< (@ 0x00000248) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_3;           /*!< (@ 0x0000024C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_4;           /*!< (@ 0x00000250) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_5;           /*!< (@ 0x00000254) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_6;           /*!< (@ 0x00000258) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_7;           /*!< (@ 0x0000025C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_8;           /*!< (@ 0x00000260) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_9;           /*!< (@ 0x00000264) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH2_FIR_COEF_10;          /*!< (@ 0x00000268) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_11;          /*!< (@ 0x0000026C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_12;          /*!< (@ 0x00000270) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_13;          /*!< (@ 0x00000274) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_14;          /*!< (@ 0x00000278) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_15;          /*!< (@ 0x0000027C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_16;          /*!< (@ 0x00000280) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH2_FIR_COEF_17;          /*!< (@ 0x00000284) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED5[14];
-  volatile uint32_t  PDM_CH2_IIR_COEF_SEL;         /*!< (@ 0x000002C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH2_PHASE;                /*!< (@ 0x000002C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH2_GAIN;                 /*!< (@ 0x000002C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH2_PKDET_TH;             /*!< (@ 0x000002CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH2_PKDET_ITV;            /*!< (@ 0x000002D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH2_PKDET_STAT;    /*!< (@ 0x000002D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED6[26];
-  volatile uint32_t  PDM_CH3_FIR_COEF_0;           /*!< (@ 0x00000340) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_1;           /*!< (@ 0x00000344) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_2;           /*!< (@ 0x00000348) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_3;           /*!< (@ 0x0000034C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_4;           /*!< (@ 0x00000350) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_5;           /*!< (@ 0x00000354) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_6;           /*!< (@ 0x00000358) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_7;           /*!< (@ 0x0000035C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_8;           /*!< (@ 0x00000360) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_9;           /*!< (@ 0x00000364) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH3_FIR_COEF_10;          /*!< (@ 0x00000368) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_11;          /*!< (@ 0x0000036C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_12;          /*!< (@ 0x00000370) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_13;          /*!< (@ 0x00000374) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_14;          /*!< (@ 0x00000378) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_15;          /*!< (@ 0x0000037C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_16;          /*!< (@ 0x00000380) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH3_FIR_COEF_17;          /*!< (@ 0x00000384) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED7[14];
-  volatile uint32_t  PDM_CH3_IIR_COEF_SEL;         /*!< (@ 0x000003C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                       */
-  volatile uint32_t  PDM_CH3_PHASE;                /*!< (@ 0x000003C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH3_GAIN;                 /*!< (@ 0x000003C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH3_PKDET_TH;             /*!< (@ 0x000003CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH3_PKDET_ITV;            /*!< (@ 0x000003D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH3_PKDET_STAT;    /*!< (@ 0x000003D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED8[26];
-  volatile uint32_t  PDM_CH4_FIR_COEF_0;           /*!< (@ 0x00000440) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_1;           /*!< (@ 0x00000444) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_2;           /*!< (@ 0x00000448) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_3;           /*!< (@ 0x0000044C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_4;           /*!< (@ 0x00000450) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_5;           /*!< (@ 0x00000454) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_6;           /*!< (@ 0x00000458) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_7;           /*!< (@ 0x0000045C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_8;           /*!< (@ 0x00000460) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_9;           /*!< (@ 0x00000464) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH4_FIR_COEF_10;          /*!< (@ 0x00000468) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_11;          /*!< (@ 0x0000046C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_12;          /*!< (@ 0x00000470) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_13;          /*!< (@ 0x00000474) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_14;          /*!< (@ 0x00000478) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_15;          /*!< (@ 0x0000047C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_16;          /*!< (@ 0x00000480) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH4_FIR_COEF_17;          /*!< (@ 0x00000484) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED9[14];
-  volatile uint32_t  PDM_CH4_IIR_COEF_SEL;         /*!< (@ 0x000004C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH4_PHASE;                /*!< (@ 0x000004C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH4_GAIN;                 /*!< (@ 0x000004C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH4_PKDET_TH;             /*!< (@ 0x000004CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH4_PKDET_ITV;            /*!< (@ 0x000004D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH4_PKDET_STAT;    /*!< (@ 0x000004D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED10[26];
-  volatile uint32_t  PDM_CH5_FIR_COEF_0;           /*!< (@ 0x00000540) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_1;           /*!< (@ 0x00000544) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_2;           /*!< (@ 0x00000548) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_3;           /*!< (@ 0x0000054C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_4;           /*!< (@ 0x00000550) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_5;           /*!< (@ 0x00000554) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_6;           /*!< (@ 0x00000558) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_7;           /*!< (@ 0x0000055C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_8;           /*!< (@ 0x00000560) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_9;           /*!< (@ 0x00000564) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH5_FIR_COEF_10;          /*!< (@ 0x00000568) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_11;          /*!< (@ 0x0000056C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_12;          /*!< (@ 0x00000570) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_13;          /*!< (@ 0x00000574) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_14;          /*!< (@ 0x00000578) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_15;          /*!< (@ 0x0000057C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_16;          /*!< (@ 0x00000580) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH5_FIR_COEF_17;          /*!< (@ 0x00000584) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED11[14];
-  volatile uint32_t  PDM_CH5_IIR_COEF_SEL;         /*!< (@ 0x000005C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH5_PHASE;                /*!< (@ 0x000005C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH5_GAIN;                 /*!< (@ 0x000005C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH5_PKDET_TH;             /*!< (@ 0x000005CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH5_PKDET_ITV;            /*!< (@ 0x000005D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH5_PKDET_STAT;    /*!< (@ 0x000005D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED12[26];
-  volatile uint32_t  PDM_CH6_FIR_COEF_0;           /*!< (@ 0x00000640) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_1;           /*!< (@ 0x00000644) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_2;           /*!< (@ 0x00000648) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_3;           /*!< (@ 0x0000064C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_4;           /*!< (@ 0x00000650) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_5;           /*!< (@ 0x00000654) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_6;           /*!< (@ 0x00000658) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_7;           /*!< (@ 0x0000065C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_8;           /*!< (@ 0x00000660) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_9;           /*!< (@ 0x00000664) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH6_FIR_COEF_10;          /*!< (@ 0x00000668) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_11;          /*!< (@ 0x0000066C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_12;          /*!< (@ 0x00000670) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_13;          /*!< (@ 0x00000674) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_14;          /*!< (@ 0x00000678) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_15;          /*!< (@ 0x0000067C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_16;          /*!< (@ 0x00000680) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH6_FIR_COEF_17;          /*!< (@ 0x00000684) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED13[14];
-  volatile uint32_t  PDM_CH6_IIR_COEF_SEL;         /*!< (@ 0x000006C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH6_PHASE;                /*!< (@ 0x000006C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH6_GAIN;                 /*!< (@ 0x000006C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH6_PKDET_TH;             /*!< (@ 0x000006CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH6_PKDET_ITV;            /*!< (@ 0x000006D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH6_PKDET_STAT;    /*!< (@ 0x000006D4) Channel (n) Peak Detector Status Register                  */
-  volatile const  uint32_t  RESERVED14[26];
-  volatile uint32_t  PDM_CH7_FIR_COEF_0;           /*!< (@ 0x00000740) Channel (n) FIR Filter Coefficient 0 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_1;           /*!< (@ 0x00000744) Channel (n) FIR Filter Coefficient 1 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_2;           /*!< (@ 0x00000748) Channel (n) FIR Filter Coefficient 2 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_3;           /*!< (@ 0x0000074C) Channel (n) FIR Filter Coefficient 3 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_4;           /*!< (@ 0x00000750) Channel (n) FIR Filter Coefficient 4 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_5;           /*!< (@ 0x00000754) Channel (n) FIR Filter Coefficient 5 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_6;           /*!< (@ 0x00000758) Channel (n) FIR Filter Coefficient 6 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_7;           /*!< (@ 0x0000075C) Channel (n) FIR Filter Coefficient 7 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_8;           /*!< (@ 0x00000760) Channel (n) FIR Filter Coefficient 8 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_9;           /*!< (@ 0x00000764) Channel (n) FIR Filter Coefficient 9 Register              */
-  volatile uint32_t  PDM_CH7_FIR_COEF_10;          /*!< (@ 0x00000768) Channel (n) FIR Filter Coefficient 10 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_11;          /*!< (@ 0x0000076C) Channel (n) FIR Filter Coefficient 11 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_12;          /*!< (@ 0x00000770) Channel (n) FIR Filter Coefficient 12 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_13;          /*!< (@ 0x00000774) Channel (n) FIR Filter Coefficient 13 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_14;          /*!< (@ 0x00000778) Channel (n) FIR Filter Coefficient 14 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_15;          /*!< (@ 0x0000077C) Channel (n) FIR Filter Coefficient 15 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_16;          /*!< (@ 0x00000780) Channel (n) FIR Filter Coefficient 16 Register             */
-  volatile uint32_t  PDM_CH7_FIR_COEF_17;          /*!< (@ 0x00000784) Channel (n) FIR Filter Coefficient 17 Register             */
-  volatile const  uint32_t  RESERVED15[14];
-  volatile uint32_t  PDM_CH7_IIR_COEF_SEL;         /*!< (@ 0x000007C0) Channel (n) IIR Filter Coefficient Selection
-                                                                    Register                                                      */
-  volatile uint32_t  PDM_CH7_PHASE;                /*!< (@ 0x000007C4) Channel (n) Phase Control Register                         */
-  volatile uint32_t  PDM_CH7_GAIN;                 /*!< (@ 0x000007C8) Channel (n) Gain Control Register                          */
-  volatile uint32_t  PDM_CH7_PKDET_TH;             /*!< (@ 0x000007CC) Channel (n) Peak Detector Threshold Register               */
-  volatile uint32_t  PDM_CH7_PKDET_ITV;            /*!< (@ 0x000007D0) Channel (n) Peak Detector Interval Register                */
-  volatile const  uint32_t  PDM_CH7_PKDET_STAT;    /*!< (@ 0x000007D4) Channel (n) Peak Detector Status Register                  */
-} PDM_Type;
-
-/* Taking the difference of two different channel gain register address value */
-#define PDM_CH_OFFSET                 ((uint32_t *)&(pdm->PDM_CH1_GAIN) - (uint32_t *)&(pdm->PDM_CH0_GAIN))
+  volatile PDM_PDM_CHANNEL_CFG_Type PDM_CHANNEL_CFG[8];  /*!< (@ 0x00000040) [0..7]                                                     */
+} PDM_Type;                                              /*!< Size = 2112 (0x840)                                                       */
 
 #define PDM0_IRQ_ENABLE               (0xFF03)                  /* To enable the interrupt status register */
 #define PDM_BYPASS_IIR                (1 << 2)                  /* Bypass DC blocking IIR filter           */
@@ -515,9 +329,7 @@ static inline void pdm_enable_multi_ch(PDM_Type *pdm, uint32_t arg)
  */
 static inline void pdm_set_ch_iir_coef(PDM_Type *pdm, uint8_t ch_num, uint32_t ch_iir_coef)
 {
-    uint32_t *CH_CNFG = (uint32_t *)&(pdm->PDM_CH0_IIR_COEF_SEL) + PDM_CH_OFFSET * ch_num;
-
-    *CH_CNFG = ch_iir_coef;
+    pdm->PDM_CHANNEL_CFG[ch_num].PDM_CH_IIR_COEF_SEL = ch_iir_coef;
 }
 
 /**
@@ -530,9 +342,7 @@ static inline void pdm_set_ch_iir_coef(PDM_Type *pdm, uint8_t ch_num, uint32_t c
  */
 static inline void pdm_set_ch_phase(PDM_Type *pdm, uint8_t ch_num, uint32_t ch_phase)
 {
-    uint32_t *CH_CNFG = (uint32_t *)&(pdm->PDM_CH0_PHASE) + PDM_CH_OFFSET * ch_num;
-
-    *CH_CNFG = ch_phase;
+    pdm->PDM_CHANNEL_CFG[ch_num].PDM_CH_PHASE = ch_phase;
 }
 
 /**
@@ -545,9 +355,7 @@ static inline void pdm_set_ch_phase(PDM_Type *pdm, uint8_t ch_num, uint32_t ch_p
  */
 static inline void pdm_set_ch_gain(PDM_Type *pdm, uint8_t ch_num, uint32_t ch_gain)
 {
-    uint32_t *CH_CNFG = (uint32_t *)&(pdm->PDM_CH0_GAIN) + PDM_CH_OFFSET * ch_num;
-
-    *CH_CNFG = ch_gain;
+    pdm->PDM_CHANNEL_CFG[ch_num].PDM_CH_GAIN = ch_gain;
 }
 
 /**
@@ -563,9 +371,7 @@ static inline void pdm_set_ch_gain(PDM_Type *pdm, uint8_t ch_num, uint32_t ch_ga
 static inline void pdm_set_peak_detect_th(PDM_Type *pdm, uint8_t ch_num,
                                           uint32_t ch_peak_detect_th)
 {
-    uint32_t *CH_CNFG = (uint32_t *)&(pdm->PDM_CH0_PKDET_TH) + PDM_CH_OFFSET * ch_num;
-
-    *CH_CNFG = ch_peak_detect_th;
+    pdm->PDM_CHANNEL_CFG[ch_num].PDM_CH_PKDET_TH = ch_peak_detect_th;
 }
 
 /**
@@ -581,9 +387,7 @@ static inline void pdm_set_peak_detect_th(PDM_Type *pdm, uint8_t ch_num,
 static inline void pdm_set_peak_detect_itv(PDM_Type *pdm, uint8_t ch_num,
                                            uint32_t ch_peak_detect_itv)
 {
-    uint32_t *CH_CNFG = (uint32_t *)&(pdm->PDM_CH0_PKDET_ITV) + PDM_CH_OFFSET * ch_num;
-
-    *CH_CNFG = ch_peak_detect_itv;
+    pdm->PDM_CHANNEL_CFG[ch_num].PDM_CH_PKDET_ITV = ch_peak_detect_itv;
 }
 
 /**
@@ -598,8 +402,7 @@ static inline void pdm_set_peak_detect_itv(PDM_Type *pdm, uint8_t ch_num,
 static inline void pdm_set_fir_coeff(PDM_Type *pdm, uint8_t ch_num, uint32_t ch_fir_coef[PDM_MAX_FIR_COEFFICIENT])
 {
     uint32_t i;
-
-    uint32_t *ch_n_fir_coef_0 =  (uint32_t *)&(pdm->PDM_CH0_FIR_COEF_0) + PDM_CH_OFFSET  * ch_num;
+    uint32_t *ch_n_fir_coef_0 = (uint32_t *)&(pdm->PDM_CHANNEL_CFG[ch_num].PDM_CH_FIR_COEF_0);
 
     for(i = 0; i< PDM_MAX_FIR_COEFFICIENT; i++)
     {

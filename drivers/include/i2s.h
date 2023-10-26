@@ -29,10 +29,10 @@
 #endif
 
 /**
-  * @brief LPI2S (LPI2S)
+  * @brief I2S (I2S)
   */
 
-typedef struct {                                      /*!< LPI2S Structure                                                */
+typedef struct {                                      /*!< I2S Structure                                                  */
     volatile uint32_t           I2S_IER;              /*!< (@ 0x00000000) I2S Enable Register                             */
     volatile uint32_t           I2S_IRER;             /*!< (@ 0x00000004) I2S Receiver Block Enable Register              */
     volatile uint32_t           I2S_ITER;             /*!< (@ 0x00000008) I2S Transmitter Block Enable Register           */
@@ -73,7 +73,7 @@ typedef struct {                                      /*!< LPI2S Structure      
     volatile const uint32_t       I2S_COMP_VERSION;   /*!< (@ 0x000001F8) Reserved                                        */
     volatile const uint32_t       I2S_COMP_TYPE;      /*!< (@ 0x000001FC) Reserved                                        */
     volatile uint32_t             I2S_DMACR;          /*!< (@ 0x00000200) DMA Control Register                            */
-} LPI2S_Type;                                         /*!< Size = 516 (0x204)                                             */
+} I2S_Type;                                           /*!< Size = 516 (0x204)                                             */
 
 /*!< Number of bytes for 16/32bit resolution*/
 #define I2S_16BIT_BUF_TYPE_BYTES        2
@@ -181,10 +181,6 @@ typedef struct {                                      /*!< LPI2S Structure      
 /* I2S DMA TX and RX register offset */
 #define I2S_RXDMA_OFFSET                (0x1C0)
 #define I2S_TXDMA_OFFSET                (0x1C8)
-
-/*!< Both the LPI2S and I2S are of same controller instance */
-#define I2S_Type                        LPI2S_Type
-
 
 /**
  * enum I2S_WSS

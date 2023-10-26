@@ -60,6 +60,7 @@
   #include <mpu_M55.h>
 #endif
 
+#include "app_map.h"
 /*----------------------------------------------------------------------------
   Define clocks
  *----------------------------------------------------------------------------*/
@@ -146,7 +147,14 @@ void SystemInit (void)
                     MEMSYSCTL_PFCR_ENABLE_Msk;
 
 #if defined (__MPU_PRESENT) && (__MPU_PRESENT == 1U)
+/*
+ * Do not do MPU_Setup() if running from the OSPI XIP regions as MPU_Setup() temporarily
+ * disables the MPU which causes the default Device/XN attributes to take effect for the
+ * OSPI XIP regions.
+ */
+#if !BOOT_FROM_OSPI_FLASH
   MPU_Setup();
+#endif
 #endif
 
   // Enable caches now, for speed, but we will have to clean

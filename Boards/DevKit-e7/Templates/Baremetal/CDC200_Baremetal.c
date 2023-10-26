@@ -39,6 +39,8 @@
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
 
+/* SE Services */
+#include "se_services_port.h"
 
 #define DIMAGE_X       (RTE_PANEL_HACTIVE_TIME)
 #define DIMAGE_Y       (RTE_PANEL_VACTIVE_LINE)
@@ -83,9 +85,30 @@ static void display_callback(uint32_t event)
 static void CDC_demo()
 {
     int32_t ret       = 0;
+    uint32_t service_error_code;
+    uint32_t error_code;
     ARM_DRIVER_VERSION version;
 
+
     printf("\r\n >>> CDC demo starting up!!! <<< \r\n");
+
+    /* Initialize the SE services */
+    se_services_port_init();
+
+    /* Enable MIPI Clocks */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 100MHz clock enable = %d\n", error_code);
+        return;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, true, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 38.4Mhz(HFOSC) clock enable = %d\n", error_code);
+        goto error_disable_100mhz_clk;
+    }
 
     version = CDCdrv->GetVersion();
     printf("\r\n CDC version api:%X driver:%X...\r\n",version.api, version.drv);
@@ -94,7 +117,7 @@ static void CDC_demo()
     ret = CDCdrv->Initialize(display_callback);
     if(ret != ARM_DRIVER_OK){
         printf("\r\n Error: CDC init failed\n");
-        return;
+        goto error_disable_hfosc_clk;
     }
 
     /* Power control CDC */
@@ -139,21 +162,35 @@ static void CDC_demo()
 
 error_poweroff:
 
-        /* Power off CDC */
-        ret = CDCdrv->PowerControl(ARM_POWER_OFF);
-        if(ret != ARM_DRIVER_OK)
-        {
-            printf("\r\n Error: CDC Power OFF failed.\r\n");
-        }
+    /* Power off CDC */
+    ret = CDCdrv->PowerControl(ARM_POWER_OFF);
+    if(ret != ARM_DRIVER_OK)
+    {
+        printf("\r\n Error: CDC Power OFF failed.\r\n");
+    }
 
 error_uninitialize:
 
-        /* Un-initialize CDC driver */
-        ret = CDCdrv->Uninitialize();
-        if(ret != ARM_DRIVER_OK)
-        {
-            printf("\r\n Error: CDC Uninitialize failed.\r\n");
-        }
+    /* Un-initialize CDC driver */
+    ret = CDCdrv->Uninitialize();
+    if(ret != ARM_DRIVER_OK)
+    {
+        printf("\r\n Error: CDC Uninitialize failed.\r\n");
+    }
+
+error_disable_hfosc_clk:
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, false, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 38.4Mhz(HFOSC)  clock disable = %d\n", error_code);
+    }
+
+error_disable_100mhz_clk:
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, false, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 100MHz clock disable = %d\n", error_code);
+    }
 
         printf("\r\n XXX CDC demo exiting XXX...\r\n");
 }

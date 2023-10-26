@@ -23,7 +23,7 @@
 static ospi_flash_cfg_t ospi_flash_config;
 
 /**
-  \fn         static void ospi_flash_reset(ospi_flash_cfg_t *ospi_cfg)
+  \fn         static void issi_flash_reset(ospi_flash_cfg_t *ospi_cfg)
   \brief      This function resets the ISSI NOR Flash to the default state
   \param[in]  ospi_cfg : OSPI configuration structure
   \return     none
@@ -31,8 +31,8 @@ static ospi_flash_cfg_t ospi_flash_config;
 static void issi_flash_reset(ospi_flash_cfg_t *ospi_cfg)
 {
     ospi_setup_write(ospi_cfg, ADDR_LENGTH_0_BITS);
-    ospi_send(ospi_cfg, ISSI_RESET_ENABLE);
-    ospi_send(ospi_cfg, ISSI_RESET_MEMORY);
+    ospi_send_blocking(ospi_cfg, ISSI_RESET_ENABLE);
+    ospi_send_blocking(ospi_cfg, ISSI_RESET_MEMORY);
 }
 
 /**
@@ -45,7 +45,7 @@ static void issi_write_enable(ospi_flash_cfg_t *ospi_cfg)
 {
     /* Write WEL bit in OctalSPI mode */
     ospi_setup_write(ospi_cfg, ADDR_LENGTH_0_BITS);
-    ospi_send(ospi_cfg, ISSI_WRITE_ENABLE);
+    ospi_send_blocking(ospi_cfg, ISSI_WRITE_ENABLE);
 }
 
 /**
@@ -79,7 +79,7 @@ static uint8_t issi_decode_id(ospi_flash_cfg_t *ospi_cfg, uint8_t *buffer)
 }
 
 /**
-  \fn         static uint8_t opsi_flash_ReadID_DDR(ospi_flash_cfg_t *ospi_cfg)
+  \fn         static uint8_t issi_flash_ReadID_DDR(ospi_flash_cfg_t *ospi_cfg)
   \brief      This function reads the Device ID , if the ISSI NOR Flash boots up in DDR mode
   \param[in]  ospi_cfg : OSPI configuration structure
   \return     Device ID of NOR Flash
@@ -90,7 +90,7 @@ static uint8_t issi_flash_ReadID_DDR(ospi_flash_cfg_t *ospi_cfg)
     ospi_cfg->ddr_en = 1;
 
     ospi_setup_read(ospi_cfg, ADDR_LENGTH_0_BITS, 1, 8);
-    ospi_recv(ospi_cfg, ISSI_READ_ID, &buffer);
+    ospi_recv_blocking(ospi_cfg, ISSI_READ_ID, &buffer);
 
     return buffer;
 }
@@ -106,7 +106,7 @@ static uint8_t issi_flash_ReadID(ospi_flash_cfg_t *ospi_cfg)
     uint8_t buffer[8];
 
     ospi_setup_read(ospi_cfg, ADDR_LENGTH_0_BITS, 8, 0);
-    ospi_recv(ospi_cfg, ISSI_READ_ID, buffer);
+    ospi_recv_blocking(ospi_cfg, ISSI_READ_ID, buffer);
 
     return issi_decode_id(ospi_cfg, buffer);
 }
@@ -128,7 +128,7 @@ static void issi_flash_set_configuration_register_SDR(ospi_flash_cfg_t *ospi_cfg
     ospi_push(ospi_cfg, 0x00);
     ospi_push(ospi_cfg, 0x00);
     ospi_push(ospi_cfg, address);
-    ospi_send(ospi_cfg, value);
+    ospi_send_blocking(ospi_cfg, value);
 }
 
 /**
@@ -147,7 +147,7 @@ static void issi_flash_set_configuration_register_DDR(ospi_flash_cfg_t *ospi_cfg
     ospi_push(ospi_cfg, cmd);
     ospi_push(ospi_cfg, address);
     ospi_push(ospi_cfg, value);
-    ospi_send(ospi_cfg, value);
+    ospi_send_blocking(ospi_cfg, value);
 }
 
 /**
@@ -173,7 +173,7 @@ static uint32_t issi_flash_read_configuration_register_ddr(ospi_flash_cfg_t *osp
         ospi_push(ospi_cfg, ISSI_READ_NONVOLATILE_CONFIG_REG);
     }
 
-    ospi_recv(ospi_cfg, address, &val);
+    ospi_recv_blocking(ospi_cfg, address, &val);
 
     return val ;
 }

@@ -37,7 +37,7 @@ extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(OSPI_RESET_PORT);
 ARM_DRIVER_GPIO *GPIODrv = &ARM_Driver_GPIO_(OSPI_RESET_PORT);
 
 #define DDR_DRIVE_EDGE      0
-#define RXDS_DELAY          16
+#define RXDS_DELAY          11
 #define OSPI_BUS_SPEED      100000000           /* 100MHz */
 #define ISSI_WAIT_CYCLES    6
 

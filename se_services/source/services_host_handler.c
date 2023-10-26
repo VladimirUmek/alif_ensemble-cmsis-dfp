@@ -18,7 +18,11 @@
 #include <string.h>
 #include "services_lib_bare_metal.h"
 #include "services_lib_protocol.h"
+#if defined(A32)
+#include "a32_device.h"
+#else
 #include "system_utils.h"
+#endif
 
 #define SERVICES_REQ_TIMEOUT_MS  0x20
 #define SEND_MSG_ACK_TIMEOUT     1000000ul
@@ -221,8 +225,12 @@ uint32_t SERVICES_send_request(uint32_t services_handle,
    * Send a message to the SE
    */
   uint32_t global_address = s_pkt_buffer_address_global;
+
+  SCB_CleanDCache_by_Addr((uint32_t*)global_address, SERVICES_MAX_PACKET_BUFFER_SIZE);
+
   uint32_t ret = SERVICES_send_msg(services_handle, global_address);
-  if (ret != SERVICES_REQ_SUCCESS) {
+  if (ret != SERVICES_REQ_SUCCESS)
+  {
       return ret;
   }
 
@@ -246,6 +254,9 @@ uint32_t SERVICES_send_request(uint32_t services_handle,
     //  break;
     //}
   }
+
+  SCB_InvalidateDCache_by_Addr((uint32_t*)global_address,
+                                SERVICES_MAX_PACKET_BUFFER_SIZE);
 
   return p_header->hdr_error_code;
 }

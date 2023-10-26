@@ -83,7 +83,7 @@ typedef struct _GPIO_DRV_STATE {
   * @brief GPIO Resources
   */
 typedef struct _GPIO_RESOURCES {
-    LPGPIO_Type         *reg_base;                               /**< GPIO PORT Base Address>**/
+    GPIO_Type           *reg_base;                               /**< GPIO PORT Base Address>**/
     IRQn_Type           IRQ_base_num;                            /**< GPIO PORT IRQ base Num>**/
     uint16_t            db_clkdiv;                               /**< GPIO PORT debounce clk divisor: only for GPIO 0-14 >**/
     GPIO_DRV_STATE      state;                                   /**< GPIO PORT status flag >**/

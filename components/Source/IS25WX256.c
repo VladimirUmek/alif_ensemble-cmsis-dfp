@@ -24,6 +24,7 @@
 #include "RTE_Device.h"
 #include "RTE_Components.h"
 #include "IS25WX256.h"
+#include CMSIS_device_header
 
 #if !(RTE_ISSI_FLASH)
 #error "ISSI Flash driver is not enabled in RTE_Device.h"
@@ -219,8 +220,12 @@ static int32_t ReadStatusReg (uint8_t command, uint8_t *stat)
         return ARM_DRIVER_ERROR;
     }
 
-    while (!issi_event_flag);
-    if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+    while (!issi_event_flag)
+    {
+         __WFE();
+    }
+
+    if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
     {
         ControlSlaveSelect(false);
         issi_event_flag = 0;
@@ -257,6 +262,8 @@ static int32_t SetWriteEnable (void)
         return ARM_DRIVER_ERROR;
     }
 
+    issi_event_flag = 0;
+
     /* Select slave */
     status = ControlSlaveSelect(true);
     if (status != ARM_DRIVER_OK)
@@ -272,8 +279,12 @@ static int32_t SetWriteEnable (void)
         return ARM_DRIVER_ERROR;
     }
 
-    while (!issi_event_flag);
-    if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+    while (!issi_event_flag)
+    {
+         __WFE();
+    }
+
+    if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
     {
         ControlSlaveSelect(false);
         issi_event_flag = 0;
@@ -454,9 +465,12 @@ static int32_t ARM_Flash_PowerControl (ARM_POWER_STATE state)
                     return ARM_DRIVER_ERROR;
                 }
 
-                while(!issi_event_flag);
+                while (!issi_event_flag)
+                {
+                     __WFE();
+                }
 
-                if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+                if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
                 {
                     ControlSlaveSelect(false);
                     issi_event_flag = 0;
@@ -526,9 +540,12 @@ static int32_t ARM_Flash_PowerControl (ARM_POWER_STATE state)
                     return ARM_DRIVER_ERROR;
                 }
 
-                while(!issi_event_flag);
+                while (!issi_event_flag)
+                {
+                     __WFE();
+                }
 
-                if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+                if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
                 {
                     ControlSlaveSelect(false);
                     issi_event_flag = 0;
@@ -641,7 +658,10 @@ static int32_t ARM_Flash_ReadData (uint32_t addr, void *data, uint32_t cnt)
             return ARM_DRIVER_ERROR;
         }
 
-        while(!issi_event_flag);
+        while (!issi_event_flag)
+        {
+             __WFE();
+        }
 
         if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
         {
@@ -768,9 +788,12 @@ static int32_t ARM_Flash_ProgramData (uint32_t addr, const void *data, uint32_t 
             return ARM_DRIVER_ERROR;
         }
 
-        while (!issi_event_flag);
+        while (!issi_event_flag)
+        {
+             __WFE();
+        }
 
-        if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+        if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
         {
             ControlSlaveSelect(false);
             issi_event_flag = 0;
@@ -895,9 +918,12 @@ static int32_t ARM_Flash_EraseSector (uint32_t addr)
                 return ARM_DRIVER_ERROR;
             }
 
-            while (!issi_event_flag);
+            while (!issi_event_flag)
+            {
+                 __WFE();
+            }
 
-            if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+            if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
             {
                 ControlSlaveSelect(false);
                 issi_event_flag = 0;
@@ -929,7 +955,7 @@ static int32_t ARM_Flash_EraseSector (uint32_t addr)
                 {
                     ISSI_FlashStatus.error = 1U;
                 }
-            }while ((num & FLAG_STATUS_BUSY) == 0);
+            } while ((num & FLAG_STATUS_BUSY) == 0);
         }
 
         status = ControlSlaveSelect(false);
@@ -997,9 +1023,12 @@ static int32_t ARM_Flash_EraseChip (void)
                 return ARM_DRIVER_ERROR;
             }
 
-            while (!issi_event_flag);
+            while (!issi_event_flag)
+            {
+                 __WFE();
+            }
 
-            if(!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
+            if (!(issi_event_flag & ARM_OSPI_EVENT_TRANSFER_COMPLETE))
             {
                 ControlSlaveSelect(false);
                 issi_event_flag = 0;
@@ -1031,7 +1060,7 @@ static int32_t ARM_Flash_EraseChip (void)
                 {
                     ISSI_FlashStatus.error = 1U;
                 }
-            }while ((num & FLAG_STATUS_BUSY) == 0);
+            } while ((num & FLAG_STATUS_BUSY) == 0);
         }
         status = ControlSlaveSelect(false);
     }

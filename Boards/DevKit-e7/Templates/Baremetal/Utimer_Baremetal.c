@@ -20,7 +20,6 @@
  *           - Configuring the UTIMER Channel 3 for counter start triggering mode.
  *           - Configuring the UTIMER Channel 4 for driver A, double buffering capture mode.
  *           - Configuring the UTIMER Channel 5 for driver A, double buffering compare mode.
- *           - Configuring the UTIMER Channel 6 for PWM signal generation.
  * @bug      None.
  * @Note     None
  ******************************************************************************/
@@ -991,155 +990,6 @@ error_compare_mode_uninstall:
     printf("*** demo application: compare mode completed *** \r\n\n");
 }
 
-/**
- * @function    void utimer_pwm_cb_func(event)
- * @brief       utimer pwm mode callback function
- * @note        none
- * @param       event
- * @retval      none
- */
-static void utimer_pwm_cb_func(uint8_t event)
-{
-    if (event == ARM_UTIMER_EVENT_COMPARE_A) {
-        cb_compare_a_status = 1;
-    }
-    if (event == ARM_UTIMER_EVENT_OVER_FLOW) {
-        cb_basic_status = 1;
-    }
-}
-
-/**
- * @function    void utimer_pwm_mode_app(void)
- * @brief       utimer pwm mode application
- * @note        none
- * @param       none
- * @retval      none
- */
-static void utimer_pwm_mode_app(void)
-{
-    int32_t ret;
-    uint8_t channel = 6;
-    uint32_t count_array[3];
-
-    /*
-     * utimer channel 6 is configured to generate PWM o/p signal of 75% duty cycle(driver A is enabled).
-     * observe output signal from P1_4.
-     */
-    printf("*** utimer demo application for pwm started ***\n");
-    /*
-     * System CLOCK frequency (F)= 400Mhz
-     *
-     * Time for 1 count T = 1/F = 1/(400*10^6) = 0.0025 * 10^-6
-     *
-     * To Increment or Decrement Timer by 1 count, takes 0.0025 micro sec
-     *
-     * So count for 400ms = (400*(10^-3)/(0.0025*(10^-6)) = 160000000
-     * DEC = 160000000
-     * HEX = 0x9896800
-     *
-     * So count for 100ms = (100*(10^-3)/(0.0025*(10^-6)) = 40000000
-     * DEC = 40000000
-     * HEX = 0x2625A00
-     */
-    count_array[0] =  0x0;               /*< initial counter value >*/
-    count_array[1] =  0x9896800;         /*< over flow count value >*/
-    count_array[2] =  0x2625A00;         /*< compare a/b value>*/
-
-    /*
-     * Note: User can change the duty cycle of output PWM signal by changing counter value.
-     * This demo testapp gives 75% duty cycle as you can see above the relation btw count_array[1] & count_array[2].
-     */
-
-    /* pwm mode pin config */
-    ret = pinconf_set (PORT_1, PIN_4, PINMUX_ALTERNATE_FUNCTION_4, 0);
-    if(ret != ARM_DRIVER_OK) {
-        printf("\r\n Error in PINMUX.\r\n");
-    }
-
-    ret = ptrUTIMER->Initialize (channel, utimer_pwm_cb_func);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d failed initialize \n", channel);
-        return;
-    }
-
-    ret = ptrUTIMER->PowerControl (channel, ARM_POWER_FULL);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d failed power up \n", channel);
-        goto error_pwm_mode_uninstall;
-    }
-
-    ret = ptrUTIMER->ConfigCounter (channel, ARM_UTIMER_MODE_COMPARING, ARM_UTIMER_COUNTER_UP);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d mode configuration failed \n", channel);
-        goto error_pwm_mode_poweroff;
-    }
-
-    ret = ptrUTIMER->SetCount (channel, ARM_UTIMER_CNTR, count_array[0]);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d set count failed \n", channel);
-        goto error_pwm_mode_poweroff;
-    }
-
-    ret = ptrUTIMER->SetCount (channel, ARM_UTIMER_CNTR_PTR, count_array[1]);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d set count failed \n", channel);
-        goto error_pwm_mode_poweroff;
-    }
-
-    ret = ptrUTIMER->SetCount (channel, ARM_UTIMER_COMPARE_A, count_array[2]);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d set count failed \n", channel);
-        goto error_pwm_mode_poweroff;
-    }
-
-    ret = ptrUTIMER->Start(channel);
-    if(ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d failed to start \n", channel);
-        goto error_pwm_mode_poweroff;
-    } else {
-        printf("utimer channel %d :timer started\n", channel);
-    }
-
-    printf("PWM output signal generation started\n");
-    for (int i=0; i<20; i++)
-    {
-        while(1)
-        {
-            if (cb_compare_a_status) {
-                cb_compare_a_status = 0;
-                break;
-            }
-            if (cb_basic_status) {
-                cb_basic_status = 0;
-                break;
-            }
-        }
-    }
-
-    ret = ptrUTIMER->Stop(channel, ARM_UTIMER_COUNTER_CLEAR);
-    if(ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d failed to stop \n", channel);
-    } else {
-        printf("utimer channel %d: timer stopped\n", channel);
-    }
-
-error_pwm_mode_poweroff:
-
-    ret = ptrUTIMER->PowerControl (channel, ARM_POWER_OFF);
-    if (ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d failed power off \n", channel);
-    }
-
-error_pwm_mode_uninstall:
-
-    ret = ptrUTIMER->Uninitialize (channel);
-    if(ret != ARM_DRIVER_OK) {
-        printf("utimer channel %d failed to un-initialize \n", channel);
-    }
-
-    printf("*** demo application: pwm mode completed *** \r\n\n");
-}
-
 int main()
 {
     #if defined(RTE_Compiler_IO_STDOUT_User)
@@ -1157,5 +1007,4 @@ int main()
     utimer_trigger_mode_app();
     utimer_capture_mode_app();
     utimer_compare_mode_app();
-    utimer_pwm_mode_app();
 }

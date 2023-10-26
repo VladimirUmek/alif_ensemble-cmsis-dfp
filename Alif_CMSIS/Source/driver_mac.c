@@ -365,6 +365,8 @@ static int32_t PowerControl(ARM_POWER_STATE state, MAC_DEV *dev)
         disable_eth_periph_clk();
 
         NVIC_DisableIRQ(dev->irq);
+
+        dev->flags &= ~ETH_POWER;
         break;
 
     case ARM_POWER_LOW:

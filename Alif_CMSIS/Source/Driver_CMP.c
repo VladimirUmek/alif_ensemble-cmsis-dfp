@@ -394,7 +394,7 @@ static void CMP_IRQ_handler(CMP_RESOURCES *CMP)
 /* Comparator Configurations */
 static CMP_RESOURCES HSCMP0 = {
     .cb_event           = NULL,
-    .regs               = (CMP0_Type *)CMP0_BASE,
+    .regs               = (CMP_Type *)CMP0_BASE,
     .drv_instance       = CMP_INSTANCE_0,
     .state              = {0},
     .irq_num            = (IRQn_Type)CMP0_IRQ_IRQn,
@@ -498,7 +498,7 @@ ARM_DRIVER_CMP Driver_CMP0 =
 /* Comparator Configurations */
 static CMP_RESOURCES HSCMP1 = {
     .cb_event           = NULL,
-    .regs               = (CMP0_Type *)CMP1_BASE,
+    .regs               = (CMP_Type *)CMP1_BASE,
     .drv_instance       = CMP_INSTANCE_1,
     .state              = {0},
     .irq_num            = (IRQn_Type)CMP1_IRQ_IRQn,
@@ -602,7 +602,7 @@ ARM_DRIVER_CMP Driver_CMP1 =
 /* Comparator Configurations */
 static CMP_RESOURCES HSCMP2 = {
     .cb_event           = NULL,
-    .regs               = (CMP0_Type *)CMP2_BASE,
+    .regs               = (CMP_Type *)CMP2_BASE,
     .drv_instance       = CMP_INSTANCE_2,
     .state              = {0},
     .irq_num            = (IRQn_Type)CMP2_IRQ_IRQn,
@@ -706,7 +706,7 @@ ARM_DRIVER_CMP Driver_CMP2 =
 /* Comparator Configurations */
 static CMP_RESOURCES HSCMP3 = {
     .cb_event           = NULL,
-    .regs               = (CMP0_Type *)CMP3_BASE,
+    .regs               = (CMP_Type *)CMP3_BASE,
     .drv_instance       = CMP_INSTANCE_3,
     .state              = {0},
     .irq_num            = (IRQn_Type)CMP3_IRQ_IRQn,

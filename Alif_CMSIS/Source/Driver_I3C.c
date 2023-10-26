@@ -874,7 +874,13 @@ static int32_t I3Cx_Control(I3C_RESOURCES *i3c,
       return ARM_DRIVER_ERROR_UNSUPPORTED;
     }
     break;
+
   case I3C_SLAVE_SET_ADDR:
+
+#if I3C_DMA_ENABLE
+    /* currently, I3C DMA for Slave is not supported. */
+    return ARM_DRIVER_ERROR_UNSUPPORTED;
+#endif
 
       i3c->datp    = i3c_get_dat_addr(i3c->regs);
       i3c->maxdevs = i3c_get_dat_depth(i3c->regs);

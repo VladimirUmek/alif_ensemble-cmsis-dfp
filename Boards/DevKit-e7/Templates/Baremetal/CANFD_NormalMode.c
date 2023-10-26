@@ -130,7 +130,7 @@ const uint8_t canfd_len_dlc_map[0x10U] =
 
 /* Support functions */
 static void canfd_process_rx_message(void);
-static void canfd_transmit_message(void);
+static void canfd_transmit_message(const CANFD_FRAME msg_type);
 static void canfd_check_error(void);
 
 /**
@@ -147,7 +147,7 @@ static int32_t pinmux_config(void)
     /* pinmux configurations for CANFD pins */
     ret_val = pinconf_set(PORT_7, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
                          (PADCTRL_READ_ENABLE | PADCTRL_SCHMITT_TRIGGER_ENABLE |
-                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS));
+                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA));
     if(ret_val)
     {
         printf("ERROR: Failed to configure PINMUX for CANFD Rx \r\n");
@@ -155,7 +155,7 @@ static int32_t pinmux_config(void)
     }
 
     ret_val = pinconf_set(PORT_7, PIN_1, PINMUX_ALTERNATE_FUNCTION_7,
-                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS |
+                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA |
                           PADCTRL_SCHMITT_TRIGGER_ENABLE));
     if(ret_val)
     {
@@ -243,6 +243,7 @@ void cb_object_event(uint32_t obj_idx, uint32_t event)
  */
 void canfd_demo_thread_entry(void)
 {
+    CANFD_FRAME msg_type            = CANFD_FRAME_STD_ID_CLASSIC_DATA;
     int32_t ret_val                 = ARM_DRIVER_OK;
     ARM_CAN_CAPABILITIES              can_capabilities;
     ARM_CAN_OBJ_CAPABILITIES          can_obj_capabilities;
@@ -259,7 +260,10 @@ void canfd_demo_thread_entry(void)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk enable = %d\n", error_code);
+        return;
+    }
 
     /* Enables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
@@ -267,7 +271,10 @@ void canfd_demo_thread_entry(void)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
 
     printf("*** CANFD Normal mode Demo app is starting ***\n");
 
@@ -318,7 +325,8 @@ void canfd_demo_thread_entry(void)
     }
     /* Setting bit rate for CANFD */
     ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_NOMINAL,
-              CANFD_NOMINAL_BITRATE, CANFD_NOMINAL_BITTIME_SEGMENTS);
+                                         CANFD_NOMINAL_BITRATE,
+                                         CANFD_NOMINAL_BITTIME_SEGMENTS);
     if(ret_val != ARM_DRIVER_OK)
     {
        printf("ERROR: Failed to set CANFD Nominal Bitrate\r\n");
@@ -328,7 +336,8 @@ void canfd_demo_thread_entry(void)
     if(can_capabilities.fd_mode == 1U)
     {
         ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_FD_DATA,
-                  CANFD_FAST_BITRATE, CANFD_FAST_BITTIME_SEGMENTS);
+                                             CANFD_FAST_BITRATE,
+                                             CANFD_FAST_BITTIME_SEGMENTS);
         if(ret_val != ARM_DRIVER_OK)
         {
            printf("ERROR: Failed to set CANFD Fast Bitrate\r\n");
@@ -363,8 +372,10 @@ void canfd_demo_thread_entry(void)
        goto power_off_canfd;
     }
     /* Setting Object filter of CANFD */
-    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id, ARM_CAN_FILTER_ID_EXACT_ADD,
-                              CANFD_OBJECT_FILTER_CODE, CANFD_OBJECT_FILTER_MASK);
+    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id,
+                                              ARM_CAN_FILTER_ID_EXACT_ADD,
+                                              CANFD_OBJECT_FILTER_CODE,
+                                              CANFD_OBJECT_FILTER_MASK);
     if(ret_val == ARM_DRIVER_ERROR_SPECIFIC)
     {
        printf("ERROR: No free Filter available\r\n");
@@ -385,11 +396,15 @@ void canfd_demo_thread_entry(void)
 
     while(!(stop_execution))
     {
+        if(msg_tx_complete)
+        {
+            msg_tx_complete = false;
+            /* Invoke the below function to prepare and send a message */
+            canfd_transmit_message(msg_type++);
+        }
+
         /* Invoke the below function to process the received message */
         canfd_process_rx_message();
-
-        /* Invoke the below function to prepare and send a message */
-        canfd_transmit_message();
 
         /* Invoke the below function to check on errors */
         canfd_check_error();
@@ -408,25 +423,29 @@ uninitialise_canfd:
     {
         printf("ERROR in CANFD un-initialization\r\n");
     }
+
     /* Disables the HFOSC clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                                               CLKEN_HFOSC,
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk disable = %d\n", error_code);
-
+        return;
+    }
     /* Disables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                                               CLKEN_CLK_160M,
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
+    }
 
     printf("*** CANFD Normal mode Demo is ended ***\r\n");
-
-    return;
 }
 
 /**
@@ -438,9 +457,6 @@ uninitialise_canfd:
  */
 int main()
 {
-    /* Initialize the SE services */
-    se_services_port_init();
-
 #if defined(RTE_Compiler_IO_STDOUT_User)
     int32_t ret;
     ret = stdout_init();
@@ -522,7 +538,7 @@ void canfd_process_rx_message(void)
                 }
 
                 printf("Id:%lu, Len:%d:\r\n    Data:",
-                   (rx_msg_header.id & (~ARM_CAN_ID_IDE_Msk)), rx_msg_size);
+                      (rx_msg_header.id & (~ARM_CAN_ID_IDE_Msk)), rx_msg_size);
                 for(iter = 0; iter < rx_msg_size; iter++)
                 {
                     printf("%c", rx_data[iter]);
@@ -557,102 +573,94 @@ void canfd_process_rx_message(void)
  * @param   none
  * @retval  none
  */
-void canfd_transmit_message()
+void canfd_transmit_message(const CANFD_FRAME msg_type)
 {
-    static CANFD_FRAME msg_type = CANFD_FRAME_STD_ID_CLASSIC_DATA;
     uint32_t status = ARM_DRIVER_OK;
     uint8_t iter;
 
-    if(msg_tx_complete)
+    switch(msg_type)
     {
-        /* If the previous message is successfully sent 7 seconds ago,
-         * then prepaer and transmit next message */
-        switch(msg_type)
-        {
-            case CANFD_FRAME_STD_ID_CLASSIC_DATA:
-                /* Sending Classic CAN DATA message of
-                 * length 5 bytes with Message Id 0x5A5 */
-                tx_msg_header.brs = 0x0U;
-                tx_msg_header.dlc = 0x5U;
-                tx_msg_header.id  = 0x5A5U;
-                tx_msg_header.rtr = 0x0U;
-                tx_msg_header.edl = 0x0U;
-                tx_msg_size       = 0x5U;
-                break;
-            case CANFD_FRAME_STD_ID_RTR:
-                /* Sending Classic CAN Remote request message
-                 * with Message Id 0x515 */
-                tx_msg_header.brs = 0x0U;
-                tx_msg_header.dlc = 0x0U;
-                tx_msg_header.id  = 0x515U;
-                tx_msg_header.rtr = 0x1U;
-                tx_msg_header.edl = 0x0U;
-                tx_msg_size       = 0x0U;
-                break;
-            case CANFD_FRAME_STD_ID_FD_DATA:
-                /* Sending FD CAN DATA message of
-                 * length 64 bytes with Message Id 0x5AA */
-                tx_msg_header.brs = 0x1U;
-                tx_msg_header.dlc = 0xFU;
-                tx_msg_header.id  = 0x5AAU;
-                tx_msg_header.rtr = 0x0U;
-                tx_msg_header.edl = 0x1U;
-                tx_msg_size       = 0x40U;
-                break;
-            case CANFD_FRAME_EXT_ID_RTR:
-                /* Sending Classic CAN Remote request message
-                 * with Extended Message Id 0x1FF5A5AU */
-                tx_msg_header.brs = 0x0U;
-                tx_msg_header.dlc = 0x0U;
-                tx_msg_header.id  = 0x81FF5A5AU;
-                tx_msg_header.rtr = 0x1U;
-                tx_msg_header.edl = 0x0U;
-                tx_msg_size       = 0x0U;
-                break;
-            case CANFD_FRAME_EXT_ID_CLASSIC_DATA:
-                /* Sending Classic CAN data message of
-                 * length 8 bytes with Extended Message Id 0x1FF5A5AU */
-                tx_msg_header.brs = 0x0U;
-                tx_msg_header.dlc = 0x8U;
-                tx_msg_header.id  = 0x81FF5A5AU;
-                tx_msg_header.rtr = 0x0U;
-                tx_msg_header.edl = 0x0U;
-                tx_msg_size       = 0x8U;
-                break;
-            case CANFD_FRAME_EXT_ID_FD_DATA:
-                /* Sending FD CAN message of length 16 bytes
-                 * with Extended Message Id 0x1FF5A5AU */
-                tx_msg_header.brs = 0x1U;
-                tx_msg_header.dlc = 0xAU;
-                tx_msg_header.id  = 0x81FF5A5AU;
-                tx_msg_header.rtr = 0x0U;
-                tx_msg_header.edl = 0x1U;
-                tx_msg_size       = 0x10U;
-                break;
+        case CANFD_FRAME_STD_ID_CLASSIC_DATA:
+            /* Sending Classic CAN DATA message of
+             * length 5 bytes with Message Id 0x5A5 */
+            tx_msg_header.brs = 0x0U;
+            tx_msg_header.dlc = 0x5U;
+            tx_msg_header.id  = 0x5A5U;
+            tx_msg_header.rtr = 0x0U;
+            tx_msg_header.edl = 0x0U;
+            tx_msg_size       = 0x5U;
+            break;
+        case CANFD_FRAME_STD_ID_RTR:
+            /* Sending Classic CAN Remote request message
+             * with Message Id 0x515 */
+            tx_msg_header.brs = 0x0U;
+            tx_msg_header.dlc = 0x0U;
+            tx_msg_header.id  = 0x515U;
+            tx_msg_header.rtr = 0x1U;
+            tx_msg_header.edl = 0x0U;
+            tx_msg_size       = 0x0U;
+            break;
+        case CANFD_FRAME_STD_ID_FD_DATA:
+            /* Sending FD CAN DATA message of
+             * length 64 bytes with Message Id 0x5AA */
+            tx_msg_header.brs = 0x1U;
+            tx_msg_header.dlc = 0xFU;
+            tx_msg_header.id  = 0x5AAU;
+            tx_msg_header.rtr = 0x0U;
+            tx_msg_header.edl = 0x1U;
+            tx_msg_size       = 0x40U;
+            break;
+        case CANFD_FRAME_EXT_ID_RTR:
+            /* Sending Classic CAN Remote request message
+             * with Extended Message Id 0x1FF5A5AU */
+            tx_msg_header.brs = 0x0U;
+            tx_msg_header.dlc = 0x0U;
+            tx_msg_header.id  = 0x81FF5A5AU;
+            tx_msg_header.rtr = 0x1U;
+            tx_msg_header.edl = 0x0U;
+            tx_msg_size       = 0x0U;
+            break;
+        case CANFD_FRAME_EXT_ID_CLASSIC_DATA:
+            /* Sending Classic CAN data message of
+             * length 8 bytes with Extended Message Id 0x1FF5A5AU */
+            tx_msg_header.brs = 0x0U;
+            tx_msg_header.dlc = 0x8U;
+            tx_msg_header.id  = 0x81FF5A5AU;
+            tx_msg_header.rtr = 0x0U;
+            tx_msg_header.edl = 0x0U;
+            tx_msg_size       = 0x8U;
+            break;
+        case CANFD_FRAME_EXT_ID_FD_DATA:
+            /* Sending FD CAN message of length 16 bytes
+             * with Extended Message Id 0x1FF5A5AU */
+            tx_msg_header.brs = 0x1U;
+            tx_msg_header.dlc = 0xAU;
+            tx_msg_header.id  = 0x81FF5A5AU;
+            tx_msg_header.rtr = 0x0U;
+            tx_msg_header.edl = 0x1U;
+            tx_msg_size       = 0x10U;
+            break;
 
-            case CANFD_FRAME_OVER:
-            default:
-                /* stop_execution = true; */
-                return;
-        }
-        /* Sends the message to CAN HAL Driver */
-        status = CANFD_instance->MessageSend(tx_obj_id, &tx_msg_header,
-                                         tx_data, tx_msg_size);
-        if(status == ARM_DRIVER_OK)
+        case CANFD_FRAME_OVER:
+        default:
+            /* stop_execution = true; */
+            return;
+    }
+    /* Sends the message to CAN HAL Driver */
+    status = CANFD_instance->MessageSend(tx_obj_id, &tx_msg_header,
+                                     tx_data, tx_msg_size);
+    if(status == ARM_DRIVER_OK)
+    {
+        printf("Tx Msg:\r\n    Id:%lu, Len:%d: \r\n    Data:",
+               (tx_msg_header.id & (~ARM_CAN_ID_IDE_Msk)), tx_msg_size);
+        for(iter = 0; iter < tx_msg_size; iter++)
         {
-            msg_tx_complete = false;
-            printf("Tx Msg:\r\n    Id:%lu, Len:%d: \r\n    Data:",
-                   (tx_msg_header.id & (~ARM_CAN_ID_IDE_Msk)), tx_msg_size);
-            for(iter = 0; iter < tx_msg_size; iter++)
-            {
-                printf("%c", tx_data[iter]);
-            }
-            printf("\r\n");
-            msg_type++;
+            printf("%c", tx_data[iter]);
         }
-        else
-        {
-            printf("Error: Failed to send message \n");
-        }
-   }
+        printf("\r\n");
+    }
+    else
+    {
+        printf("Error: Failed to send message \n");
+    }
 }

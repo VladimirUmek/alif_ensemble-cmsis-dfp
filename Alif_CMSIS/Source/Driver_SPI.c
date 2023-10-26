@@ -1517,7 +1517,7 @@ extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(RTE_SPI0_SW_SPI_PORT);
 #endif
 
 static SPI_RESOURCES SPI0_RES = {
-    .regs                   = (LPSPI_Type*) SPI0_BASE,
+    .regs                   = (SPI_Type*) SPI0_BASE,
     .cb_event               = NULL,
     .irq_priority           = RTE_SPI0_IRQ_PRIORITY,
     .drv_instance           = SPI_INSTANCE_0,
@@ -1667,7 +1667,7 @@ extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(RTE_SPI1_SW_SPI_PORT);
 #endif
 
 static SPI_RESOURCES SPI1_RES = {
-    .regs                   = (LPSPI_Type*) SPI1_BASE,
+    .regs                   = (SPI_Type*) SPI1_BASE,
     .cb_event               = NULL,
     .irq_priority           = RTE_SPI1_IRQ_PRIORITY,
     .drv_instance           = SPI_INSTANCE_1,
@@ -1817,7 +1817,7 @@ extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(RTE_SPI2_SW_SPI_PORT);
 #endif
 
 static SPI_RESOURCES SPI2_RES = {
-    .regs                   = (LPSPI_Type*) SPI2_BASE,
+    .regs                   = (SPI_Type*) SPI2_BASE,
     .cb_event               = NULL,
     .irq_priority           = RTE_SPI2_IRQ_PRIORITY,
     .drv_instance           = SPI_INSTANCE_2,
@@ -1966,7 +1966,7 @@ extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(RTE_SPI3_SW_SPI_PORT);
 #endif
 
 static SPI_RESOURCES SPI3_RES = {
-    .regs                   = (LPSPI_Type*) SPI3_BASE,
+    .regs                   = (SPI_Type*) SPI3_BASE,
     .cb_event               = NULL,
     .irq_priority           = RTE_SPI3_IRQ_PRIORITY,
     .drv_instance           = SPI_INSTANCE_3,
@@ -2130,7 +2130,7 @@ extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(RTE_LPSPI_SW_SPI_PORT);
 #endif
 
 static SPI_RESOURCES LPSPI_RES = {
-    .regs                   = (LPSPI_Type*) LPSPI_BASE,
+    .regs                   = (SPI_Type*) LPSPI_BASE,
     .cb_event               = NULL,
     .irq_priority           = RTE_LPSPI_IRQ_PRIORITY,
     .drv_instance           = LPSPI_INSTANCE,

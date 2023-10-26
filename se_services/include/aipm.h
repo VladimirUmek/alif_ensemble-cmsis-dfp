@@ -233,29 +233,83 @@ typedef enum {
 #define EWIC_BROWN_OUT               0x00400000UL// bit22
 
 typedef enum {
+    DCDC_VOUT_0800 = 1,
+    DCDC_VOUT_0825 = 2,
+    DCDC_VOUT_0850 = 3,
+} dcdc_voltage_t;
+
+typedef enum {
     DCDC_MODE_OFF = 0,
-    DCDC_MODE_PFM,
+    DCDC_MODE_PFM_AUTO,
+    DCDC_MODE_PFM_FORCED,
     DCDC_MODE_PWM
 } dcdc_mode_t;
 
 typedef enum {
-    PHY_USB = 1,
-    PHY_MIPI_CSI = 2,
-    PHY_MIPI_DSI = 4
-} ldo_phy_t;
+  IOFLEX_LEVEL_3V3,
+  IOFLEX_LEVEL_1V8
+} ioflex_mode_t;
+
+typedef enum
+{
+  NPU_HP,
+  NPU_HE,
+  ISIM,
+  OSPI_1,
+  CANFD,
+  SDC,
+  USB,
+  ETH,
+  GPU,
+  CDC200,
+  CAMERA,
+  MIPI_DSI,
+  MIPI_CSI,
+  LP_PERIPH
+} ip_clock_gating_t;
+
+#define NPU_HP_MASK       (1 << NPU_HP)   // bit0
+#define NPU_HE_MASK       (1 << NPU_HE)   // bit1
+#define ISIM_MASK         (1 << ISIM)     // bit2
+#define OSPI_1_MASK       (1 << OSPI_1)   // bit3
+#define CANFD_MASK        (1 << CANFD)    // bit4
+#define SDC_MASK          (1 << SDC)      // bit5
+#define USB_MASK          (1 << USB)      // bit6
+#define ETH_MASK          (1 << ETH)      // bit7
+#define GPU_MASK          (1 << GPU)      // bit8
+#define CDC200_MASK       (1 << CDC200)   // bit9
+#define CAMERA_MASK       (1 << CAMERA)   // bit10
+#define MIPI_DSI_MASK     (1 << MIPI_DSI) // bit11
+#define MIPI_CSI_MASK     (1 << MIPI_CSI) // bit12
+#define LP_PERIPH_MASK    (1 << LP_PERIPH // bit13
+
+typedef enum
+{
+  LDO_PHY,
+  USB_PHY,
+  MIPI_TX_DPHY,
+  MIPI_RX_DPHY,
+  MIPI_PLL_DPHY
+} phy_gating_t;
+
+#define LDO_PHY_MASK          (1 << LDO_PHY)       // bit0
+#define USB_PHY_MASK          (1 << USB_PHY)       // bit1
+#define MIPI_TX_DPHY_MASK     (1 << MIPI_TX_DPHY)  // bit2
+#define MIPI_RX_DPHY_MASK     (1 << MIPI_RX_DPHY)  // bit3
+#define MIPI_PLL_DPHY_MASK    (1 << MIPI_PLL_DPHY) // bit4
 
 /* Power Management Data Structures */
 typedef struct {
     uint32_t power_domains;         /* Power domains to stay on */
-    uint32_t dcdc_voltage;          /* Voltage scaling support - clock frequency / temperature dependent */
+    dcdc_voltage_t dcdc_voltage;    /* DCDC output voltage */
+    dcdc_mode_t dcdc_mode;          /* DCDC mode - PWM or PFM based on the workload */
     lfclock_t aon_clk_src;          /* LFRC/LFXO */
     hfclock_t run_clk_src;          /* HFRC/HFXO/PLL */
     clock_frequency_t cpu_clk_freq; /* APSS/RTSS-HP/RTSS-HE specific setting */
     scaled_clk_freq_t scaled_clk_freq; /* Scaled HFRC/HFXO frequency */
     uint32_t memory_blocks;         /* Memories blocks to be retained/powered */
-    dcdc_mode_t dcdc_mode;          /* DCDC mode - PWM or PFM based on the workload */
     uint32_t ip_clock_gating;       /* IP Clock Gating */
-    ldo_phy_t phy_pwr_gating;       /* PHY Power Gating */
+    uint32_t phy_pwr_gating;        /* PHY Power Gating */
     uint32_t vdd_ioflex_3V3;        /* Enable 3.3V GPIOs */
     uint32_t wakeup_events;
     uint32_t ewic_cfg;
@@ -266,14 +320,16 @@ typedef struct {
 typedef struct
 {
     uint32_t power_domains;         /* Power domains to stay on */
-    uint32_t dcdc_voltage;          /* Voltage scaling support - clock frequency / temperature dependent */
+    dcdc_voltage_t dcdc_voltage;    /* DCDC output voltage */
+    dcdc_mode_t dcdc_mode;          /* DCDC mode - PWM or PFM based on the workload */
     lfclock_t aon_clk_src;          /* LFRC/LFXO */
     hfclock_t stby_clk_src;         /* HFRC/HFXO/PLL */
     scaled_clk_freq_t stby_clk_freq; /* Selected automatically in SoC Standby mode */
-    uint32_t sysref_clk_src;        /* SoC Reference Clock shared with all subsystems */
-    uint32_t memory_blocks;         /* Memories blocks to be retained/powered */
-    uint32_t ip_clock_gating;       /* IP Clock Gating */
-    uint32_t vdd_ioflex_3V3;        /* Enable 3.3V GPIOs */
+    uint32_t sysref_clk_src;         /* SoC Reference Clock shared with all subsystems */
+    uint32_t memory_blocks;          /* Memories blocks to be retained/powered */
+    uint32_t ip_clock_gating;        /* IP Clock Gating */
+    uint32_t phy_pwr_gating;         /* PHY Power Gating */
+    ioflex_mode_t vdd_ioflex_3V3;    /* Flex GPIOs voltage */
     uint32_t wakeup_events;
     uint32_t ewic_cfg;
     uint32_t vtor_address;

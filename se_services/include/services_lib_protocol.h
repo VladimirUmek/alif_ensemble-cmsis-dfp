@@ -29,6 +29,8 @@ extern "C" {
  ******************************************************************************/
 /**
  * Version   JIRA         Description
+ * 0.0.41
+ * 0.0.40   SE-2111       [aiPM] Define the parameter VDD_IOFLEX_3V3 as an enum
  * 0.0.39   SE-2077       SERVICES switch to CMSIS V0.9.4
  * 0.0.38   SE-2047       SERVICES switch to CMSIS V0.9.3
  * 0.0.37   SE-1951       Scalable HFRC and HXTAL frequencies
@@ -81,7 +83,7 @@ extern "C" {
  * 0.0.2    SE-708        First re-factoring
  * 0.0.1                  First implementation
  */
-#define SE_SERVICES_VERSION_STRING                 "0.0.39"
+#define SE_SERVICES_VERSION_STRING                 "0.0.41"
 
 #define IMAGE_NAME_LENGTH                          8
 #define VERSION_RESPONSE_LENGTH                    80
@@ -129,12 +131,12 @@ typedef struct {
   service_header_t header;
   volatile uint32_t send_power_domains;
   volatile uint32_t send_dcdc_voltage;
+  volatile uint32_t send_dcdc_mode;
   volatile uint32_t send_aon_clk_src;
   volatile uint32_t send_run_clk_src;
   volatile uint32_t send_cpu_clk_freq;
   volatile uint32_t send_scaled_clk_freq;
   volatile uint32_t send_memory_blocks;
-  volatile uint32_t send_dcdc_mode;
   volatile uint32_t send_ip_clock_gating;
   volatile uint32_t send_phy_pwr_gating;
   volatile uint32_t send_vdd_ioflex_3V3;
@@ -149,12 +151,12 @@ typedef struct {
   service_header_t header;
   volatile uint32_t resp_power_domains;
   volatile uint32_t resp_dcdc_voltage;
+  volatile uint32_t resp_dcdc_mode;
   volatile uint32_t resp_aon_clk_src;
   volatile uint32_t resp_run_clk_src;
   volatile uint32_t resp_cpu_clk_freq;
   volatile uint32_t resp_scaled_clk_freq;
   volatile uint32_t resp_memory_blocks;
-  volatile uint32_t resp_dcdc_mode;
   volatile uint32_t resp_ip_clock_gating;
   volatile uint32_t resp_phy_pwr_gating;
   volatile uint32_t resp_vdd_ioflex_3V3;
@@ -169,11 +171,13 @@ typedef struct {
   service_header_t header;
   volatile uint32_t send_power_domains;
   volatile uint32_t send_dcdc_voltage;
+  volatile uint32_t send_dcdc_mode;
   volatile uint32_t send_aon_clk_src;
   volatile uint32_t send_stby_clk_src;
   volatile uint32_t send_stby_clk_freq;
   volatile uint32_t send_memory_blocks;
   volatile uint32_t send_ip_clock_gating;
+  volatile uint32_t send_phy_pwr_gating;
   volatile uint32_t send_vdd_ioflex_3V3;
   volatile uint32_t send_wakeup_events;
   volatile uint32_t send_ewic_cfg;
@@ -186,11 +190,13 @@ typedef struct {
   service_header_t header;
   volatile uint32_t resp_power_domains;
   volatile uint32_t resp_dcdc_voltage;
+  volatile uint32_t resp_dcdc_mode;
   volatile uint32_t resp_aon_clk_src;
   volatile uint32_t resp_stby_clk_src;
   volatile uint32_t resp_stby_clk_freq;
   volatile uint32_t resp_memory_blocks;
   volatile uint32_t resp_ip_clock_gating;
+  volatile uint32_t resp_phy_pwr_gating;
   volatile uint32_t resp_vdd_ioflex_3V3;
   volatile uint32_t resp_wakeup_events;
   volatile uint32_t resp_ewic_cfg;
@@ -571,16 +577,16 @@ typedef struct
 } get_otp_data_t;
 
 /**
- * @struct  read_otp_data_t
- * @brief   request for otp read
+ * @struct  otp_data_t
+ * @brief   request for otp read or write
  */
 typedef struct
 {
   service_header_t header;
-  volatile uint32_t send_offset;       /**< OTP offset to read */
-  volatile uint32_t resp_otp_word;     /**< OTP contents       */
+  volatile uint32_t send_offset;     /**< OTP offset to read or write */
+  volatile uint32_t otp_word;        /**< OTP contents       */
   volatile uint32_t resp_error_code;
-} read_otp_data_t;
+} otp_data_t;
 
 /**
  * @struct get_device_part_svc_t
@@ -745,6 +751,28 @@ typedef struct
   uint32_t power_profile;
   uint32_t resp_error_code;
 } m55_vtor_save_request_svc_t;
+
+//----------------------------------------------------------------
+// DCDC voltage control Request
+//
+typedef struct
+{
+  service_header_t header;
+  uint32_t dcdc_vout_sel; // bit1:0
+  uint32_t dcdc_vout_trim; // bit3:0
+  uint32_t resp_error_code;
+} dcdc_voltage_request_svc_t;
+
+//----------------------------------------------------------------
+// LDO voltage control Request
+//
+typedef struct
+{
+  service_header_t header;
+  uint32_t ret_ldo_voltage; // bit3:0
+  uint32_t aon_ldo_voltage; // bit3:0
+  uint32_t resp_error_code;
+} ldo_voltage_request_svc_t;
 
 //----------------------------------------------------------------
 // Clocks API

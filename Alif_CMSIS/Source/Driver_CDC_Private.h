@@ -13,7 +13,7 @@
  * @author   Prasanna Ravi
  * @email    prasanna.ravi@alifsemi.com
  * @version  V1.0.0
- * @date     10-April-2023
+ * @date     28-Sep-2023
  * @brief    CDC driver Specific Header file.
  ******************************************************************************/
 
@@ -36,28 +36,15 @@ extern "C"
 typedef volatile struct _CDC_DRIVER_STATE {
     uint32_t initialized : 1;                    /**< Driver Initialized    */
     uint32_t powered     : 1;                    /**< Driver powered        */
-    uint32_t configured  : 1;                    /**< Driver configured    */
-    uint32_t reserved    : 29;                   /**< Reserved             */
+    uint32_t configured  : 1;                    /**< Driver configured     */
+    uint32_t reserved    : 29;                   /**< Reserved              */
 } CDC_DRIVER_STATE;
-
-/** \brief CDC DPI frame info */
-typedef struct _CDC_FRAME_INFO{
-    uint32_t hsync_time;                         /**< HSYNC time          */
-    uint32_t hbp_time;                           /**< HBP time            */
-    uint32_t hfp_time;                           /**< HFP time            */
-    uint32_t hactive_time;                       /**< HACTIVE time        */
-    uint32_t vsync_line;                         /**< VSYNC line          */
-    uint32_t vbp_line;                           /**< VBP line            */
-    uint32_t vfp_line;                           /**< VFP line            */
-    uint32_t vactive_line;                       /**< VACTIVE line        */
-} CDC_FRAME_INFO;
 
 /** \brief Resources for a CDC instance */
 typedef struct _CDC_RESOURCES {
     CDC_Type                  *regs;                 /**< Pointer to regs                  */
     ARM_CDC200_SignalEvent_t  cb_event;              /**< Pointer to call back function    */
     cdc_backgnd_color_info_t  *bgc;                  /**< Pointer to CDC background color  */
-    CDC_FRAME_INFO            *frame_info;           /**< Pointer to CDC frame info        */
     CDC_PIXEL_FORMAT          pixel_format;          /**< CDC pixel format                 */
     uint8_t                   const_alpha;           /**< Layer constant alpha             */
     CDC_BLEND_FACTOR          blend_factor;          /**< Layer blending factor            */

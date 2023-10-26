@@ -117,7 +117,22 @@
 #define DAC120_BASE                 0x49028000UL
 #define DAC121_BASE                 0x49029000UL
 #define PDM_BASE                    0x4902D000UL
-#define HWSEM_BASE                  0x4902E000UL
+#define HWSEM0_BASE                 0x4902E000UL
+#define HWSEM1_BASE                 0x4902E010UL
+#define HWSEM2_BASE                 0x4902E020UL
+#define HWSEM3_BASE                 0x4902E030UL
+#define HWSEM4_BASE                 0x4902E040UL
+#define HWSEM5_BASE                 0x4902E050UL
+#define HWSEM6_BASE                 0x4902E060UL
+#define HWSEM7_BASE                 0x4902E070UL
+#define HWSEM8_BASE                 0x4902E080UL
+#define HWSEM9_BASE                 0x4902E090UL
+#define HWSEM10_BASE                0x4902E0A0UL
+#define HWSEM11_BASE                0x4902E0B0UL
+#define HWSEM12_BASE                0x4902E0C0UL
+#define HWSEM13_BASE                0x4902E0D0UL
+#define HWSEM14_BASE                0x4902E0E0UL
+#define HWSEM15_BASE                0x4902E0F0UL
 #define CLKCTL_PER_SLV_BASE         0x4902F000UL
 #define CPI_BASE                    0x49030000UL
 #define CDC_BASE                    0x49031000UL
@@ -186,5 +201,10 @@
 #define MRAM_BASE                 0x80000000
 #define MRAM_SIZE                 0x00580000		/* 5.5M */
 
+/* OSPI XIP regions */
+#define OSPI0_XIP_BASE            0xA0000000
+#define OSPI0_XIP_SIZE            0x20000000
+#define OSPI1_XIP_BASE            0xC0000000
+#define OSPI1_XIP_SIZE            0x20000000
 
 #endif /* GLOBAL_MAP_H */

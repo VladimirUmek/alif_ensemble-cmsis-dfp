@@ -70,8 +70,8 @@ uint32_t SERVICES_get_run_cfg(uint32_t services_handle, run_profile_t *pp,
   pp->scaled_clk_freq   = p_svc->resp_scaled_clk_freq;
   pp->dcdc_mode         = p_svc->resp_dcdc_mode;
   pp->dcdc_voltage      = p_svc->resp_dcdc_voltage;
-  pp->ip_clock_gating   = p_svc->resp_ip_clock_gating;
   pp->memory_blocks     = p_svc->resp_memory_blocks;
+  pp->ip_clock_gating   = p_svc->resp_ip_clock_gating;
   pp->phy_pwr_gating    = p_svc->resp_phy_pwr_gating;
   pp->power_domains     = p_svc->resp_power_domains;
   pp->vdd_ioflex_3V3    = p_svc->resp_vdd_ioflex_3V3;
@@ -109,8 +109,8 @@ uint32_t SERVICES_set_run_cfg(uint32_t services_handle, run_profile_t *pp,
   p_svc->send_scaled_clk_freq  = pp->scaled_clk_freq;
   p_svc->send_dcdc_mode        = pp->dcdc_mode; /* typedef */
   p_svc->send_dcdc_voltage     = pp->dcdc_voltage;
-  p_svc->send_ip_clock_gating  = pp->ip_clock_gating;
   p_svc->send_memory_blocks    = pp->memory_blocks;
+  p_svc->send_ip_clock_gating  = pp->ip_clock_gating;
   p_svc->send_phy_pwr_gating   = pp->phy_pwr_gating; /*typedef */
   p_svc->send_power_domains    = pp->power_domains;
   p_svc->send_vdd_ioflex_3V3   = pp->vdd_ioflex_3V3;
@@ -147,12 +147,13 @@ uint32_t SERVICES_get_off_cfg(uint32_t services_handle, off_profile_t *wp,
   *error_code = p_svc->resp_error_code; /* return actual call error */
 
   wp->dcdc_voltage      = p_svc->resp_dcdc_voltage;
-  wp->ip_clock_gating   = p_svc->resp_ip_clock_gating;
   wp->memory_blocks     = p_svc->resp_memory_blocks;
   wp->power_domains     = p_svc->resp_power_domains;
   wp->aon_clk_src       = p_svc->resp_aon_clk_src;
   wp->stby_clk_src      = p_svc->resp_stby_clk_src;
   wp->stby_clk_freq     = p_svc->resp_stby_clk_freq;
+  wp->ip_clock_gating   = p_svc->resp_ip_clock_gating;
+  wp->phy_pwr_gating    = p_svc->resp_phy_pwr_gating;
   wp->vdd_ioflex_3V3    = p_svc->resp_vdd_ioflex_3V3;
   wp->vtor_address      = p_svc->resp_vtor_address;
   wp->vtor_address_ns   = p_svc->resp_vtor_address_ns;
@@ -183,12 +184,13 @@ uint32_t SERVICES_set_off_cfg(uint32_t services_handle, off_profile_t *wp,
    * @todo use memcpy()
    */
   p_svc->send_dcdc_voltage     = wp->dcdc_voltage;
-  p_svc->send_ip_clock_gating  = wp->ip_clock_gating;
   p_svc->send_memory_blocks    = wp->memory_blocks;
   p_svc->send_power_domains    = wp->power_domains;
   p_svc->send_aon_clk_src      = wp->aon_clk_src;
   p_svc->send_stby_clk_src     = wp->stby_clk_src;
   p_svc->send_stby_clk_freq    = wp->stby_clk_freq;
+  p_svc->send_ip_clock_gating  = wp->ip_clock_gating;
+  p_svc->send_phy_pwr_gating   = wp->phy_pwr_gating; /*typedef */
   p_svc->send_vdd_ioflex_3V3   = wp->vdd_ioflex_3V3;
   p_svc->send_vtor_address     = wp->vtor_address;
   p_svc->send_vtor_address_ns  = wp->vtor_address_ns;
@@ -395,4 +397,62 @@ SERVICES_corstone_standby_mode(uint32_t services_handle,
   *error_code = p_svc->resp_error_code; /* return actual call error */
 
   return srv_error_code;  /* Return SERVICES error code */
+}
+
+/**
+ * @brief Function for DCDC voltage control
+ * @param services_handle
+ * @param dcdc_vout_sel
+ * @param dcdc_vout_trim
+ * @param error_code
+ * @return
+ */
+uint32_t
+SERVICES_power_dcdc_voltage_control(uint32_t services_handle,
+                                    uint32_t dcdc_vout_sel,
+                                    uint32_t dcdc_vout_trim,
+                                    uint32_t *error_code)
+{
+  dcdc_voltage_request_svc_t * p_svc =
+      (dcdc_voltage_request_svc_t *)
+      SERVICES_prepare_packet_buffer(sizeof(dcdc_voltage_request_svc_t));
+
+  p_svc->dcdc_vout_sel     = dcdc_vout_sel;
+  p_svc->dcdc_vout_trim    = dcdc_vout_trim;
+
+  uint32_t ret = SERVICES_send_request(services_handle,
+                                       SERVICE_POWER_DCDC_VOLTAGE_REQ_ID,
+                                       NULL);
+  *error_code = p_svc->resp_error_code;
+
+  return ret;
+}
+
+/**
+ * @brief Function for LDO voltage control
+ * @param services_handle
+ * @param ret_ldo_voltage
+ * @param aon_ldo_voltage
+ * @param error_code
+ * @return
+ */
+uint32_t
+SERVICES_power_ldo_voltage_control(uint32_t services_handle,
+                                   uint32_t ret_ldo_voltage,
+                                   uint32_t aon_ldo_voltage,
+                                   uint32_t *error_code)
+{
+  ldo_voltage_request_svc_t * p_svc =
+      (ldo_voltage_request_svc_t *)
+      SERVICES_prepare_packet_buffer(sizeof(ldo_voltage_request_svc_t));
+
+  p_svc->ret_ldo_voltage    = ret_ldo_voltage;
+  p_svc->aon_ldo_voltage    = aon_ldo_voltage;
+
+  uint32_t ret = SERVICES_send_request(services_handle,
+                                       SERVICE_POWER_LDO_VOLTAGE_REQ_ID,
+                                       NULL);
+  *error_code = p_svc->resp_error_code;
+
+  return ret;
 }

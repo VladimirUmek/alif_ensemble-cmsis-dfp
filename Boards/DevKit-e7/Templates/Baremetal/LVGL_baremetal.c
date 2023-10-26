@@ -19,12 +19,14 @@
  * @Note     None
  ******************************************************************************/
 
+#include "lvgl.h"
+#include "demos/lv_demos.h"
+
 #include <RTE_Components.h>
 #include CMSIS_device_header
 
-#include "lvgl.h"
-#include "demos/lv_demos.h"
 #if defined(RTE_Compiler_IO_STDOUT)
+#include "Driver_Common.h"
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
 

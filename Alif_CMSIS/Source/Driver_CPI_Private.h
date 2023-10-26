@@ -77,7 +77,7 @@ typedef struct CPI_DRIVER_STATE {
 /** \brief CPI Device Resource Structure */
 typedef struct _CPI_RESOURCES {
     ARM_CPI_SignalEvent_t                 cb_event;       /**< CPI Application Event Callback                     */
-    LPCPI_Type                            *regs;          /**< CPI Register Base Address                          */
+    CPI_Type                              *regs;          /**< CPI Register Base Address                          */
     CPI_INSTANCE                          drv_instance;   /**< CPI driver instances                               */
     CPI_DRIVER_STATE                      status;         /**< CPI Status                                         */
     uint8_t                               irq_priority;   /**< CPI Interrupt Priority                             */

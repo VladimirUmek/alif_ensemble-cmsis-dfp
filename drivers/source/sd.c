@@ -53,7 +53,7 @@ SD_DRV_STATUS sd_error_handler(){
   \param[in]    SD Global Handle pointer
   \return       sd driver status
   */
-SD_DRV_STATUS sd_host_init(sd_handle_t *pHsd){
+SD_DRV_STATUS sd_host_init(sd_handle_t *pHsd, uint8_t bus_width, uint8_t dma_mode){
 
     uint8_t powerlevel;
 
@@ -63,6 +63,8 @@ SD_DRV_STATUS sd_host_init(sd_handle_t *pHsd){
     /* set some default values */
     pHsd->regs      = SDMMC;
     pHsd->state     = SD_CARD_STATE_INIT;
+    pHsd->bus_width = bus_width;
+    pHsd->dma_mode  = dma_mode;
 
     /* Get the Host Controller version */
     pHsd->hc_version = *((volatile uint16_t *)(SDMMC_HC_VERSION_REG)) & SDMMC_HC_VERSION_REG_Msk;
@@ -90,11 +92,16 @@ SD_DRV_STATUS sd_host_init(sd_handle_t *pHsd){
     hc_set_bus_power(pHsd, (uint8_t)(powerlevel | SDMMC_PC_BUS_PWR_VDD1_Msk));
     hc_set_tout(pHsd, 0xE);
 
-#ifdef SDMMC_ADMA2_MODE
-    hc_config_dma(pHsd, (uint8_t)(SDMMC_HOST_CTRL1_ADMA32_MODE_Msk | SDMMC_HOST_CTRL1_DMA_SEL_1BIT_MODE));
-#else
-    hc_config_dma(pHsd, (uint8_t)(SDMMC_HOST_CTRL1_SDMA_MODE | SDMMC_HOST_CTRL1_DMA_SEL_1BIT_MODE));
-#endif
+    if(pHsd->dma_mode == SDMMC_HOST_CTRL1_SDMA_MODE)
+        hc_config_dma(pHsd, (uint8_t)(SDMMC_HOST_CTRL1_SDMA_MODE | SDMMC_HOST_CTRL1_DMA_SEL_1BIT_MODE));
+    else if(pHsd->dma_mode == SDMMC_HOST_CTRL1_ADMA2_MODE)
+        hc_config_dma(pHsd, (uint8_t)(SDMMC_HOST_CTRL1_ADMA32_MODE_Msk | SDMMC_HOST_CTRL1_DMA_SEL_1BIT_MODE));
+    else if(pHsd->dma_mode == SDMMC_HOST_CTRL1_ADMA3_MODE)
+        /* TODO: ADMA3 mode, switching to default ADMA2 mode */
+        hc_config_dma(pHsd, (uint8_t)(SDMMC_HOST_CTRL1_ADMA32_MODE_Msk | SDMMC_HOST_CTRL1_DMA_SEL_1BIT_MODE));
+    else
+        /* Wrong input given by user swithing to default ADMA2 mode */
+        hc_config_dma(pHsd, (uint8_t)(SDMMC_HOST_CTRL1_ADMA32_MODE_Msk | SDMMC_HOST_CTRL1_DMA_SEL_1BIT_MODE));
 
     return SD_DRV_STATUS_OK;
 }
@@ -110,7 +117,6 @@ SD_DRV_STATUS sd_card_init(sd_handle_t *pHsd){
     uint16_t reg;
 
     /* Default settings */
-    pHsd->bus_width          = SDMMC_1_BIT_WIDTH;
     pHsd->sd_card.cardtype   = SDMMC_CARD_SDHC;
     pHsd->sd_card.busspeed   = SDMMC_CLK_400_KHZ;
 
@@ -182,11 +188,12 @@ SD_DRV_STATUS sd_card_init(sd_handle_t *pHsd){
     }
 
     if(!(pHsd->sd_card.sdio_mode)){
-#ifdef SDMMC_4BIT_MODE
-        if(hc_set_bus_width(pHsd, SDMMC_HOST_CTRL1_4_BIT_WIDTH) != SDMMC_HC_STATUS_OK){
-            return SD_DRV_STATUS_CARD_INIT_ERR;
+
+        if(pHsd->bus_width == SDMMC_4_BIT_MODE){
+            if(hc_set_bus_width(pHsd, SDMMC_HOST_CTRL1_4_BIT_WIDTH) != SDMMC_HC_STATUS_OK){
+                return SD_DRV_STATUS_CARD_INIT_ERR;
+            }
         }
-#endif
 
         if(hc_set_blk_size(pHsd, SDMMC_BLK_SIZE_512_Msk)!= SDMMC_HC_STATUS_OK){
             return SD_DRV_STATUS_CARD_INIT_ERR;
@@ -206,13 +213,13 @@ SD_DRV_STATUS sd_card_init(sd_handle_t *pHsd){
   \param[in]    device ID
   \return       sd driver status
   */
-SD_DRV_STATUS sd_init(uint8_t devId)
+SD_DRV_STATUS sd_init(uint8_t devId, uint8_t bus_width, uint8_t dma_mode)
 {
     ARG_UNUSED(devId);
     SD_DRV_STATUS errcode = SD_DRV_STATUS_OK;
 
     /* Initialize Host controller */
-    errcode = sd_host_init(&Hsd);
+    errcode = sd_host_init(&Hsd, bus_width, dma_mode);
 
     if(errcode != SD_DRV_STATUS_OK){
         return SD_DRV_STATUS_HOST_INIT_ERR;

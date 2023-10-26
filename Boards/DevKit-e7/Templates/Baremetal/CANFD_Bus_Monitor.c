@@ -129,7 +129,7 @@ static int32_t pinmux_config(void)
     /* pinmux configurations for CANFD pins */
     ret_val = pinconf_set(PORT_7, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
                          (PADCTRL_READ_ENABLE | PADCTRL_SCHMITT_TRIGGER_ENABLE |
-                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS));
+                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA));
     if(ret_val)
     {
         printf("ERROR: Failed to configure PINMUX for CANFD Rx \r\n");
@@ -137,7 +137,7 @@ static int32_t pinmux_config(void)
     }
 
     ret_val = pinconf_set(PORT_7, PIN_1, PINMUX_ALTERNATE_FUNCTION_7,
-                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS |
+                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA |
                           PADCTRL_SCHMITT_TRIGGER_ENABLE));
     if(ret_val)
     {
@@ -223,7 +223,10 @@ void canfd_lom_demo_thread_entry(void)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk enable = %d\n", error_code);
+        return;
+    }
 
     /* Enables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
@@ -231,7 +234,11 @@ void canfd_lom_demo_thread_entry(void)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
+
 
     printf("*** CANFD Listen only mode Demo app is starting ***\n");
 
@@ -282,7 +289,8 @@ void canfd_lom_demo_thread_entry(void)
     }
     /* Setting bit rate for CANFD */
     ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_NOMINAL,
-              CANFD_NOMINAL_BITRATE, CANFD_NOMINAL_BITTIME_SEGMENTS);
+                                         CANFD_NOMINAL_BITRATE,
+                                         CANFD_NOMINAL_BITTIME_SEGMENTS);
     if(ret_val != ARM_DRIVER_OK)
     {
        printf("ERROR: Failed to set CANFD Nominal Bitrate\r\n");
@@ -292,7 +300,8 @@ void canfd_lom_demo_thread_entry(void)
     if(can_capabilities.fd_mode == 1U)
     {
         ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_FD_DATA,
-                  CANFD_FAST_BITRATE, CANFD_FAST_BITTIME_SEGMENTS);
+                                             CANFD_FAST_BITRATE,
+                                             CANFD_FAST_BITTIME_SEGMENTS);
         if(ret_val != ARM_DRIVER_OK)
         {
            printf("ERROR: Failed to set CANFD Fast Bitrate\r\n");
@@ -317,8 +326,10 @@ void canfd_lom_demo_thread_entry(void)
        goto power_off_canfd;
     }
     /* Setting Object filter of CANFD */
-    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id, ARM_CAN_FILTER_ID_EXACT_ADD,
-                              CANFD_OBJECT_FILTER_CODE, CANFD_OBJECT_FILTER_MASK);
+    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id,
+                                              ARM_CAN_FILTER_ID_EXACT_ADD,
+                                              CANFD_OBJECT_FILTER_CODE,
+                                              CANFD_OBJECT_FILTER_MASK);
     if(ret_val == ARM_DRIVER_ERROR_SPECIFIC)
     {
        printf("ERROR: No free Filter available\r\n");
@@ -358,13 +369,17 @@ uninitialise_canfd:
     {
         printf("ERROR in CANFD un-initialization\r\n");
     }
+
     /* Disables the HFOSC clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                                               CLKEN_HFOSC,
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk disable = %d\n", error_code);
+        return;
+    }
 
     /* Disables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
@@ -372,11 +387,12 @@ uninitialise_canfd:
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
+    }
 
     printf("*** CANFD Listen only Mode Demo is ended ***\r\n");
-
-    return;
 }
 
 /**
@@ -388,9 +404,6 @@ uninitialise_canfd:
  */
 int main()
 {
-    /* Initialize the SE services */
-    se_services_port_init();
-
 #if defined(RTE_Compiler_IO_STDOUT_User)
     int32_t ret;
     ret = stdout_init();

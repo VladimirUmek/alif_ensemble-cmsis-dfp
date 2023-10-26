@@ -26,61 +26,59 @@
 
 /* CANFD register structure */
 typedef struct _CANFD_Type
-{
-    volatile const uint32_t   RESERVED[38];
-    volatile const uint32_t   CANFD_TTS;                    /*!< (@ 0x00000098) Transmission Time Stamp Register                           */
-    volatile const uint32_t   RESERVED1;
-    volatile       uint8_t    CANFD_CFG_STAT;               /*!< (@ 0x000000A0) Configuration and Status Register                          */
-    volatile       uint8_t    CANFD_TCMD;                   /*!< (@ 0x000000A1) Command Register                                           */
-    volatile       uint8_t    CANFD_TCTRL;                  /*!< (@ 0x000000A2) Transmit Control Register                                  */
-    volatile       uint8_t    CANFD_RCTRL;                  /*!< (@ 0x000000A3) Receive Control Register                                   */
-    volatile       uint8_t    CANFD_RTIE;                   /*!< (@ 0x000000A4) Receive and Transmit Interrupt Enable Register             */
-    volatile       uint8_t    CANFD_RTIF;                   /*!< (@ 0x000000A5) Receive and Transmit Interrupt Flag Register               */
-    volatile       uint8_t    CANFD_ERRINT;                 /*!< (@ 0x000000A6) Error Interrupt Enable and Flag Register                   */
-    volatile       uint8_t    CANFD_LIMIT;                  /*!< (@ 0x000000A7) Warning Limits Register                                    */
-    volatile       uint8_t    CANFD_S_SEG_1;                /*!< (@ 0x000000A8) Slow Speed Bit Timing 1 Register (Segment 1)               */
-    volatile       uint8_t    CANFD_S_SEG_2;                /*!< (@ 0x000000A9) Slow Speed Bit Timing 2 Register (Segment 2)               */
-    volatile       uint8_t    CANFD_S_SJW;                  /*!< (@ 0x000000AA) Slow Speed Bit Timing 3 Register (Synchronization
-                                                                     Jump Width)                                                */
-    volatile       uint8_t    CANFD_S_PRESC;                /*!< (@ 0x000000AB) Slow Speed Prescaler Register                              */
-    volatile       uint8_t    CANFD_F_SEG_1;                /*!< (@ 0x000000AC) Fast Speed Bit Timing 1 Register (Segment 1)               */
-    volatile       uint8_t    CANFD_F_SEG_2;                /*!< (@ 0x000000AD) Fast Speed Bit Timing 2 Register (Segment 2)               */
-    volatile       uint8_t    CANFD_F_SJW;                  /*!< (@ 0x000000AE) Fast Speed Bit Timing 3 Register (Synchronization
-                                                                      Jump Width)                                                */
-    volatile       uint8_t    CANFD_F_PRESC;                /*!< (@ 0x000000AF) Fast Speed Prescaler Register                              */
-    volatile const uint8_t    CANFD_EALCAP;                 /*!< (@ 0x000000B0) Error and Arbitration Lost Capture Register                */
-    volatile       uint8_t    CANFD_TDC;                    /*!< (@ 0x000000B1) Transmitter Delay Compensation Register                    */
-    volatile const uint8_t    CANFD_RECNT;                  /*!< (@ 0x000000B2) Receive Error Counter Register                             */
-    volatile const uint8_t    CANFD_TECNT;                  /*!< (@ 0x000000B3) Transmit Error Counter Register                            */
-    volatile       uint8_t    CANFD_ACFCTRL;                /*!< (@ 0x000000B4) Acceptance Filter Control Register                         */
-    volatile       uint8_t    CANFD_TIMECFG;                /*!< (@ 0x000000B5) CiA 603 Time-Stamping Register                             */
-    volatile       uint8_t    CANFD_ACF_EN_0;               /*!< (@ 0x000000B6) Acceptance Filter Enable 0 Register                        */
-    volatile       uint8_t    CANFD_ACF_EN_1;               /*!< (@ 0x000000B7) Acceptance Filter Enable 1 Register                        */
+{                                                   /*!< (@ 0x49036000) CANFD Structure                                            */
+  volatile const  uint32_t  CANFD_RBUF[20];         /*!< (@ 0x00000000) Receive Buffer Register                                    */
+  volatile        uint32_t  CANFD_TBUF[18];         /*!< (@ 0x00000050) Transmit Buffer Register                                   */
+  volatile const  uint32_t  CANFD_TTS;              /*!< (@ 0x00000098) Transmission Time Stamp Register                           */
+  volatile const  uint32_t  RESERVED;
+  volatile        uint8_t   CANFD_CFG_STAT;         /*!< (@ 0x000000A0) Configuration and Status Register                          */
+  volatile        uint8_t   CANFD_TCMD;             /*!< (@ 0x000000A1) Command Register                                           */
+  volatile        uint8_t   CANFD_TCTRL;            /*!< (@ 0x000000A2) Transmit Control Register                                  */
+  volatile        uint8_t   CANFD_RCTRL;            /*!< (@ 0x000000A3) Receive Control Register                                   */
+  volatile        uint8_t   CANFD_RTIE;             /*!< (@ 0x000000A4) Receive and Transmit Interrupt Enable Register             */
+  volatile        uint8_t   CANFD_RTIF;             /*!< (@ 0x000000A5) Receive and Transmit Interrupt Flag Register               */
+  volatile        uint8_t   CANFD_ERRINT;           /*!< (@ 0x000000A6) Error Interrupt Enable and Flag Register                   */
+  volatile        uint8_t   CANFD_LIMIT;            /*!< (@ 0x000000A7) Warning Limits Register                                    */
+  volatile        uint8_t   CANFD_S_SEG_1;          /*!< (@ 0x000000A8) Slow Speed Bit Timing 1 Register (Segment 1)               */
+  volatile        uint8_t   CANFD_S_SEG_2;          /*!< (@ 0x000000A9) Slow Speed Bit Timing 2 Register (Segment 2)               */
+  volatile        uint8_t   CANFD_S_SJW;            /*!< (@ 0x000000AA) Slow Speed Bit Timing 3 Register (Synchronization
+                                                                        Jump Width)                                                */
+  volatile        uint8_t   CANFD_S_PRESC;          /*!< (@ 0x000000AB) Slow Speed Prescaler Register                              */
+  volatile        uint8_t   CANFD_F_SEG_1;          /*!< (@ 0x000000AC) Fast Speed Bit Timing 1 Register (Segment 1)               */
+  volatile        uint8_t   CANFD_F_SEG_2;          /*!< (@ 0x000000AD) Fast Speed Bit Timing 2 Register (Segment 2)               */
+  volatile        uint8_t   CANFD_F_SJW;            /*!< (@ 0x000000AE) Fast Speed Bit Timing 3 Register (Synchronization
+                                                                        Jump Width)                                                */
+  volatile        uint8_t   CANFD_F_PRESC;          /*!< (@ 0x000000AF) Fast Speed Prescaler Register                              */
+  volatile const  uint8_t   CANFD_EALCAP;           /*!< (@ 0x000000B0) Error and Arbitration Lost Capture Register                */
+  volatile        uint8_t   CANFD_TDC;              /*!< (@ 0x000000B1) Transmitter Delay Compensation Register                    */
+  volatile const  uint8_t   CANFD_RECNT;            /*!< (@ 0x000000B2) Receive Error Counter Register                             */
+  volatile const  uint8_t   CANFD_TECNT;            /*!< (@ 0x000000B3) Transmit Error Counter Register                            */
+  volatile        uint8_t   CANFD_ACFCTRL;          /*!< (@ 0x000000B4) Acceptance Filter Control Register                         */
+  volatile        uint8_t   CANFD_TIMECFG;          /*!< (@ 0x000000B5) CiA 603 Time-Stamping Register                             */
+  volatile        uint8_t   CANFD_ACF_EN_0;         /*!< (@ 0x000000B6) Acceptance Filter Enable 0 Register                        */
+  volatile        uint8_t   CANFD_ACF_EN_1;         /*!< (@ 0x000000B7) Acceptance Filter Enable 1 Register                        */
 
-    union {
-     volatile      uint32_t   CANFD_ACF_0_3_CODE;           /*!< (@ 0x000000B8 - 0x000000BB) Acceptance CODE Register 0-3                  */
-     volatile      uint32_t   CANFD_ACF_0_3_MASK;           /*!< (@ 0x000000B8 - 0x000000BB) Acceptance MASK Register 0-3                  */
-    };
-
-    volatile const uint8_t    CANFD_VER_0;                  /*!< (@ 0x000000BC) CANFD Version                                              */
-    volatile const uint8_t    CANFD_VER_1;                  /*!< (@ 0x000000BD) CANFD Version                                              */
-    volatile const uint16_t   RESERVED2;
-    volatile const uint32_t   RESERVED3[2];
-    volatile const uint16_t   RESERVED4;
-    volatile       uint8_t    CANFD_MEM_PROT;               /*!< (@ 0x000000CA) Memory Protection Register                                 */
-    volatile       uint8_t    CANFD_MEM_STAT;               /*!< (@ 0x000000CB) Memory Status Register                                     */
-    volatile       uint8_t    CANFD_MEM_ES_0;               /*!< (@ 0x000000CC) Memory Error Stimulation 0 Register                        */
-    volatile       uint8_t    CANFD_MEM_ES_1;               /*!< (@ 0x000000CD) Memory Error Stimulation 1 Register                        */
-    volatile       uint8_t    CANFD_MEM_ES_2;               /*!< (@ 0x000000CE) Memory Error Stimulation 2 Register                        */
-    volatile       uint8_t    CANFD_MEM_ES_3;               /*!< (@ 0x000000CF) Memory Error Stimulation 3 Register                        */
-    volatile       uint8_t    CANFD_SRCFG;                  /*!< (@ 0x000000D0) Spatial Redundancy Configuration Register                  */
-    volatile const uint8_t    RESERVED5;
-    volatile const uint16_t   RESERVED6;
-}CANFD_Type;
+  union {
+    volatile      uint32_t CANFD_ACF_0_3_CODE;      /*!< (@ 0x000000B8) Acceptance CODE Register                                   */
+    volatile      uint32_t CANFD_ACF_0_3_MASK;      /*!< (@ 0x000000B8) Acceptance MASK Register                                   */
+  };
+  volatile const  uint8_t   CANFD_VER_0;            /*!< (@ 0x000000BC) Reserved                                                   */
+  volatile const  uint8_t   CANFD_VER_1;            /*!< (@ 0x000000BD) Reserved                                                   */
+  volatile const  uint16_t  RESERVED1;
+  volatile const  uint32_t  RESERVED2[2];
+  volatile const  uint16_t  RESERVED3;
+  volatile        uint8_t   CANFD_MEM_PROT;         /*!< (@ 0x000000CA) Memory Protection Register                                 */
+  volatile        uint8_t   CANFD_MEM_STAT;         /*!< (@ 0x000000CB) Memory Status Register                                     */
+  volatile        uint8_t   CANFD_MEM_ES_0;         /*!< (@ 0x000000CC) Memory Error Stimulation 0 Register                        */
+  volatile        uint8_t   CANFD_MEM_ES_1;         /*!< (@ 0x000000CD) Memory Error Stimulation 1 Register                        */
+  volatile        uint8_t   CANFD_MEM_ES_2;         /*!< (@ 0x000000CE) Memory Error Stimulation 2 Register                        */
+  volatile        uint8_t   CANFD_MEM_ES_3;         /*!< (@ 0x000000CF) Memory Error Stimulation 3 Register                        */
+  volatile        uint8_t   CANFD_SRCFG;            /*!< (@ 0x000000D0) Spatial Redundancy Configuration Register                  */
+  volatile const  uint8_t   RESERVED4;
+  volatile const  uint16_t  RESERVED5;
+}CANFD_Type;                                        /*!< Size = 212 (0xd4)                                                          */
 
 /* Hardware related configuration */
-#define CANFD_RX_MSG_BUFFER_OFFSET               0U              /* Rx buffer starts at offset 0 */
-#define CANFD_TX_MSG_BUFFER_OFFSET               80U             /* Tx buffer starts at offset 80th byte */
 
 #define CANFD_MAX_ACCEPTANCE_FILTERS             3U
 #define CANFD_MAX_ERROR_WARN_LIMIT               128U

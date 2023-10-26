@@ -75,30 +75,6 @@ static inline void disable_dac_periph_clk(DAC_INSTANCE instance)
     }
 }
 
-/**
-  \fn     static inline void control_adc_cmp_periph_clk(void)
-  \brief  Enable ADC, CMP Control register.
-  \param  none.
-  \return none.
- */
-static inline void enable_adc_cmp_periph_clk(void)
-{
-    CLKCTL_PER_SLV->ADC_CTRL = ADC_CTRL_ADC0_CKEN;
-    CLKCTL_PER_SLV->CMP_CTRL = CMP_CTRL_CMP0_CLKEN;
-}
-
-/**
-  \fn     static inline void disable_adc_cmp_periph_clk(void)
-  \brief  Disable ADC, CMP Control register.
-  \param  none.
-  \return none.
- */
-static inline void disable_adc_cmp_periph_clk(void)
-{
-    CLKCTL_PER_SLV->ADC_CTRL = 0U;
-    CLKCTL_PER_SLV->CMP_CTRL = 0U;
-}
-
 #ifdef __cplusplus
 }
 #endif

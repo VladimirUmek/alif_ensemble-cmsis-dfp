@@ -28,6 +28,7 @@
 /*******************************************************************************
  *  M A C R O   D E F I N E S
  ******************************************************************************/
+#define PRINT_BUFFER_MAXIMUM  256 /* Max size of TTY print buffer */
 
 /*******************************************************************************
  *  T Y P E D E F S
@@ -75,13 +76,10 @@ int SERVICES_print(const char * fmt, ...)
 {
 #if SERVICES_PRINT_ENABLE != 0
   va_list args;
-  char buffer[256];
+  char buffer[PRINT_BUFFER_MAXIMUM];
 
-  /*
-   * @todo Handle long strings bigger than buffer size
-   */
   va_start(args,fmt);
-  vsprintf(buffer, fmt, args);
+  vsnprintf(buffer, PRINT_BUFFER_MAXIMUM, fmt, args);
   va_end(args);
 
   printf("%s", buffer);

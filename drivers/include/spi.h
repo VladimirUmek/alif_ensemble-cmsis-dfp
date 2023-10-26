@@ -31,70 +31,38 @@ extern "C"
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef struct {
-    volatile       uint32_t SPI_CTRLR0;           /*!< (@ 0x00000000) Control Register 0                                         */
-    volatile       uint32_t SPI_CTRLR1;           /*!< (@ 0x00000004) Control Register 1                                         */
-    volatile       uint32_t SPI_ENR;              /*!< (@ 0x00000008) SPI Enable Register                                        */
-    volatile       uint32_t SPI_MWCR;             /*!< (@ 0x0000000C) Microwire Control Register                                 */
-    volatile       uint32_t SPI_SER;              /*!< (@ 0x00000010) Slave Enable Register                                      */
-    volatile       uint32_t SPI_BAUDR;            /*!< (@ 0x00000014) Baud Rate Select Register                                  */
-    volatile       uint32_t SPI_TXFTLR;           /*!< (@ 0x00000018) Transmit FIFO Threshold Level Register                     */
-    volatile       uint32_t SPI_RXFTLR;           /*!< (@ 0x0000001C) Receive FIFO Threshold Level Register                      */
-    volatile const uint32_t SPI_TXFLR;            /*!< (@ 0x00000020) Transmit FIFO Level Register                               */
-    volatile const uint32_t SPI_RXFLR;            /*!< (@ 0x00000024) Receive FIFO Level Register                                */
-    volatile const uint32_t SPI_SR;               /*!< (@ 0x00000028) Status Register                                            */
-    volatile       uint32_t SPI_IMR;              /*!< (@ 0x0000002C) Interrupt Mask Register                                    */
-    volatile const uint32_t SPI_ISR;              /*!< (@ 0x00000030) Interrupt Status Register                                  */
-    volatile const uint32_t SPI_RISR;             /*!< (@ 0x00000034) Raw Interrupt Status Register                              */
-    volatile const uint32_t SPI_TXOICR;           /*!< (@ 0x00000038) Transmit FIFO Overflow Interrupt Clear Register            */
-    volatile const uint32_t SPI_RXOICR;           /*!< (@ 0x0000003C) Receive FIFO Overflow Interrupt Clear Register             */
-    volatile const uint32_t SPI_RXUICR;           /*!< (@ 0x00000040) Receive FIFO Underflow Interrupt Clear Register            */
-    volatile const uint32_t SPI_MSTICR;           /*!< (@ 0x00000044) Multi-Master Interrupt Clear Register                      */
-    volatile const uint32_t SPI_ICR;              /*!< (@ 0x00000048) Interrupt Clear Register                                   */
-    volatile       uint32_t SPI_DMACR;            /*!< (@ 0x0000004C) DMA Control Register                                       */
-    volatile       uint32_t SPI_DMATDLR;          /*!< (@ 0x00000050) DMA Transmit Data Level Register                           */
-    volatile       uint32_t SPI_DMARDLR;          /*!< (@ 0x00000054) DMA Receive Data Level Register                            */
-    volatile const uint32_t SPI_IDR;              /*!< (@ 0x00000058) Reserved                                                   */
-    volatile const uint32_t SPI_VERSION_ID;       /*!< (@ 0x0000005C) Reserved                                                   */
-    volatile       uint32_t SPI_DR0;              /*!< (@ 0x00000060) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR1;              /*!< (@ 0x00000064) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR2;              /*!< (@ 0x00000068) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR3;              /*!< (@ 0x0000006C) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR4;              /*!< (@ 0x00000070) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR5;              /*!< (@ 0x00000074) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR6;              /*!< (@ 0x00000078) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR7;              /*!< (@ 0x0000007C) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR8;              /*!< (@ 0x00000080) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR9;              /*!< (@ 0x00000084) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR10;             /*!< (@ 0x00000088) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR11;             /*!< (@ 0x0000008C) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR12;             /*!< (@ 0x00000090) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR13;             /*!< (@ 0x00000094) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR14;             /*!< (@ 0x00000098) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR15;             /*!< (@ 0x0000009C) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR16;             /*!< (@ 0x000000A0) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR17;             /*!< (@ 0x000000A4) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR18;             /*!< (@ 0x000000A8) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR19;             /*!< (@ 0x000000AC) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR20;             /*!< (@ 0x000000B0) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR21;             /*!< (@ 0x000000B4) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR22;             /*!< (@ 0x000000B8) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR23;             /*!< (@ 0x000000BC) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR24;             /*!< (@ 0x000000C0) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR25;             /*!< (@ 0x000000C4) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR26;             /*!< (@ 0x000000C8) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR27;             /*!< (@ 0x000000CC) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR28;             /*!< (@ 0x000000D0) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR29;             /*!< (@ 0x000000D4) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR30;             /*!< (@ 0x000000D8) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR31;             /*!< (@ 0x000000DC) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR32;             /*!< (@ 0x000000E0) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR33;             /*!< (@ 0x000000E4) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR34;             /*!< (@ 0x000000E8) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_DR35;             /*!< (@ 0x000000EC) SPI Data Register (n)                                      */
-    volatile       uint32_t SPI_RX_SAMPLE_DELAY;  /*!< (@ 0x000000F0) RX Sample Delay Register                                   */
-} LPSPI_Type;                                     /*!< Size = 244 (0xf4)                                                         */
+/**
+  * @brief LPSPI (LPSPI)
+  */
 
+typedef struct {
+    volatile        uint32_t  SPI_CTRLR0;            /*!< (@ 0x00000000) Control Register 0                                  */
+    volatile        uint32_t  SPI_CTRLR1;            /*!< (@ 0x00000004) Control Register 1                                  */
+    volatile        uint32_t  SPI_ENR;               /*!< (@ 0x00000008) SPI Enable Register                                 */
+    volatile        uint32_t  SPI_MWCR;              /*!< (@ 0x0000000C) Microwire Control Register                          */
+    volatile        uint32_t  SPI_SER;               /*!< (@ 0x00000010) Slave Enable Register                               */
+    volatile        uint32_t  SPI_BAUDR;             /*!< (@ 0x00000014) Baud Rate Select Register                           */
+    volatile        uint32_t  SPI_TXFTLR;            /*!< (@ 0x00000018) Transmit FIFO Threshold Level Register              */
+    volatile        uint32_t  SPI_RXFTLR;            /*!< (@ 0x0000001C) Receive FIFO Threshold Level Register               */
+    volatile const  uint32_t  SPI_TXFLR;             /*!< (@ 0x00000020) Transmit FIFO Level Register                        */
+    volatile const  uint32_t  SPI_RXFLR;             /*!< (@ 0x00000024) Receive FIFO Level Register                         */
+    volatile const  uint32_t  SPI_SR;                /*!< (@ 0x00000028) Status Register                                     */
+    volatile        uint32_t  SPI_IMR;               /*!< (@ 0x0000002C) Interrupt Mask Register                             */
+    volatile const  uint32_t  SPI_ISR;               /*!< (@ 0x00000030) Interrupt Status Register                           */
+    volatile const  uint32_t  SPI_RISR;              /*!< (@ 0x00000034) Raw Interrupt Status Register                       */
+    volatile const  uint32_t  SPI_TXOICR;            /*!< (@ 0x00000038) Transmit FIFO Overflow Interrupt Clear Register     */
+    volatile const  uint32_t  SPI_RXOICR;            /*!< (@ 0x0000003C) Receive FIFO Overflow Interrupt Clear Register      */
+    volatile const  uint32_t  SPI_RXUICR;            /*!< (@ 0x00000040) Receive FIFO Underflow Interrupt Clear Register     */
+    volatile const  uint32_t  SPI_MSTICR;            /*!< (@ 0x00000044) Multi-Master Interrupt Clear Register               */
+    volatile const  uint32_t  SPI_ICR;               /*!< (@ 0x00000048) Interrupt Clear Register                            */
+    volatile        uint32_t  SPI_DMACR;             /*!< (@ 0x0000004C) DMA Control Register                                */
+    volatile        uint32_t  SPI_DMATDLR;           /*!< (@ 0x00000050) DMA Transmit Data Level Register                    */
+    volatile        uint32_t  SPI_DMARDLR;           /*!< (@ 0x00000054) DMA Receive Data Level Register                     */
+    volatile const  uint32_t  SPI_IDR;               /*!< (@ 0x00000058) Reserved                                            */
+    volatile const  uint32_t  SPI_VERSION_ID;        /*!< (@ 0x0000005C) Reserved                                            */
+    volatile        uint32_t  SPI_DR[36];            /*!< (@ 0x00000060) SPI Data Register (n)                               */
+    volatile        uint32_t  SPI_RX_SAMPLE_DELAY;   /*!< (@ 0x000000F0) RX Sample Delay Register                            */
+} SPI_Type;                                          /*!< Size = 244 (0xf4)                                                         */
 
 #define SPI_TX_FIFO_DEPTH                               16U
 #define SPI_RX_FIFO_DEPTH                               16U
@@ -290,7 +258,7 @@ typedef enum _SPI_PROTO
 typedef enum _SPI_TMOD
 {
     SPI_TMOD_TX_AND_RX     = 0x00,         /**< Transmit and Receive    */
-    SPI_TMOD_TX            = 0x01,         /**< Transmit only           */
+    SPI_TMOD_TX            = 0x01,         /*/mit only           */
     SPI_TMOD_RX            = 0x02,         /**< Receive only            */
     SPI_TMOD_EEPROM_READ   = 0x03          /**< EEPROM read             */
 } SPI_TMOD;
@@ -333,34 +301,34 @@ typedef struct _spi_transfer_t {
 } spi_transfer_t;
 
 /**
-  \fn          static inline void spi_disable(LPSPI_Type *spi)
+  \fn          static inline void spi_disable(SPI_Type *spi)
   \brief       Disable the SPI instance
   \param[in]   spi     Pointer to the SPI register map
   \return      none
 */
-static inline void spi_disable(LPSPI_Type *spi)
+static inline void spi_disable(SPI_Type *spi)
 {
     spi->SPI_ENR = SPI_DISABLE;
 }
 
 /**
-  \fn          static inline void spi_enable(LPSPI_Type *spi)
+  \fn          static inline void spi_enable(SPI_Type *spi)
   \brief       Enable the SPI instance
   \param[in]   spi     Pointer to the SPI register map
   \return      none
 */
-static inline void spi_enable(LPSPI_Type *spi)
+static inline void spi_enable(SPI_Type *spi)
 {
     spi->SPI_ENR = SPI_ENABLE;
 }
 
 /**
-  \fn          static inline void spi_mode_master(LPSPI_Type *spi)
+  \fn          static inline void spi_mode_master(SPI_Type *spi)
   \brief       Enable master mode in the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \return      none
 */
-static inline void spi_mode_master(LPSPI_Type *spi)
+static inline void spi_mode_master(SPI_Type *spi)
 {
     spi_disable(spi);
     spi->SPI_CTRLR0 |= SPI_CTRLR0_SSI_IS_MST_MASTER;
@@ -368,12 +336,12 @@ static inline void spi_mode_master(LPSPI_Type *spi)
 }
 
 /**
-  \fn          static inline void spi_mode_slave(LPSPI_Type *spi)
+  \fn          static inline void spi_mode_slave(SPI_Type *spi)
   \brief       Enable slave mode in the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \return      none
 */
-static inline void spi_mode_slave(LPSPI_Type *spi)
+static inline void spi_mode_slave(SPI_Type *spi)
 {
     spi_disable(spi);
     spi->SPI_CTRLR0 &= ~SPI_CTRLR0_SSI_IS_MST_MASTER;
@@ -381,14 +349,14 @@ static inline void spi_mode_slave(LPSPI_Type *spi)
 }
 
 /**
-  \fn          static inline void spi_set_bus_speed(LPSPI_Type *spi, uint32_t speed, uint32_t clk)
+  \fn          static inline void spi_set_bus_speed(SPI_Type *spi, uint32_t speed, uint32_t clk)
   \brief       Set the bus speed for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   speed   The bus speed to be set
   \param[in]   clk     SPI input clk
   \return      none
 */
-static inline void spi_set_bus_speed(LPSPI_Type *spi, uint32_t speed, uint32_t clk)
+static inline void spi_set_bus_speed(SPI_Type *spi, uint32_t speed, uint32_t clk)
 {
     spi_disable(spi);
     spi->SPI_BAUDR = (clk / speed);
@@ -396,124 +364,124 @@ static inline void spi_set_bus_speed(LPSPI_Type *spi, uint32_t speed, uint32_t c
 }
 
 /**
-  \fn          static inline uint32_t spi_get_bus_speed(LPSPI_Type *spi, uint32_t clk)
+  \fn          static inline uint32_t spi_get_bus_speed(SPI_Type *spi, uint32_t clk)
   \brief       Get the current bus speed of the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   clk     SPI input clk
   \return      Current bus speed
 */
-static inline uint32_t spi_get_bus_speed(LPSPI_Type *spi, uint32_t clk)
+static inline uint32_t spi_get_bus_speed(SPI_Type *spi, uint32_t clk)
 {
     return clk / spi->SPI_BAUDR;
 }
 
 /**
-  \fn          static inline void spi_mask_interrupts(LPSPI_Type *spi)
+  \fn          static inline void spi_mask_interrupts(SPI_Type *spi)
   \brief       Mask all the interrupts for the SPI instance
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_mask_interrupts(LPSPI_Type *spi)
+static inline void spi_mask_interrupts(SPI_Type *spi)
 {
     spi->SPI_IMR = 0;
 }
 
 /**
-  \fn          static inline void spi_enable_rx_dma(LPSPI_Type *spi)
+  \fn          static inline void spi_enable_rx_dma(SPI_Type *spi)
   \brief       Enable SPI RX DMA Block
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_enable_rx_dma(LPSPI_Type *spi)
+static inline void spi_enable_rx_dma(SPI_Type *spi)
 {
     spi->SPI_DMACR |= SPI_DMACR_RX_DMA_ENABLE;
 }
 
 /**
-  \fn          static inline void spi_disable_rx_dma(LPSPI_Type *spi)
+  \fn          static inline void spi_disable_rx_dma(SPI_Type *spi)
   \brief       Enable SPI RX DMA Block
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_disable_rx_dma(LPSPI_Type *spi)
+static inline void spi_disable_rx_dma(SPI_Type *spi)
 {
     spi->SPI_DMACR &= ~SPI_DMACR_RX_DMA_ENABLE;
 }
 
 /**
-  \fn          static inline void spi_enable_tx_dma(LPSPI_Type *spi)
+  \fn          static inline void spi_enable_tx_dma(SPI_Type *spi)
   \brief       Enable SPI TX DMA Block
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_enable_tx_dma(LPSPI_Type *spi)
+static inline void spi_enable_tx_dma(SPI_Type *spi)
 {
     spi->SPI_DMACR |= SPI_DMACR_TX_DMA_ENABLE;
 }
 
 /**
-  \fn          static inline void spi_disable_tx_dma(LPSPI_Type *spi)
+  \fn          static inline void spi_disable_tx_dma(SPI_Type *spi)
   \brief       Enable SPI TX DMA Block
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_disable_tx_dma(LPSPI_Type *spi)
+static inline void spi_disable_tx_dma(SPI_Type *spi)
 {
     spi->SPI_DMACR &= ~SPI_DMACR_TX_DMA_ENABLE;
 }
 
 /**
-  \fn          static inline void spi_set_dma_rx_level(LPSPI_Type *spi, uint8_t data_level)
+  \fn          static inline void spi_set_dma_rx_level(SPI_Type *spi, uint8_t data_level)
   \brief       Enable SPI RX DMA Block
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_set_dma_rx_level(LPSPI_Type *spi, uint8_t data_level)
+static inline void spi_set_dma_rx_level(SPI_Type *spi, uint8_t data_level)
 {
     spi->SPI_DMARDLR = data_level;
 }
 
 /**
-  \fn          static inline void spi_set_dma_tx_level(LPSPI_Type *spi, uint8_t data_level)
+  \fn          static inline void spi_set_dma_tx_level(SPI_Type *spi, uint8_t data_level)
   \brief       Enable SPI TX DMA Block
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-static inline void spi_set_dma_tx_level(LPSPI_Type *spi, uint8_t data_level)
+static inline void spi_set_dma_tx_level(SPI_Type *spi, uint8_t data_level)
 {
     spi->SPI_DMATDLR = data_level;
 }
 
 /**
-  \fn          volatile uint32_t* spi_get_data_addr(LPSPI_Type *spi)
+  \fn          volatile uint32_t* spi_get_data_addr(SPI_Type *spi)
   \brief       Return the Data reg Address
   \param[in]   spi   Pointer to SPI register map
   \return      \ref  Return the address
 */
-static inline volatile uint32_t* spi_get_data_addr(LPSPI_Type *spi)
+static inline volatile uint32_t* spi_get_data_addr(SPI_Type *spi)
 {
-    return &spi->SPI_DR0;
+    return &spi->SPI_DR[0];
 }
 
 /**
-  \fn          bool spi_busy(LPSPI_Type *spi)
+  \fn          bool spi_busy(SPI_Type *spi)
   \brief       return spi busy status
   \param[in]   spi   Pointer to SPI register map
   \return      \ref  spi busy status
 */
-static inline bool spi_busy(LPSPI_Type *spi)
+static inline bool spi_busy(SPI_Type *spi)
 {
     return (spi->SPI_SR & 1);
 }
 
 /**
-  \fn          void spi_set_rx_sample_delay(LPSPI_Type *spi, uint8_t rx_sample_delay)
+  \fn          void spi_set_rx_sample_delay(SPI_Type *spi, uint8_t rx_sample_delay)
   \brief       Set Receive sample delay for the SPI instance
   \param[in]   spi              Pointer to the SPI register map
   \param[in]   rx_sample_delay  rx sample delay
   \return      none
 */
-static inline void spi_set_rx_sample_delay(LPSPI_Type *spi, uint8_t rx_sample_delay)
+static inline void spi_set_rx_sample_delay(SPI_Type *spi, uint8_t rx_sample_delay)
 {
     spi_disable(spi);
     spi->SPI_RX_SAMPLE_DELAY = rx_sample_delay;
@@ -521,251 +489,251 @@ static inline void spi_set_rx_sample_delay(LPSPI_Type *spi, uint8_t rx_sample_de
 }
 
 /**
-  \fn          void spi_set_mode(LPSPI_Type *spi, SPI_MODE mode)
+  \fn          void spi_set_mode(SPI_Type *spi, SPI_MODE mode)
   \brief       Set the SPI mode for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   mode    The mode to be set.
   \return      none
 */
-void spi_set_mode(LPSPI_Type *spi, SPI_MODE mode);
+void spi_set_mode(SPI_Type *spi, SPI_MODE mode);
 
 /**
-  \fn          void spi_set_protocol(LPSPI_Type *spi, SPI_PROTO format)
+  \fn          void spi_set_protocol(SPI_Type *spi, SPI_PROTO format)
   \brief       Set the protocol format for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   format  The protocol to be set
   \return      none
 */
-void spi_set_protocol(LPSPI_Type *spi, SPI_PROTO format);
+void spi_set_protocol(SPI_Type *spi, SPI_PROTO format);
 
 /**
-  \fn          void spi_set_dfs(LPSPI_Type *spi, uint8_t dfs)
+  \fn          void spi_set_dfs(SPI_Type *spi, uint8_t dfs)
   \brief       Set the data frame size for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   dfs     The data frame size
   \return      none
 */
-void spi_set_dfs(LPSPI_Type *spi, uint8_t dfs);
+void spi_set_dfs(SPI_Type *spi, uint8_t dfs);
 
 /**
-  \fn          void spi_set_tmode(LPSPI_Type *spi, SPI_TMOD tmod)
+  \fn          void spi_set_tmode(SPI_Type *spi, SPI_TMOD tmod)
   \brief       Set the transfer mode for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   tmod    Transfer mode
   \return      none
 */
-void spi_set_tmod(LPSPI_Type *spi, SPI_TMOD tmod);
+void spi_set_tmod(SPI_Type *spi, SPI_TMOD tmod);
 
 /**
-  \fn          SPI_TMOD spi_get_tmod(LPSPI_Type *spi)
+  \fn          SPI_TMOD spi_get_tmod(SPI_Type *spi)
   \brief       Get the transfer mode of the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \return      The current transfer mode
 */
-SPI_TMOD spi_get_tmod(LPSPI_Type *spi);
+SPI_TMOD spi_get_tmod(SPI_Type *spi);
 
 /**
-  \fn          void spi_set_sste(LPSPI_Type *spi, bool enable)
+  \fn          void spi_set_sste(SPI_Type *spi, bool enable)
   \brief       Enable/Disable Slave Select Toggle for the SPI instance
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   enable    Enable/Disable control
   \return      none
 */
-void spi_set_sste(LPSPI_Type *spi, bool enable);
+void spi_set_sste(SPI_Type *spi, bool enable);
 
 /**
-  \fn          void spi_set_tx_threshold(LPSPI_Type *spi, uint8_t threshold)
+  \fn          void spi_set_tx_threshold(SPI_Type *spi, uint8_t threshold)
   \brief       Set Transmit FIFO interrupt threshold for the SPI instance
   \param[in]   spi        Pointer to the SPI register map
   \param[in]   threshold  Transmit FIFO threshold
   \return      none
 */
-void spi_set_tx_threshold(LPSPI_Type *spi, uint8_t threshold);
+void spi_set_tx_threshold(SPI_Type *spi, uint8_t threshold);
 
 /**
-  \fn          void spi_set_rx_threshold(LPSPI_Type *spi, uint8_t threshold)
+  \fn          void spi_set_rx_threshold(SPI_Type *spi, uint8_t threshold)
   \brief       Set Receive FIFO interrupt threshold for the SPI instance
   \param[in]   spi        Pointer to the SPI register map
   \param[in]   threshold  Receive FIFO threshold
   \return      none
 */
-void spi_set_rx_threshold(LPSPI_Type *spi, uint8_t threshold);
+void spi_set_rx_threshold(SPI_Type *spi, uint8_t threshold);
 
 /**
-  \fn          void spi_set_tx_fifo_start_level(LPSPI_Type *spi, uint16_t level)
+  \fn          void spi_set_tx_fifo_start_level(SPI_Type *spi, uint16_t level)
   \brief       Set Transmit FIFO start level
   \param[in]   spi    Pointer to the SPI register map
   \param[in]   level  Transmit FIFO start level
   \return      none
 */
-void spi_set_tx_fifo_start_level(LPSPI_Type *spi, uint16_t level);
+void spi_set_tx_fifo_start_level(SPI_Type *spi, uint16_t level);
 
 /**
-  \fn          void spi_control_ss(LPSPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
+  \fn          void spi_control_ss(SPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
   \brief       Control the slave select line
   \param[in]   spi    Pointer to the SPI register map
   \param[in]   slave  The slave to be selected
   \param[in]   state  The state of the slave select line
   \return      none
 */
-void spi_control_ss(LPSPI_Type *spi, uint8_t slave, SPI_SS_STATE state);
+void spi_control_ss(SPI_Type *spi, uint8_t slave, SPI_SS_STATE state);
 
 /**
-  \fn          void spi_send(LPSPI_Type *spi)
+  \fn          void spi_send(SPI_Type *spi)
   \brief       Prepare the SPI instance for transmission
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-void spi_send(LPSPI_Type *spi);
+void spi_send(SPI_Type *spi);
 
 /**
-  \fn          void spi_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
+  \fn          void spi_receive(SPI_Type *spi, spi_transfer_t *transfer)
   \brief       Prepare the SPI instance for reception
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   transfer  Pointer to transfer structure
   \return      none
 */
-void spi_receive(LPSPI_Type *spi, spi_transfer_t *transfer);
+void spi_receive(SPI_Type *spi, spi_transfer_t *transfer);
 
 /**
-  \fn          void spi_transfer(LPSPI_Type *spi, uint32_t total_cnt)
+  \fn          void spi_transfer(SPI_Type *spi, uint32_t total_cnt)
   \brief       Prepare the SPI instance for transfer
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   total_cnt total number of data count
   \return      none
 */
-void spi_transfer(LPSPI_Type *spi, uint32_t total_cnt);
+void spi_transfer(SPI_Type *spi, uint32_t total_cnt);
 
 /**
-  \fn          void lpspi_set_mode(LPSPI_Type *spi, SPI_MODE mode)
+  \fn          void lpspi_set_mode(SPI_Type *spi, SPI_MODE mode)
   \brief       Set the mode for the LPSPI instance.
   \param[in]   lpspi   Pointer to the LPSPI register map
   \param[in]   mode    The mode to be set.
   \return      none
 */
-void lpspi_set_mode(LPSPI_Type *lpspi, SPI_MODE mode);
+void lpspi_set_mode(SPI_Type *lpspi, SPI_MODE mode);
 
 /**
-  \fn          void lpspi_set_protocol(LPSPI_Type *lpspi, SPI_PROTO format)
+  \fn          void lpspi_set_protocol(SPI_Type *lpspi, SPI_PROTO format)
   \brief       Set the protocol format for the LPSPI instance.
   \param[in]   lpspi   Pointer to the LPSPI register map
   \param[in]   format  The protocol to be set
   \return      none
 */
-void lpspi_set_protocol(LPSPI_Type *lpspi, SPI_PROTO format);
+void lpspi_set_protocol(SPI_Type *lpspi, SPI_PROTO format);
 
 /**
-  \fn          void lpspi_set_dfs(LPSPI_Type *lpspi, uint8_t dfs)
+  \fn          void lpspi_set_dfs(SPI_Type *lpspi, uint8_t dfs)
   \brief       Set the data frame size for the LPSPI instance.
   \param[in]   lpspi   Pointer to the LPSPI register map
   \param[in]   dfs     The data frame size
   \return      none
 */
-void lpspi_set_dfs(LPSPI_Type *lpspi, uint8_t dfs);
+void lpspi_set_dfs(SPI_Type *lpspi, uint8_t dfs);
 
 /**
-  \fn          void lpspi_set_tmod(LPSPI_Type *lpspi, SPI_TMOD tmod)
+  \fn          void lpspi_set_tmod(SPI_Type *lpspi, SPI_TMOD tmod)
   \brief       Set the transfer mode for the LPSPI instance.
   \param[in]   lpspi   Pointer to the LPSPI register map
   \param[in]   tmod    Transfer mode
   \return      none
 */
-void lpspi_set_tmod(LPSPI_Type *lpspi, SPI_TMOD tmod);
+void lpspi_set_tmod(SPI_Type *lpspi, SPI_TMOD tmod);
 
 /**
-  \fn          SPI_TMOD lpspi_get_tmod(LPSPI_Type *lpspi)
+  \fn          SPI_TMOD lpspi_get_tmod(SPI_Type *lpspi)
   \brief       Get the transfer mode of the LPSPI instance.
   \param[in]   lpspi     Pointer to the LPSPI register map
   \return      The current transfer mode
 */
-SPI_TMOD lpspi_get_tmod(LPSPI_Type *lpspi);
+SPI_TMOD lpspi_get_tmod(SPI_Type *lpspi);
 
 /**
-  \fn          void lpspi_send(LPSPI_Type *spi)
+  \fn          void lpspi_send(SPI_Type *spi)
   \brief       Prepare the SPI instance for transmission
   \param[in]   lpspi       Pointer to the LPSPI register map
   \return      none
 */
-void lpspi_send(LPSPI_Type *lpspi);
+void lpspi_send(SPI_Type *lpspi);
 
 /**
-  \fn          void lpspi_receive(LPSPI_Type *lpspi, uint32_t total_cnt)
+  \fn          void lpspi_receive(SPI_Type *lpspi, uint32_t total_cnt)
   \brief       Prepare the LPSPI instance for reception
   \param[in]   lpspi     Pointer to the LPSPI register map
   \param[in]   total_cnt total number of data count
   \return      none
 */
-void lpspi_receive(LPSPI_Type *lpspi, uint32_t total_cnt);
+void lpspi_receive(SPI_Type *lpspi, uint32_t total_cnt);
 
 /**
-  \fn          void lpspi_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
+  \fn          void lpspi_transfer(SPI_Type *lpspi, uint32_t total_cnt)
   \brief       Prepare the LPSPI instance for transfer
   \param[in]   lpspi      Pointer to the LPSPI register map
   \param[in]   total_cnt  total number of data count
   \return      none
 */
-void lpspi_transfer(LPSPI_Type *lpspi, uint32_t total_cnt);
+void lpspi_transfer(SPI_Type *lpspi, uint32_t total_cnt);
 
 /**
-  \fn          void spi_dma_send(LPSPI_Type *spi)
+  \fn          void spi_dma_send(SPI_Type *spi)
   \brief       Prepare the SPI instance for DMA send
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-void spi_dma_send(LPSPI_Type *spi);
+void spi_dma_send(SPI_Type *spi);
 
 /**
-  \fn          void spi_dma_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
+  \fn          void spi_dma_receive(SPI_Type *spi, spi_transfer_t *transfer)
   \brief       Prepare the SPI instance for DMA reception
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   transfer  Pointer to transfer structure
   \return      none
 */
-void spi_dma_receive(LPSPI_Type *spi, spi_transfer_t *transfer);
+void spi_dma_receive(SPI_Type *spi, spi_transfer_t *transfer);
 
 /**
-  \fn          void spi_dma_transfer(LPSPI_Type *spi, uint32_t total_cnt)
+  \fn          void spi_dma_transfer(SPI_Type *spi, uint32_t total_cnt)
   \brief       Prepare the SPI instance for DMA transfer
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   total_cnt total number of data count
   \return      none
 */
-void spi_dma_transfer(LPSPI_Type *spi, uint32_t total_cnt);
+void spi_dma_transfer(SPI_Type *spi, uint32_t total_cnt);
 
 /**
-  \fn          void lpspi_dma_send(LPSPI_Type *spi)
+  \fn          void lpspi_dma_send(SPI_Type *spi)
   \brief       Prepare the SPI instance for DMA transmission
   \param[in]   lpspi       Pointer to the LPSPI register map
   \return      none
 */
-void lpspi_dma_send(LPSPI_Type *lpspi);
+void lpspi_dma_send(SPI_Type *lpspi);
 
 /**
-  \fn          void lpspi_dma_receive(LPSPI_Type *lpspi, spi_transfer_t *transfer)
+  \fn          void lpspi_dma_receive(SPI_Type *lpspi, spi_transfer_t *transfer)
   \brief       Prepare the LPSPI instance for DMA reception
   \param[in]   lpspi     Pointer to the LPSPI register map
   \param[in]   transfer  Pointer to transfer structure
   \return      none
 */
-void lpspi_dma_receive(LPSPI_Type *lpspi, spi_transfer_t *transfer);
+void lpspi_dma_receive(SPI_Type *lpspi, spi_transfer_t *transfer);
 
 /**
-  \fn          void lpspi_dma_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
+  \fn          void lpspi_dma_transfer(SPI_Type *lpspi, uint32_t total_cnt)
   \brief       Prepare the LPSPI instance for DMA transfer
   \param[in]   lpspi      Pointer to the LPSPI register map
   \param[in]   total_cnt  total number of data count
   \return      none
 */
-void lpspi_dma_transfer(LPSPI_Type *lpspi, uint32_t total_cnt);
+void lpspi_dma_transfer(SPI_Type *lpspi, uint32_t total_cnt);
 
 /**
-  \fn          void spi_irq_handler(LPSPI_Type *spi, spi_master_transfer_t *transfer)
+  \fn          void spi_irq_handler(SPI_Type *spi, spi_master_transfer_t *transfer)
   \brief       Handle interrupts for the SPI instance.
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   transfer  The transfer structure for the SPI instance
   \return      none
 */
-void spi_irq_handler(LPSPI_Type *spi, spi_transfer_t *transfer);
+void spi_irq_handler(SPI_Type *spi, spi_transfer_t *transfer);
 #ifdef __cplusplus
 }
 #endif

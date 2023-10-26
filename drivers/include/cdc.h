@@ -29,92 +29,60 @@ extern "C"
 #include <stddef.h>
 
 /**
+ * @struct CDC_CDC_LAYER_CFG_Type
+ * @brief CDC_CDC_LAYER_CFG [CDC_LAYER_CFG] ([0..1])
+ */
+typedef struct {
+    volatile const uint32_t  CDC_L_CFG1;                   /*!< (@ 0x00000000) Layer (n) Configuration 1 Register                         */
+    volatile const uint32_t  CDC_L_CFG2;                   /*!< (@ 0x00000004) Layer (n) Configuration 2 Register                         */
+    volatile       uint32_t  CDC_L_REL_CTRL;               /*!< (@ 0x00000008) Layer (n) Shadow Reload Control Register                   */
+    volatile       uint32_t  CDC_L_CTRL;                   /*!< (@ 0x0000000C) Layer (n) Control Register                                 */
+    volatile       uint32_t  CDC_L_WIN_HPOS;               /*!< (@ 0x00000010) Layer (n) Window Horizontal Position Register              */
+    volatile       uint32_t  CDC_L_WIN_VPOS;               /*!< (@ 0x00000014) Layer (n) Window Vertical Position Register                */
+    volatile       uint32_t  CDC_L_CKEY;                   /*!< (@ 0x00000018) Layer (n) Color Key Register                               */
+    volatile       uint32_t  CDC_L_PIX_FORMAT;             /*!< (@ 0x0000001C) Layer (n) Pixel Format Register                            */
+    volatile       uint32_t  CDC_L_CONST_ALPHA;            /*!< (@ 0x00000020) Layer (n) Constant Alpha Register                          */
+    volatile       uint32_t  CDC_L_DFLT_COLOR;             /*!< (@ 0x00000024) Layer (n) Default Color Register                           */
+    volatile       uint32_t  CDC_L_BLEND_CFG;              /*!< (@ 0x00000028) Layer (n) Blending Factors Register                        */
+    volatile       uint32_t  CDC_L_FB_BCTRL;               /*!< (@ 0x0000002C) Layer (n) FB Bus Control Register                          */
+    volatile const uint32_t  RESERVED;
+    volatile       uint32_t  CDC_L_CFB_ADDR;               /*!< (@ 0x00000034) Layer (n) Color FB Address Register                        */
+    volatile       uint32_t  CDC_L_CFB_LENGTH;             /*!< (@ 0x00000038) Layer (n) Color FB Length Register                         */
+    volatile       uint32_t  CDC_L_CFB_LINES;              /*!< (@ 0x0000003C) Layer (n) Color FB Lines Register                          */
+    volatile const uint32_t  RESERVED1[4];
+    volatile       uint32_t  CDC_L_CLUT_WRACC;             /*!< (@ 0x00000050) Layer (n) CLUT Write Access Register                       */
+    volatile const uint32_t  RESERVED2[43];
+} CDC_CDC_LAYER_CFG_Type;                                  /*!< Size = 256 (0x100)                                                        */
+
+/**
  * @struct CDC_Type
  * @brief  cdc register map structure.
  */
-typedef struct {                                          /*!< (@ 0x49031000) CDC Structure                                              */
-    volatile const uint32_t CDC_HW_VER;                   /*!< (@ 0x00000000) HW Version Register                                        */
-    volatile const uint32_t CDC_LCNT;                     /*!< (@ 0x00000004) Layer Count Register                                       */
-    volatile       uint32_t CDC_SYNC_SIZE_CFG;            /*!< (@ 0x00000008) Sync Size Register                                         */
-    volatile       uint32_t CDC_BP_CFG;                   /*!< (@ 0x0000000C) Back Porch Register                                        */
-    volatile       uint32_t CDC_ACTW_CFG;                 /*!< (@ 0x00000010) Active Width Register                                      */
-    volatile       uint32_t CDC_TOTALW_CFG;               /*!< (@ 0x00000014) Total Width Register                                       */
-    volatile       uint32_t CDC_GLB_CTRL;                 /*!< (@ 0x00000018) Global Control Register                                    */
-    volatile const uint32_t CDC_CFG1;                     /*!< (@ 0x0000001C) Global Configuration 1 Register                            */
-    volatile const uint32_t CDC_CFG2;                     /*!< (@ 0x00000020) Global Configuration 2 Register                            */
-    volatile       uint32_t CDC_SRCTRL;                   /*!< (@ 0x00000024) Shadow Reload Control Register                             */
-    volatile       uint32_t CDC_GAMMA_CORR;               /*!< (@ 0x00000028) Gamma Correction Register                                  */
-    volatile       uint32_t CDC_BACKGND_COLOR;            /*!< (@ 0x0000002C) Background Color Register                                  */
+typedef struct {                                           /*!< (@ 0x49031000) CDC Structure                                              */
+    volatile const uint32_t CDC_HW_VER;                    /*!< (@ 0x00000000) HW Version Register                                        */
+    volatile const uint32_t CDC_LCNT;                      /*!< (@ 0x00000004) Layer Count Register                                       */
+    volatile       uint32_t CDC_SYNC_SIZE_CFG;             /*!< (@ 0x00000008) Sync Size Register                                         */
+    volatile       uint32_t CDC_BP_CFG;                    /*!< (@ 0x0000000C) Back Porch Register                                        */
+    volatile       uint32_t CDC_ACTW_CFG;                  /*!< (@ 0x00000010) Active Width Register                                      */
+    volatile       uint32_t CDC_TOTALW_CFG;                /*!< (@ 0x00000014) Total Width Register                                       */
+    volatile       uint32_t CDC_GLB_CTRL;                  /*!< (@ 0x00000018) Global Control Register                                    */
+    volatile const uint32_t CDC_CFG1;                      /*!< (@ 0x0000001C) Global Configuration 1 Register                            */
+    volatile const uint32_t CDC_CFG2;                      /*!< (@ 0x00000020) Global Configuration 2 Register                            */
+    volatile       uint32_t CDC_SRCTRL;                    /*!< (@ 0x00000024) Shadow Reload Control Register                             */
+    volatile       uint32_t CDC_GAMMA_CORR;                /*!< (@ 0x00000028) Gamma Correction Register                                  */
+    volatile       uint32_t CDC_BACKGND_COLOR;             /*!< (@ 0x0000002C) Background Color Register                                  */
     volatile const uint32_t RESERVED;
-    volatile       uint32_t CDC_IRQ_MASK0;                /*!< (@ 0x00000034) IRQ Enable 1 Register                                      */
-    volatile const uint32_t CDC_IRQ_STATUS0;              /*!< (@ 0x00000038) IRQ Status 1 Register                                      */
-    volatile       uint32_t CDC_IRQ_CLEAR0;               /*!< (@ 0x0000003C) IRQ Clear Register                                         */
-    volatile       uint32_t CDC_LINE_IRQ_POS;             /*!< (@ 0x00000040) Line Number IRQ Control Register                           */
-    volatile const uint32_t CDC_POS_STAT;                 /*!< (@ 0x00000044) Position Status Register                                   */
-    volatile const uint32_t CDC_SYNC_BLANK_STAT;          /*!< (@ 0x00000048) Sync/Blank Status Register                                 */
-    volatile const uint32_t RESERVED1[6];
-    volatile       uint32_t CDC_IRQ_MASK1;                /*!< (@ 0x00000064) Secondary IRQ Enable Register                              */
-    volatile const uint32_t CDC_IRQ_STATUS1;              /*!< (@ 0x00000068) Secondary IRQ Status Register                              */
-    volatile       uint32_t CDC_IRQ_CLEAR1;               /*!< (@ 0x0000006C) Secondary IRQ Clear Register                               */
-    volatile       uint32_t CDC_SLINE_IRQ_POS;            /*!< (@ 0x00000070) Secure Line IRQ Position Control Register                  */
-    volatile const uint32_t RESERVED2;
-    volatile       uint32_t CDC_CRC_REF;                  /*!< (@ 0x00000078) CRC Reference Register                                     */
-    volatile const uint32_t CDC_CRC_RES;                  /*!< (@ 0x0000007C) CRC Result Register                                        */
-    volatile       uint32_t CDC_ROT_BUFF_ADDR0;           /*!< (@ 0x00000080) Rotation Buffer 0 Address Register                         */
-    volatile       uint32_t CDC_ROT_BUFF_ADDR1;           /*!< (@ 0x00000084) Rotation Buffer 1 Address Register                         */
-    volatile       uint32_t CDC_ROT_BUFF_PITCH;           /*!< (@ 0x00000088) Rotation Buffer Pitch Register                             */
-    volatile       uint32_t CDC_ROT_BLEND_COLOR;          /*!< (@ 0x0000008C) Rotation Blend Color Register                              */
-    volatile const uint32_t RESERVED3[28];
-    volatile const uint32_t CDC_L1_CFG1;                  /*!< (@ 0x00000100) Layer (n) Configuration 1 Register                         */
-    volatile const uint32_t CDC_L1_CFG2;                  /*!< (@ 0x00000104) Layer (n) Configuration 2 Register                         */
-    volatile       uint32_t CDC_L1_REL_CTRL;              /*!< (@ 0x00000108) Layer (n) Shadow Reload Control Register                   */
-    volatile       uint32_t CDC_L1_CTRL;                  /*!< (@ 0x0000010C) Layer (n) Control Register                                 */
-    volatile       uint32_t CDC_L1_WIN_HPOS;              /*!< (@ 0x00000110) Layer (n) Window Horizontal Position Register              */
-    volatile       uint32_t CDC_L1_WIN_VPOS;              /*!< (@ 0x00000114) Layer (n) Window Vertical Position Register                */
-    volatile       uint32_t CDC_L1_CKEY;                  /*!< (@ 0x00000118) Layer (n) Color Key Register                               */
-    volatile       uint32_t CDC_L1_PIX_FORMAT;            /*!< (@ 0x0000011C) Layer (n) Pixel Format Register                            */
-    volatile       uint32_t CDC_L1_CONST_ALPHA;           /*!< (@ 0x00000120) Layer (n) Constant Alpha Register                          */
-    volatile       uint32_t CDC_L1_DFLT_COLOR;            /*!< (@ 0x00000124) Layer (n) Default Color Register                           */
-    volatile       uint32_t CDC_L1_BLEND_CFG;             /*!< (@ 0x00000128) Layer (n) Blending Factors Register                        */
-    volatile       uint32_t CDC_L1_FB_BCTRL;              /*!< (@ 0x0000012C) Layer (n) FB Bus Control Register                          */
-    volatile const uint32_t RESERVED4;
-    volatile       uint32_t CDC_L1_CFB_ADDR;              /*!< (@ 0x00000134) Layer (n) Color FB Address Register                        */
-    volatile       uint32_t CDC_L1_CFB_LENGTH;            /*!< (@ 0x00000138) Layer (n) Color FB Length Register                         */
-    volatile       uint32_t CDC_L1_CFB_LINES;             /*!< (@ 0x0000013C) Layer (n) Color FB Lines Register                          */
-    volatile const uint32_t RESERVED5[4];
-    volatile       uint32_t CDC_L1_CLUT_WRACC;            /*!< (@ 0x00000150) Layer (n) CLUT Write Access Register                       */
-    volatile       uint32_t CDC_L1_SCALER_INSIZE;         /*!< (@ 0x00000154) Layer (n) Scaler Input Size Register                       */
-    volatile       uint32_t CDC_L1_SCALER_OUTSIZE;        /*!< (@ 0x00000158) Layer (n) Scaler Output Size Register                      */
-    volatile       uint32_t CDC_L1_VSCALE_FACTOR;         /*!< (@ 0x0000015C) Layer (n) Vertical Scaling Factor Register                 */
-    volatile       uint32_t CDC_L1_VSCALE_PHASE;          /*!< (@ 0x00000160) Layer (n) Vertical Scaling Phase Register                  */
-    volatile       uint32_t CDC_L1_HSCALE_FACTOR;         /*!< (@ 0x00000164) Layer (n) Horizontal Scaling Factor Register               */
-    volatile       uint32_t CDC_L1_HSCALE_PHASE;          /*!< (@ 0x00000168) Layer (n) Horizontal Scaling Phase Register                */
-    volatile const uint32_t RESERVED6[37];
-    volatile const uint32_t CDC_L2_CFG1;                  /*!< (@ 0x00000200) Layer (n) Configuration 1 Register                         */
-    volatile const uint32_t CDC_L2_CFG2;                  /*!< (@ 0x00000204) Layer (n) Configuration 2 Register                         */
-    volatile       uint32_t CDC_L2_REL_CTRL;              /*!< (@ 0x00000208) Layer (n) Shadow Reload Control Register                   */
-    volatile       uint32_t CDC_L2_CTRL;                  /*!< (@ 0x0000020C) Layer (n) Control Register                                 */
-    volatile       uint32_t CDC_L2_WIN_HPOS;              /*!< (@ 0x00000210) Layer (n) Window Horizontal Position Register              */
-    volatile       uint32_t CDC_L2_WIN_VPOS;              /*!< (@ 0x00000214) Layer (n) Window Vertical Position Register                */
-    volatile       uint32_t CDC_L2_CKEY;                  /*!< (@ 0x00000218) Layer (n) Color Key Register                               */
-    volatile       uint32_t CDC_L2_PIX_FORMAT;            /*!< (@ 0x0000021C) Layer (n) Pixel Format Register                            */
-    volatile       uint32_t CDC_L2_CONST_ALPHA;           /*!< (@ 0x00000220) Layer (n) Constant Alpha Register                          */
-    volatile       uint32_t CDC_L2_DFLT_COLOR;            /*!< (@ 0x00000224) Layer (n) Default Color Register                           */
-    volatile       uint32_t CDC_L2_BLEND_CFG;             /*!< (@ 0x00000228) Layer (n) Blending Factors Register                        */
-    volatile       uint32_t CDC_L2_FB_BCTRL;              /*!< (@ 0x0000022C) Layer (n) FB Bus Control Register                          */
-    volatile const uint32_t RESERVED7;
-    volatile       uint32_t CDC_L2_CFB_ADDR;              /*!< (@ 0x00000234) Layer (n) Color FB Address Register                        */
-    volatile       uint32_t CDC_L2_CFB_LENGTH;            /*!< (@ 0x00000238) Layer (n) Color FB Length Register                         */
-    volatile       uint32_t CDC_L2_CFB_LINES;             /*!< (@ 0x0000023C) Layer (n) Color FB Lines Register                          */
-    volatile const uint32_t RESERVED8[4];
-    volatile       uint32_t CDC_L2_CLUT_WRACC;            /*!< (@ 0x00000250) Layer (n) CLUT Write Access Register                       */
-    volatile       uint32_t CDC_L2_SCALER_INSIZE;         /*!< (@ 0x00000254) Layer (n) Scaler Input Size Register                       */
-    volatile       uint32_t CDC_L2_SCALER_OUTSIZE;        /*!< (@ 0x00000258) Layer (n) Scaler Output Size Register                      */
-    volatile       uint32_t CDC_L2_VSCALE_FACTOR;         /*!< (@ 0x0000025C) Layer (n) Vertical Scaling Factor Register                 */
-    volatile       uint32_t CDC_L2_VSCALE_PHASE;          /*!< (@ 0x00000260) Layer (n) Vertical Scaling Phase Register                  */
-    volatile       uint32_t CDC_L2_HSCALE_FACTOR;         /*!< (@ 0x00000264) Layer (n) Horizontal Scaling Factor Register               */
-    volatile       uint32_t CDC_L2_HSCALE_PHASE;          /*!< (@ 0x00000268) Layer (n) Horizontal Scaling Phase Register                */
-} CDC_Type;
+    volatile       uint32_t CDC_IRQ_MASK0;                 /*!< (@ 0x00000034) IRQ Enable 1 Register                                      */
+    volatile const uint32_t CDC_IRQ_STATUS0;               /*!< (@ 0x00000038) IRQ Status 1 Register                                      */
+    volatile       uint32_t CDC_IRQ_CLEAR0;                /*!< (@ 0x0000003C) IRQ Clear Register                                         */
+    volatile       uint32_t CDC_LINE_IRQ_POS;              /*!< (@ 0x00000040) Line Number IRQ Control Register                           */
+    volatile const uint32_t CDC_POS_STAT;                  /*!< (@ 0x00000044) Position Status Register                                   */
+    volatile const uint32_t CDC_SYNC_BLANK_STAT;           /*!< (@ 0x00000048) Sync/Blank Status Register                                 */
+    volatile const uint32_t RESERVED1[9];
+    volatile       uint32_t CDC_SLINE_IRQ_POS;             /*!< (@ 0x00000070) Secure Line IRQ Position Control Register                  */
+    volatile const uint32_t RESERVED2[35];
+    volatile       CDC_CDC_LAYER_CFG_Type CDC_LAYER_CFG[2];/*!< (@ 0x00000100) [0..1]                                                     */
+} CDC_Type;                                                /*!< Size = 768 (0x300)                                                        */
 
 /*CDC configurations*/
 
@@ -123,7 +91,7 @@ typedef struct {                                          /*!< (@ 0x49031000) CD
  *        and serves to correctly calculate the address of the last word of data for
  *        that line internally.
  */
-#define BUS_WIDTH                        (7)
+#define BUS_WIDTH                         7U
 
 /**
  * @brief Blend factor used for blending between layers
@@ -136,14 +104,18 @@ typedef struct {                                          /*!< (@ 0x49031000) CD
 /*CDC Register Descriptions*/
 
 /**
- * @brief Global Enable bit parameter.
+ * @brief CDC_GLB_CTRL bit parameters.
  */
-#define CDC_GLOBAL_EN                    1U  /**< CDC global enable*/
+#define CDC_GLB_CTRL_HSPOL               (1U << 31)  /* HSYNC polarity */
+#define CDC_GLB_CTRL_VSPOL               (1U << 30)  /* VSYNC polarity */
+#define CDC_GLB_CTRL_BLPOL               (1U << 29)  /* Blank polarity */
+#define CDC_GLB_CTRL_PCLKPOL             (1U << 28)  /* Output Pixel clock polarity */
+#define CDC_GLB_CTRL_EN                  (1U << 0)   /**< CDC global enable*/
 
 /**
- * @brief Layer control bit parameter.
+ * @brief  CDC_Ln_CTRL bit parameter.
  */
-#define CDC_LAYER_ON                     1U  /**< CDC layer On */
+#define CDC_Ln_CTRL_LAYER_EN             1U          /**< CDC layer On */
 
 /**
  * @brief CDC_IRQ control bit parameters
@@ -161,12 +133,30 @@ typedef struct {                                          /*!< (@ 0x49031000) CD
 /**
  * @brief CDC_Ln_REL_CTRL bit parameter.
  */
-#define CDC_Ln_REL_CTRL_SH_MASK          (1U << 2) /**< CDC layer shadow reload mask */
+#define CDC_Ln_REL_CTRL_SH_MASK          (1U << 2)   /**< CDC layer shadow reload mask */
 
 /**
  * @brief CDC_Ln_BLEND_CFG bit parameter.
  */
-#define CDC_Ln_BLEND_CFG_F1_SEL_SHIFT    (8) /**< CDC layer selection of blending factor f1 position bit*/
+#define CDC_Ln_BLEND_CFG_F1_SEL_SHIFT    (8U)       /**< CDC layer selection of blending factor f1 position bit*/
+
+/**
+ * enum   CDC_POLARITY
+ * @brief CDC polarity.
+ */
+typedef enum _CDC_POLARITY{
+    CDC_POLARITY_ACTIVE_LOW,                  /**< CDC polarity low  */
+    CDC_POLARITY_ACTIVE_HIGH                  /**< CDC polarity high */
+} CDC_POLARITY;
+
+/**
+ * enum   CDC_PIXCLK_POLARITY
+ * @brief CDC pixel clock polarity.
+ */
+typedef enum _CDC_PIXCLK_POLARITY{
+    CDC_PIXCLK_POLARITY_FEED_THROUGH,         /**<  Feed-through of PIXEL_CLK input */
+    CDC_PIXCLK_POLARITY_INVERTED              /**<  Inverted PIXEL_CLK input        */
+} CDC_PIXCLK_POLARITY;
 
 /**
  * @enum   CDC_PIXEL_FORMAT
@@ -289,7 +279,7 @@ typedef struct _cdc_layer_info_t
  */
 static inline void cdc_global_enable (CDC_Type *const cdc)
 {
-    cdc->CDC_GLB_CTRL |= CDC_GLOBAL_EN;
+    cdc->CDC_GLB_CTRL |= CDC_GLB_CTRL_EN;
 }
 
 /**
@@ -300,7 +290,7 @@ static inline void cdc_global_enable (CDC_Type *const cdc)
  */
 static inline void cdc_global_disable (CDC_Type *const cdc)
 {
-    cdc->CDC_GLB_CTRL &= ~CDC_GLOBAL_EN;
+    cdc->CDC_GLB_CTRL &= ~CDC_GLB_CTRL_EN;
 }
 
 /**
@@ -391,6 +381,42 @@ static inline uint16_t cdc_get_y_position_status (CDC_Type *const cdc)
  * @retval  none
  */
 void cdc_set_cfg (CDC_Type *const cdc, const cdc_cfg_info_t *const info);
+
+/**
+ * @fn      void cdc_set_hsync_polarity(CDC_Type *const cdc, const CDC_POLARITY hsync_pol)
+ * @brief   CDC hsync polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   hsync_pol  CDC HSYNC polarity
+ * @retval  none.
+ */
+void cdc_set_hsync_polarity(CDC_Type *const cdc, const CDC_POLARITY hsync_pol);
+
+/**
+ * @fn      void cdc_set_vsync_polarity(CDC_Type *const cdc, const CDC_POLARITY vsync_pol)
+ * @brief   CDC vsync polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   vsync_pol  CDC VSYNC polarity
+ * @retval  none.
+ */
+void cdc_set_vsync_polarity(CDC_Type *const cdc, const CDC_POLARITY vsync_pol);
+
+/**
+ * @fn      void cdc_set_pclkout_polarity(CDC_Type *const cdc, const CDC_PIXCLK_POLARITY pclkout_pol)
+ * @brief   CDC pixel clock output polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   pclkout_pol  CDC pixel clock output polarity
+ * @retval  none.
+ */
+void cdc_set_pclkout_polarity(CDC_Type *const cdc, const CDC_PIXCLK_POLARITY pclkout_pol);
+
+/**
+ * @fn      void cdc_set_blank_polarity(CDC_Type *const cdc, const CDC_POLARITY blank_pol)
+ * @brief   CDC blank polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   blank_pol  CDC blank polarity
+ * @retval  none.
+ */
+void cdc_set_blank_polarity(CDC_Type *const cdc, const CDC_POLARITY blank_pol);
 
 /**
  * @fn      void cdc_set_layer_cfg (CDC_Type *const cdc, const CDC_LAYER layer, const cdc_layer_info_t *const info)

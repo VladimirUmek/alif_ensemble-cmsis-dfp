@@ -181,7 +181,7 @@ const uint8_t canfd_len_dlc_map[0x10U] =
 
 /* Support functions */
 static void canfd_process_rx_message(void);
-static bool canfd_transmit_message(void);
+static bool canfd_transmit_message(const CANFD_FRAME msg_type);
 static void canfd_check_error(void);
 
 /**
@@ -198,7 +198,7 @@ static int32_t pinmux_config(void)
     /* pinmux configurations for CANFD pins */
     ret_val = pinconf_set(PORT_7, PIN_0, PINMUX_ALTERNATE_FUNCTION_7,
                          (PADCTRL_READ_ENABLE | PADCTRL_SCHMITT_TRIGGER_ENABLE |
-                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS));
+                          PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA));
     if(ret_val)
     {
         printf("ERROR: Failed to configure PINMUX for CANFD Rx \r\n");
@@ -206,7 +206,7 @@ static int32_t pinmux_config(void)
     }
 
     ret_val = pinconf_set(PORT_7, PIN_1, PINMUX_ALTERNATE_FUNCTION_7,
-                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12_MILI_AMPS |
+                         (PADCTRL_OUTPUT_DRIVE_STRENGTH_12MA |
                           PADCTRL_SCHMITT_TRIGGER_ENABLE));
     if(ret_val)
     {
@@ -251,7 +251,7 @@ void cb_unit_event(uint32_t event)
     {
         /* Communication error occurred */
         xResult = xTaskNotifyFromISR(canfd_xHandle, CANFD_ERROR,
-                           eSetBits, &xHigherPriorityTaskWoken);
+                                     eSetBits, &xHigherPriorityTaskWoken);
 
         if(xResult == pdTRUE)
         {
@@ -291,7 +291,7 @@ void cb_object_event(uint32_t obj_idx, uint32_t event)
 
                     /* Rx Success - Notify the task*/
             xResult = xTaskNotifyFromISR(canfd_xHandle, CANFD_RX_SUCCESS,
-                               eSetBits, &xHigherPriorityTaskWoken);
+                                         eSetBits, &xHigherPriorityTaskWoken);
 
             if(xResult == pdTRUE)
             {
@@ -303,7 +303,7 @@ void cb_object_event(uint32_t obj_idx, uint32_t event)
     {
         /* Tx Success - Notify the task*/
         xResult = xTaskNotifyFromISR(canfd_xHandle, CANFD_TX_SUCCESS,
-                           eSetBits, &xHigherPriorityTaskWoken);
+                                     eSetBits, &xHigherPriorityTaskWoken);
 
         if(xResult == pdTRUE)
         {
@@ -316,11 +316,12 @@ void cb_object_event(uint32_t obj_idx, uint32_t event)
  * @fn      void canfd_demo_task(void *pvParameters)
  * @brief   CANFD Demo function
  * @note    none
- * @param   none
+ * @param   pvParameters : Task parameter
  * @retval  none
  */
 void canfd_demo_task(void* pvParameters)
 {
+    CANFD_FRAME msg_type            = CANFD_FRAME_STD_ID_CLASSIC_DATA;
     int32_t ret_val                = ARM_DRIVER_OK;
     ARM_CAN_CAPABILITIES             can_capabilities;
     ARM_CAN_OBJ_CAPABILITIES         can_obj_capabilities;
@@ -338,7 +339,10 @@ void canfd_demo_task(void* pvParameters)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk enable = %d\n", error_code);
+        return;
+    }
 
     /* Enables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
@@ -346,7 +350,10 @@ void canfd_demo_task(void* pvParameters)
                                               true,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
 
     printf("*** CANFD Normal mode Demo app is starting ***\n");
 
@@ -397,7 +404,8 @@ void canfd_demo_task(void* pvParameters)
     }
     /* Setting bit rate for CANFD */
     ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_NOMINAL,
-              CANFD_NOMINAL_BITRATE, CANFD_NOMINAL_BITTIME_SEGMENTS);
+                                         CANFD_NOMINAL_BITRATE,
+                                         CANFD_NOMINAL_BITTIME_SEGMENTS);
     if(ret_val != ARM_DRIVER_OK)
     {
        printf("ERROR: Failed to set CANFD Nominal Bitrate\r\n");
@@ -407,7 +415,8 @@ void canfd_demo_task(void* pvParameters)
     if(can_capabilities.fd_mode == 1U)
     {
         ret_val = CANFD_instance->SetBitrate(ARM_CAN_BITRATE_FD_DATA,
-                  CANFD_FAST_BITRATE, CANFD_FAST_BITTIME_SEGMENTS);
+                                             CANFD_FAST_BITRATE,
+                                             CANFD_FAST_BITTIME_SEGMENTS);
         if(ret_val != ARM_DRIVER_OK)
         {
            printf("ERROR: Failed to set CANFD Fast Bitrate\r\n");
@@ -442,8 +451,10 @@ void canfd_demo_task(void* pvParameters)
        goto power_off_canfd;
     }
     /* Setting Object filter of CANFD */
-    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id, ARM_CAN_FILTER_ID_EXACT_ADD,
-                                CANFD_OBJECT_FILTER_CODE, CANFD_OBJECT_FILTER_MASK);
+    ret_val = CANFD_instance->ObjectSetFilter(rx_obj_id,
+                                              ARM_CAN_FILTER_ID_EXACT_ADD,
+                                              CANFD_OBJECT_FILTER_CODE,
+                                              CANFD_OBJECT_FILTER_MASK);
     if(ret_val == ARM_DRIVER_ERROR_SPECIFIC)
     {
        printf("ERROR: No free Filter available\r\n");
@@ -464,7 +475,7 @@ void canfd_demo_task(void* pvParameters)
 
     while(pdTRUE)
     {
-        if(canfd_transmit_message() != false)
+        if(canfd_transmit_message(msg_type) != false)
         {
             /* wait for Tx success/Errors callback. */
             if(xTaskNotifyWait(NULL, CANFD_ALL_NOTIFICATIONS,
@@ -482,6 +493,7 @@ void canfd_demo_task(void* pvParameters)
                     break;
                 }
             }
+            msg_type++;
         }
         else
         {
@@ -529,15 +541,20 @@ uninitialise_canfd:
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: HFOSC clk disable = %d\n", error_code);
-
+        return;
+    }
     /* Disables the 160MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                                               CLKEN_CLK_160M,
                                               false,
                                               &service_error_code);
     if(error_code)
+    {
         printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
+    }
 
     printf("*** CANFD Normal mode Demo is ended ***\r\n");
 
@@ -656,7 +673,7 @@ void canfd_process_rx_message(void)
                 }
 
                 printf("Id:%lu, Len:%d:\r\n    Data:",
-                   (rx_msg_header.id & (~ARM_CAN_ID_IDE_Msk)), rx_msg_size);
+                      (rx_msg_header.id & (~ARM_CAN_ID_IDE_Msk)), rx_msg_size);
                 for(iter = 0; iter < rx_msg_size; iter++)
                 {
                     printf("%c", rx_data[iter]);
@@ -679,20 +696,19 @@ void canfd_process_rx_message(void)
 }
 
 /**
- * @fn      bool canfd_transmit_message(void)
+ * @fn      bool canfd_transmit_message(CANFD_FRAME msg_type)
  * @brief   Prepares and sends message
  * @note    none
- * @param   none
+ * @param   msg_type : Type of msg to send
  * @retval  none
  */
-bool canfd_transmit_message()
+bool canfd_transmit_message(const CANFD_FRAME msg_type)
 {
-    static CANFD_FRAME msg_type = CANFD_FRAME_STD_ID_CLASSIC_DATA;
     uint32_t status = ARM_DRIVER_OK;
     uint8_t iter;
 
-    /* If the previous message is successfully sent 7 seconds ago,
-     * then prepaer and transmit next message */
+    /* If the previous message is successfully sent,
+     * then prepare and transmit next message */
     switch(msg_type)
     {
         case CANFD_FRAME_STD_ID_CLASSIC_DATA:
@@ -773,7 +789,6 @@ bool canfd_transmit_message()
             printf("%c", tx_data[iter]);
         }
         printf("\r\n");
-        msg_type++;
     }
     else
     {

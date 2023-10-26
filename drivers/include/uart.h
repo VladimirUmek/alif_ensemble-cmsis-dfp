@@ -47,83 +47,8 @@ typedef struct {                                     /*!< UART Register Structur
     volatile const  uint32_t  RESERVED[4];
 
   union {
-    volatile const  uint32_t UART_SRBR0;             /*!< (@ 0x00000030) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR0;                    /*!< (@ 0x00000030) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR1;             /*!< (@ 0x00000034) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR1;                    /*!< (@ 0x00000034) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR2;             /*!< (@ 0x00000038) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR2;                    /*!< (@ 0x00000038) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR3;             /*!< (@ 0x0000003C) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR3;                    /*!< (@ 0x0000003C) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR4;             /*!< (@ 0x00000040) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR4;                    /*!< (@ 0x00000040) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR5;             /*!< (@ 0x00000044) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR5;                    /*!< (@ 0x00000044) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR6;             /*!< (@ 0x00000048) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR6;                    /*!< (@ 0x00000048) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR7;             /*!< (@ 0x0000004C) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR7;                    /*!< (@ 0x0000004C) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR8;             /*!< (@ 0x00000050) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR8;                    /*!< (@ 0x00000050) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR9;             /*!< (@ 0x00000054) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR9;                    /*!< (@ 0x00000054) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR10;            /*!< (@ 0x00000058) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR10;                   /*!< (@ 0x00000058) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR11;            /*!< (@ 0x0000005C) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR11;                   /*!< (@ 0x0000005C) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR12;            /*!< (@ 0x00000060) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR12;                   /*!< (@ 0x00000060) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR13;            /*!< (@ 0x00000064) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR13;                   /*!< (@ 0x00000064) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR14;            /*!< (@ 0x00000068) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR14;                   /*!< (@ 0x00000068) Shadow Transmit Holding Register (n)                       */
-  };
-
-  union {
-    volatile const  uint32_t UART_SRBR15;            /*!< (@ 0x0000006C) Shadow Receive Buffer Register (n)                         */
-    volatile uint32_t UART_STHR15;                   /*!< (@ 0x0000006C) Shadow Transmit Holding Register (n)                       */
+    volatile const  uint32_t UART_SRBR[16];          /*!< (@ 0x00000030) Shadow Receive Buffer Register (n)                         */
+    volatile uint32_t UART_STHR[16];                 /*!< (@ 0x00000030) Shadow Transmit Holding Register (n)                       */
   };
 
     volatile uint32_t  UART_FAR;                     /*!< (@ 0x00000070) FIFO Access Register                                       */
@@ -432,16 +357,16 @@ typedef struct _UART_TRANSFER
 
 
 /**
- * @fn		void uart_software_reset (UART_Type *uart)
- * @brief	uart software reset
- * @note	none
- * @param	uart: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_software_reset (UART_Type *uart)
+ * @brief   uart software reset
+ * @note    none
+ * @param   uart: Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_software_reset (UART_Type *uart)
 {
-	/* use shadow register srr software reset register */
-	uart->UART_SRR = UART_SRR_UART_RESET|UART_SRR_RCVR_FIFO_RESET|UART_SRR_TRANSMIT_FIFO_RESET;
+    /* use shadow register srr software reset register */
+    uart->UART_SRR = UART_SRR_UART_RESET|UART_SRR_RCVR_FIFO_RESET|UART_SRR_TRANSMIT_FIFO_RESET;
 }
 
 /**
@@ -467,248 +392,248 @@ static inline void* uart_get_dma_rx_addr(UART_Type *uart)
 }
 
 /**
- * @fn		int32_t uart_set_tx_trigger (UART_Type       *uart,
+ * @fn      int32_t uart_set_tx_trigger (UART_Type       *uart,
                                          UART_TX_TRIGGER  tx_trigger)
- * @brief	set uart transmitter trigger level
- *			This is used to select the empty threshold level in the transmitter FIFO
- *			at which the THRE Interrupts will be generated.
- * @note	\ref UART_TX_TRIGGER enum
- * @param	uart		: Pointer to uart register set structure
- * @param	tx_trigger	: enum UART_TX_TRIGGER
- * @retval	none
+ * @brief   set uart transmitter trigger level
+ *          This is used to select the empty threshold level in the transmitter FIFO
+ *          at which the THRE Interrupts will be generated.
+ * @note    \ref UART_TX_TRIGGER enum
+ * @param   uart        : Pointer to uart register set structure
+ * @param   tx_trigger  : enum UART_TX_TRIGGER
+ * @retval  none
  */
 static inline void uart_set_tx_trigger (UART_Type       *uart,
                                         UART_TX_TRIGGER  tx_trigger)
 {
-	/* update stet shadow TX empty trigger register */
-	uart->UART_STET = tx_trigger;
+    /* update stet shadow TX empty trigger register */
+    uart->UART_STET = tx_trigger;
 }
 
 /**
- * @fn		uint8_t uart_get_decoded_tx_trigger (UART_Type *uart)
- * @brief	get decoded uart transmitter trigger level value
- * @param	uart		: Pointer to uart register set structure
- * @retval	decoded uart transmitter trigger level value
+ * @fn      uint8_t uart_get_decoded_tx_trigger (UART_Type *uart)
+ * @brief   get decoded uart transmitter trigger level value
+ * @param   uart        : Pointer to uart register set structure
+ * @retval  decoded uart transmitter trigger level value
  */
 static inline uint8_t uart_get_decoded_tx_trigger (UART_Type *uart)
 {
-	UART_TX_TRIGGER tx_trigger = 0;
-	uint8_t decoded_tx_trigger = 0;
+    UART_TX_TRIGGER tx_trigger = 0;
+    uint8_t decoded_tx_trigger = 0;
 
-	/* get TX trigger from stet shadow TX empty trigger register */
-	tx_trigger = uart->UART_STET;
+    /* get TX trigger from stet shadow TX empty trigger register */
+    tx_trigger = uart->UART_STET;
 
-	switch(tx_trigger)
-	{
-	case UART_TX_FIFO_EMPTY:
-		decoded_tx_trigger = 0;
-		break;
+    switch(tx_trigger)
+    {
+    case UART_TX_FIFO_EMPTY:
+        decoded_tx_trigger = 0;
+        break;
 
-	case UART_TX_FIFO_CHAR_2:
-		decoded_tx_trigger = 2;
-		break;
+    case UART_TX_FIFO_CHAR_2:
+        decoded_tx_trigger = 2;
+        break;
 
-	case UART_TX_FIFO_QUARTER_FULL:
-		decoded_tx_trigger = UART_FIFO_DEPTH/4;
-		break;
+    case UART_TX_FIFO_QUARTER_FULL:
+        decoded_tx_trigger = UART_FIFO_DEPTH/4;
+        break;
 
-	case UART_TX_FIFO_HALF_FULL:
-		decoded_tx_trigger = UART_FIFO_DEPTH/2;
-		break;
-	}
+    case UART_TX_FIFO_HALF_FULL:
+        decoded_tx_trigger = UART_FIFO_DEPTH/2;
+        break;
+    }
 
-	return decoded_tx_trigger;
+    return decoded_tx_trigger;
 }
 
 /**
- * @fn		int32_t uart_set_rx_trigger (UART_Type       *uart,
+ * @fn      int32_t uart_set_rx_trigger (UART_Type       *uart,
                                          UART_RX_TRIGGER  rx_trigger)
- * @brief	set uart receiver trigger level
- *			This is used to select the trigger level in the receiver FIFO
- *			at which the Received Data Available Interrupt will be generated.
- * @note	\ref UART_RX_TRIGGER enum
- * @param	uart		: Pointer to uart register set structure
- * @param	rx_trigger	: enum UART_RX_TRIGGER
- * @retval	none
+ * @brief   set uart receiver trigger level
+ *          This is used to select the trigger level in the receiver FIFO
+ *          at which the Received Data Available Interrupt will be generated.
+ * @note    \ref UART_RX_TRIGGER enum
+ * @param   uart        : Pointer to uart register set structure
+ * @param   rx_trigger  : enum UART_RX_TRIGGER
+ * @retval  none
  */
 static inline void uart_set_rx_trigger (UART_Type       *uart,
                                         UART_RX_TRIGGER  rx_trigger)
 {
-	/* update srt shadow receiver trigger register */
-	uart->UART_SRT = rx_trigger;
+    /* update srt shadow receiver trigger register */
+    uart->UART_SRT = rx_trigger;
 }
 
 /**
- * @fn		uint8_t uart_get_decoded_rx_trigger (UART_Type *uart)
- * @brief	get decoded uart receiver trigger level value
- * @param	uart		: Pointer to uart register set structure
- * @retval	decoded uart receiver trigger level value
+ * @fn      uint8_t uart_get_decoded_rx_trigger (UART_Type *uart)
+ * @brief   get decoded uart receiver trigger level value
+ * @param   uart        : Pointer to uart register set structure
+ * @retval  decoded uart receiver trigger level value
  */
 static inline uint8_t uart_get_decoded_rx_trigger (UART_Type *uart)
 {
-	UART_RX_TRIGGER rx_trigger = 0;
-	uint8_t decoded_rx_trigger = 0;
+    UART_RX_TRIGGER rx_trigger = 0;
+    uint8_t decoded_rx_trigger = 0;
 
-	/* update srt shadow receiver trigger register */
-	rx_trigger = uart->UART_SRT;
+    /* update srt shadow receiver trigger register */
+    rx_trigger = uart->UART_SRT;
 
-	switch(rx_trigger)
-	{
-	case UART_RX_ONE_CHAR_IN_FIFO:
-		decoded_rx_trigger = 1;
-		break;
+    switch(rx_trigger)
+    {
+    case UART_RX_ONE_CHAR_IN_FIFO:
+        decoded_rx_trigger = 1;
+        break;
 
-	case UART_RX_FIFO_QUARTER_FULL:
-		decoded_rx_trigger = UART_FIFO_DEPTH/4;
-		break;
+    case UART_RX_FIFO_QUARTER_FULL:
+        decoded_rx_trigger = UART_FIFO_DEPTH/4;
+        break;
 
-	case UART_RX_FIFO_HALF_FULL:
-		decoded_rx_trigger = UART_FIFO_DEPTH/2;
-		break;
+    case UART_RX_FIFO_HALF_FULL:
+        decoded_rx_trigger = UART_FIFO_DEPTH/2;
+        break;
 
-	case UART_RX_FIFO_TWO_LESS_FULL:
-		decoded_rx_trigger = UART_FIFO_DEPTH - 2;
-		break;
-	}
+    case UART_RX_FIFO_TWO_LESS_FULL:
+        decoded_rx_trigger = UART_FIFO_DEPTH - 2;
+        break;
+    }
 
-	return decoded_rx_trigger;
+    return decoded_rx_trigger;
 }
 
 /**
- * @fn		void uart_set_break_control (UART_Type *uart)
- * @brief	set uart break control
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_set_break_control (UART_Type *uart)
+ * @brief   set uart break control
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_set_break_control (UART_Type *uart)
 {
-	/* set break_control bit in lcr line control register. */
-	uart->UART_LCR |= UART_LCR_BREAK;
+    /* set break_control bit in lcr line control register. */
+    uart->UART_LCR |= UART_LCR_BREAK;
 }
 
 /**
- * @fn		void uart_clear_break_control (UART_Type *uart)
- * @brief	clear uart break control
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_clear_break_control (UART_Type *uart)
+ * @brief   clear uart break control
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_clear_break_control (UART_Type *uart)
 {
-	/* clear break_control bit in lcr line control register. */
-	uart->UART_LCR &= ~UART_LCR_BREAK;
+    /* clear break_control bit in lcr line control register. */
+    uart->UART_LCR &= ~UART_LCR_BREAK;
 }
 
 /**
- * @fn		void uart_enable_fifo (UART_Type *uart)
- * @brief	enable uart fifo
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_enable_fifo (UART_Type *uart)
+ * @brief   enable uart fifo
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_enable_fifo (UART_Type *uart)
 {
-	/* enable uart fifo fcr FIFO control register */
-	uart->UART_FCR = UART_FCR_FIFO_ENABLE;
+    /* enable uart fifo fcr FIFO control register */
+    uart->UART_FCR = UART_FCR_FIFO_ENABLE;
 }
 
 /**
- * @fn		void uart_select_dma_mode1 (UART_Type *uart)
- * @brief	select uart dma mode1
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_select_dma_mode1 (UART_Type *uart)
+ * @brief   select uart dma mode1
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_select_dma_mode1 (UART_Type *uart)
 {
-	uart->UART_FCR |= UART_FCR_DMAM_MODE1;
+    uart->UART_FCR |= UART_FCR_DMAM_MODE1;
 }
 
 /**
- * @fn		void uart_reset_txfifo (UART_Type *uart)
- * @brief	reset transmit fifo
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_reset_txfifo (UART_Type *uart)
+ * @brief   reset transmit fifo
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_reset_txfifo (UART_Type *uart)
 {
-	/* set XMIT_FIFO_Reset bit in shadow register
-	 * srr software reset register */
-	uart->UART_SRR = UART_SRR_TRANSMIT_FIFO_RESET;
+    /* set XMIT_FIFO_Reset bit in shadow register
+     * srr software reset register */
+    uart->UART_SRR = UART_SRR_TRANSMIT_FIFO_RESET;
 }
 
 /**
- * @fn		void uart_reset_rxfifo (UART_Type *uart)
- * @brief	reset receiver fifo
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_reset_rxfifo (UART_Type *uart)
+ * @brief   reset receiver fifo
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_reset_rxfifo (UART_Type *uart)
 {
-	/* set RCVR_FIFO_Reset bit in shadow register
-	 * srr software reset register */
-	uart->UART_SRR = UART_SRR_RCVR_FIFO_RESET;
+    /* set RCVR_FIFO_Reset bit in shadow register
+     * srr software reset register */
+    uart->UART_SRR = UART_SRR_RCVR_FIFO_RESET;
 }
 
 /**
- * @fn		void uart_enable_tx_irq (UART_Type *uart)
- * @brief	enable transmitter interrupt
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_enable_tx_irq (UART_Type *uart)
+ * @brief   enable transmitter interrupt
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_enable_tx_irq (UART_Type *uart)
 {
-	/* enable transmit_holding_register_empty bit in
-	 * ier interrupt enable register */
-	uart->UART_IER |= UART_IER_ENABLE_TRANSMIT_HOLD_REG_EMPTY;
+    /* enable transmit_holding_register_empty bit in
+     * ier interrupt enable register */
+    uart->UART_IER |= UART_IER_ENABLE_TRANSMIT_HOLD_REG_EMPTY;
 }
 
 /**
- * @fn		void uart_disable_tx_irq (UART_Type *uart)
- * @brief	disable transmit interrupt
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_disable_tx_irq (UART_Type *uart)
+ * @brief   disable transmit interrupt
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_disable_tx_irq (UART_Type *uart)
 {
-	/* disable transmit_holding_register_empty bit in
-	 * ier interrupt enable register */
-	uart->UART_IER &= ~UART_IER_ENABLE_TRANSMIT_HOLD_REG_EMPTY;
+    /* disable transmit_holding_register_empty bit in
+     * ier interrupt enable register */
+    uart->UART_IER &= ~UART_IER_ENABLE_TRANSMIT_HOLD_REG_EMPTY;
 }
 
 /**
- * @fn		void uart_enable_rx_irq (UART_Type *uart)
- * @brief	enable receiver interrupt
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_enable_rx_irq (UART_Type *uart)
+ * @brief   enable receiver interrupt
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_enable_rx_irq (UART_Type *uart)
 {
-	/* enable receiver interrupt */
-	/* enable receive_data_available_interrupt bit in
-	 * ier interrupt enable register */
-	uart->UART_IER |= UART_IER_ENABLE_RECEIVED_DATA_AVAILABLE;
+    /* enable receiver interrupt */
+    /* enable receive_data_available_interrupt bit in
+     * ier interrupt enable register */
+    uart->UART_IER |= UART_IER_ENABLE_RECEIVED_DATA_AVAILABLE;
 }
 
 /**
- * @fn		void uart_disable_rx_irq (UART_Type *uart)
- * @brief	disable receiver interrupt
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_disable_rx_irq (UART_Type *uart)
+ * @brief   disable receiver interrupt
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_disable_rx_irq (UART_Type *uart)
 {
-	/* disable receiver interrupt */
-	/* disable receive_data_available_interrupt bit in
-	 * ier interrupt enable register */
-	uart->UART_IER &= ~UART_IER_ENABLE_RECEIVED_DATA_AVAILABLE;
+    /* disable receiver interrupt */
+    /* disable receive_data_available_interrupt bit in
+     * ier interrupt enable register */
+    uart->UART_IER &= ~UART_IER_ENABLE_RECEIVED_DATA_AVAILABLE;
 }
 
 /* --------------------------------- RS485 Functions ---------------------------*/
@@ -734,276 +659,276 @@ static inline void uart_disable_rx_irq (UART_Type *uart)
  */
 
 /**
- * @fn		void uart_rs485_enable (UART_Type *uart)
- * @brief	enable uart RS485 mode with default configuration as per RTE_device.h
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_rs485_enable (UART_Type *uart)
+ * @brief   enable uart RS485 mode with default configuration as per RTE_device.h
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_rs485_enable (UART_Type *uart)
 {
-	/* reset TCR transceiver control register. */
-	uart->UART_TCR = 0;
+    /* reset TCR transceiver control register. */
+    uart->UART_TCR = 0;
 
-	/* enable RS485 mode in TCR transceiver control register. */
-	uart->UART_TCR |= UART_TCR_RS485_ENABLE;
+    /* enable RS485 mode in TCR transceiver control register. */
+    uart->UART_TCR |= UART_TCR_RS485_ENABLE;
 
-	/* de polarity: active high, re polarity: active low/high. */
-	uart->UART_TCR |= UART_TCR_DE_POL_ACTIVE_HIGH;
-	uart->UART_TCR |= UART_TCR_RE_POL_ACTIVE_HIGH;
+    /* de polarity: active high, re polarity: active low/high. */
+    uart->UART_TCR |= UART_TCR_DE_POL_ACTIVE_HIGH;
+    uart->UART_TCR |= UART_TCR_RE_POL_ACTIVE_HIGH;
 }
 
 /**
- * @fn		void uart_rs485_disable (UART_Type *uart)
- * @brief	disable uart RS485 mode
- * @note	none
- * @param	uart: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_rs485_disable (UART_Type *uart)
+ * @brief   disable uart RS485 mode
+ * @note    none
+ * @param   uart: Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_rs485_disable (UART_Type *uart)
 {
-	/* disable RS485 mode in TCR transceiver control register. */
-	uart->UART_TCR &= ~UART_TCR_RS485_ENABLE;
+    /* disable RS485 mode in TCR transceiver control register. */
+    uart->UART_TCR &= ~UART_TCR_RS485_ENABLE;
 }
 
 /**
- * @fn		void uart_rs485_set_transfer_mode (UART_Type *uart, UART_RS485_TRANSFER_MODE mode)
- * @brief	set RS485 transfer modes \ref UART_RS485_TRANSFER_MODE
- * @note	none
- * @param	uart: Pointer to uart register set structure
- * @param	mode: Available RS485 transfer modes
- *				- UART_RS485_FULL_DULPLX_MODE            : Not tested as Hardware is not supporting Full duplex mode.
- *				- UART_RS485_SW_CONTROL_HALF_DULPLX_MODE : Currently Driver APIs are not exposed for SW Control Half Duplex mode.
- *				- UART_RS485_HW_CONTROL_HALF_DULPLX_MODE : Tested and Verified, Able to send and receive data properly.
- * @retval	none
+ * @fn      void uart_rs485_set_transfer_mode (UART_Type *uart, UART_RS485_TRANSFER_MODE mode)
+ * @brief   set RS485 transfer modes \ref UART_RS485_TRANSFER_MODE
+ * @note    none
+ * @param   uart: Pointer to uart register set structure
+ * @param   mode: Available RS485 transfer modes
+ *              - UART_RS485_FULL_DULPLX_MODE            : Not tested as Hardware is not supporting Full duplex mode.
+ *              - UART_RS485_SW_CONTROL_HALF_DULPLX_MODE : Currently Driver APIs are not exposed for SW Control Half Duplex mode.
+ *              - UART_RS485_HW_CONTROL_HALF_DULPLX_MODE : Tested and Verified, Able to send and receive data properly.
+ * @retval  none
  */
 static inline void uart_rs485_set_transfer_mode (UART_Type *uart, UART_RS485_TRANSFER_MODE mode)
 {
-	/* clear Transfer modes bits[4:3] */
-	uart->UART_TCR &= (~UART_TCR_XFER_MODE_MASK);
+    /* clear Transfer modes bits[4:3] */
+    uart->UART_TCR &= (~UART_TCR_XFER_MODE_MASK);
 
-	if(mode == UART_RS485_FULL_DULPLX_MODE)            uart->UART_TCR |= UART_TCR_XFER_MODE_FULL_DUPLEX;
-	if(mode == UART_RS485_SW_CONTROL_HALF_DULPLX_MODE) uart->UART_TCR |= UART_TCR_XFER_MODE_SW_CONTROL_HALF_DUPLEX;
-	if(mode == UART_RS485_HW_CONTROL_HALF_DULPLX_MODE) uart->UART_TCR |= UART_TCR_XFER_MODE_HW_CONTROL_HALF_DUPLEX;
+    if(mode == UART_RS485_FULL_DULPLX_MODE)            uart->UART_TCR |= UART_TCR_XFER_MODE_FULL_DUPLEX;
+    if(mode == UART_RS485_SW_CONTROL_HALF_DULPLX_MODE) uart->UART_TCR |= UART_TCR_XFER_MODE_SW_CONTROL_HALF_DUPLEX;
+    if(mode == UART_RS485_HW_CONTROL_HALF_DULPLX_MODE) uart->UART_TCR |= UART_TCR_XFER_MODE_HW_CONTROL_HALF_DUPLEX;
 }
 
 /**
- * @fn		UART_RS485_TRANSFER_MODE uart_rs485_get_transfer_mode (UART_Type *uart)
- * @brief	get selected RS485 transfer mode \ref UART_RS485_TRANSFER_MODE
- * @note	none
- * @param	uart: Pointer to uart register set structure
- * @retval	selected RS485 transfer mode
+ * @fn      UART_RS485_TRANSFER_MODE uart_rs485_get_transfer_mode (UART_Type *uart)
+ * @brief   get selected RS485 transfer mode \ref UART_RS485_TRANSFER_MODE
+ * @note    none
+ * @param   uart: Pointer to uart register set structure
+ * @retval  selected RS485 transfer mode
  */
 static inline UART_RS485_TRANSFER_MODE uart_rs485_get_transfer_mode (UART_Type *uart)
 {
-	return ((uart->UART_TCR & UART_TCR_XFER_MODE_MASK) >> 3);
+    return ((uart->UART_TCR & UART_TCR_XFER_MODE_MASK) >> 3);
 }
 
 /**
- * @fn		void uart_rs485_set_de_assertion_time (UART_Type *uart, uint32_t assertion_time)
- * @brief	set RS485 DE Assertion time for
- *			DET driver output enable timing register
- * @note	DE Assertion time: 8 bit only, DET register bits (7:0)
- * @param	uart			: Pointer to uart register set structure
- * @param	assertion_time	: 8-bit DE Assertion time
- * @retval	none
+ * @fn      void uart_rs485_set_de_assertion_time (UART_Type *uart, uint32_t assertion_time)
+ * @brief   set RS485 DE Assertion time for
+ *          DET driver output enable timing register
+ * @note    DE Assertion time: 8 bit only, DET register bits (7:0)
+ * @param   uart            : Pointer to uart register set structure
+ * @param   assertion_time  : 8-bit DE Assertion time
+ * @retval  none
  */
 static inline void uart_rs485_set_de_assertion_time (UART_Type *uart, uint32_t assertion_time)
 {
-	/* DE Assertion time: 8 bit only. */
+    /* DE Assertion time: 8 bit only. */
 
-	/* clear DE Assertion time: bits (7:0). */
-	uart->UART_DET &= (~UART_DET_TIME_MASK);
+    /* clear DE Assertion time: bits (7:0). */
+    uart->UART_DET &= (~UART_DET_TIME_MASK);
 
-	/* DE Assertion time: bits (7:0). */
-	uart->UART_DET |= (assertion_time & UART_DET_TIME_MASK);
+    /* DE Assertion time: bits (7:0). */
+    uart->UART_DET |= (assertion_time & UART_DET_TIME_MASK);
 }
 
 /**
- * @fn		void uart_rs485_set_de_deassertion_time (UART_Type *uart, uint32_t deassertion_time)
- * @brief	set RS485 DE De-Assertion time for
- *			DET driver output enable timing register
- * @note	DE Assertion time: 8 bit only, DET register bits (23:16)
- * @param	uart				: Pointer to uart register set structure
- * @param	deassertion_time	: 8-bit DE De-Assertion time
- * @retval	none
+ * @fn      void uart_rs485_set_de_deassertion_time (UART_Type *uart, uint32_t deassertion_time)
+ * @brief   set RS485 DE De-Assertion time for
+ *          DET driver output enable timing register
+ * @note    DE Assertion time: 8 bit only, DET register bits (23:16)
+ * @param   uart                : Pointer to uart register set structure
+ * @param   deassertion_time    : 8-bit DE De-Assertion time
+ * @retval  none
  */
 static inline void  uart_rs485_set_de_deassertion_time (UART_Type *uart, uint32_t deassertion_time)
 {
-	/* DE De-Assertion time: 8 bit only. */
+    /* DE De-Assertion time: 8 bit only. */
 
-	/* clear DE De-Assertion time: bits (23:16). */
-	uart->UART_DET &= ( ~ (UART_DET_TIME_MASK << UART_DET_DE_DEASSERTION_TIME_BIT_SHIFT) );
+    /* clear DE De-Assertion time: bits (23:16). */
+    uart->UART_DET &= ( ~ (UART_DET_TIME_MASK << UART_DET_DE_DEASSERTION_TIME_BIT_SHIFT) );
 
-	/* DE De-Assertion time: bits (23:16). */
-	uart->UART_DET |= ( (deassertion_time & UART_DET_TIME_MASK) << UART_DET_DE_DEASSERTION_TIME_BIT_SHIFT );
+    /* DE De-Assertion time: bits (23:16). */
+    uart->UART_DET |= ( (deassertion_time & UART_DET_TIME_MASK) << UART_DET_DE_DEASSERTION_TIME_BIT_SHIFT );
 }
 
 /**
- * @fn		void uart_rs485_set_de_to_re_turn_around_time (UART_Type *uart, uint32_t de_to_re_time)
- * @brief	set RS485 Driver Enable DE to Receive Enable RE Turn Around time for
- *			TAT turn-around timing register
- * @note	TAT DE to RE Turn Around time: 16 bit , TAT register bits (15:0)
- * @param	uart				: Pointer to uart register set structure
- * @param	de_to_re_time		: 16-bit DE to RE time
- * @retval	none
+ * @fn      void uart_rs485_set_de_to_re_turn_around_time (UART_Type *uart, uint32_t de_to_re_time)
+ * @brief   set RS485 Driver Enable DE to Receive Enable RE Turn Around time for
+ *          TAT turn-around timing register
+ * @note    TAT DE to RE Turn Around time: 16 bit , TAT register bits (15:0)
+ * @param   uart                : Pointer to uart register set structure
+ * @param   de_to_re_time       : 16-bit DE to RE time
+ * @retval  none
  */
 static inline void uart_rs485_set_de_to_re_turn_around_time (UART_Type *uart, uint32_t de_to_re_time)
 {
-	/* Driver Enable DE to Receive Enable RE Turn Around time: 16 bit . */
+    /* Driver Enable DE to Receive Enable RE Turn Around time: 16 bit . */
 
-	/* Clear TAT DE to RE Turn Around time bits (15:0). */
-	uart->UART_TAT &= (~UART_TAT_TIME_MASK);
+    /* Clear TAT DE to RE Turn Around time bits (15:0). */
+    uart->UART_TAT &= (~UART_TAT_TIME_MASK);
 
-	/* TAT DE to RE Turn Around time bits (15:0). */
-	uart->UART_TAT |= (de_to_re_time & UART_TAT_TIME_MASK);
+    /* TAT DE to RE Turn Around time bits (15:0). */
+    uart->UART_TAT |= (de_to_re_time & UART_TAT_TIME_MASK);
 }
 
 /**
- * @fn		void uart_rs485_set_re_to_de_turn_around_time (UART_Type *uart, uint32_t re_to_de_time)
- * @brief	set RS485 Receive Enable RE to Driver Enable DE Turn Around time for
- *			TAT turn-around timing register
- * @note	TAT RE to DE Turn Around time: 16 bit , TAT register bits (31:16)
- * @param	uart			: Pointer to uart register set structure
- * @param	re_to_de_time	: 16-bit RE to DE time
- * @retval	none
+ * @fn      void uart_rs485_set_re_to_de_turn_around_time (UART_Type *uart, uint32_t re_to_de_time)
+ * @brief   set RS485 Receive Enable RE to Driver Enable DE Turn Around time for
+ *          TAT turn-around timing register
+ * @note    TAT RE to DE Turn Around time: 16 bit , TAT register bits (31:16)
+ * @param   uart            : Pointer to uart register set structure
+ * @param   re_to_de_time   : 16-bit RE to DE time
+ * @retval  none
  */
 static inline void uart_rs485_set_re_to_de_turn_around_time (UART_Type *uart, uint32_t re_to_de_time)
 {
-	/* Receive Enable RE to Driver Enable DE Turn Around time: 16 bit . */
+    /* Receive Enable RE to Driver Enable DE Turn Around time: 16 bit . */
 
-	/* Clear TAT RE to DE Turn Around time bits (31:16). */
-	uart->UART_TAT &= ( ~ (UART_TAT_TIME_MASK << UART_TAT_RE_TO_DE_TIME_BIT_SHIFT) );
+    /* Clear TAT RE to DE Turn Around time bits (31:16). */
+    uart->UART_TAT &= ( ~ (UART_TAT_TIME_MASK << UART_TAT_RE_TO_DE_TIME_BIT_SHIFT) );
 
-	/* TAT RE to DE Turn Around time bits (31:16). */
-	uart->UART_TAT |= ( (re_to_de_time & UART_TAT_TIME_MASK) << UART_TAT_RE_TO_DE_TIME_BIT_SHIFT );
+    /* TAT RE to DE Turn Around time bits (31:16). */
+    uart->UART_TAT |= ( (re_to_de_time & UART_TAT_TIME_MASK) << UART_TAT_RE_TO_DE_TIME_BIT_SHIFT );
 }
 
 /**
- * @fn		void uart_rs485_enable_de_en (UART_Type *uart)
- * @brief	Enable RS485 DE Driver Enable Signal State
- * @note	none
- * @param	uart : Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_rs485_enable_de_en (UART_Type *uart)
+ * @brief   Enable RS485 DE Driver Enable Signal State
+ * @note    none
+ * @param   uart : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_rs485_enable_de_en (UART_Type *uart)
 {
-	uint32_t mode;
+    uint32_t mode;
 
-	/* Special check only for Software control Half-Duplex Mode
-	 * as DE and RE are mutually exclusive here. */
+    /* Special check only for Software control Half-Duplex Mode
+     * as DE and RE are mutually exclusive here. */
 
-	/* Check rs485 transfer mode. */
-	mode = uart_rs485_get_transfer_mode(uart);
+    /* Check rs485 transfer mode. */
+    mode = uart_rs485_get_transfer_mode(uart);
 
-	if(mode == UART_RS485_SW_CONTROL_HALF_DULPLX_MODE)
-	{
-		/* In Software control Half-Duplex Mode DE and RE are mutually exclusive.
-		 * so anyone either DE or RE can be enable at a time.
-		 */
+    if(mode == UART_RS485_SW_CONTROL_HALF_DULPLX_MODE)
+    {
+        /* In Software control Half-Duplex Mode DE and RE are mutually exclusive.
+         * so anyone either DE or RE can be enable at a time.
+         */
 
-		/* in S/W Half-Duplex Mode first disable RE signal before enabling DE signal. */
-		/* disable RE. */
-		uart->UART_RE_EN = UART_RE_EN_DISABLE;
-	}
+        /* in S/W Half-Duplex Mode first disable RE signal before enabling DE signal. */
+        /* disable RE. */
+        uart->UART_RE_EN = UART_RE_EN_DISABLE;
+    }
 
-	/* enable DE Driver Enable signal. */
-	uart->UART_DE_EN = UART_DE_EN_ENABLE;
+    /* enable DE Driver Enable signal. */
+    uart->UART_DE_EN = UART_DE_EN_ENABLE;
 }
 
 /**
- * @fn		void uart_rs485_disable_de_en (UART_Type *uart)
- * @brief	Disable RS485 DE Driver Enable Signal State
- * @note	none
- * @param	uart : Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_rs485_disable_de_en (UART_Type *uart)
+ * @brief   Disable RS485 DE Driver Enable Signal State
+ * @note    none
+ * @param   uart : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_rs485_disable_de_en (UART_Type *uart)
 {
-	/* Disable the DE Driver Enable signal. */
-	uart->UART_DE_EN = UART_DE_EN_DISABLE;
+    /* Disable the DE Driver Enable signal. */
+    uart->UART_DE_EN = UART_DE_EN_DISABLE;
 }
 
 /**
- * @fn		void uart_rs485_enable_re_en (UART_Type *uart)
- * @brief	Enable RS485 RE Receiver Enable Signal State
- * @note	none
- * @param	uart : Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_rs485_enable_re_en (UART_Type *uart)
+ * @brief   Enable RS485 RE Receiver Enable Signal State
+ * @note    none
+ * @param   uart : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_rs485_enable_re_en (UART_Type *uart)
 {
-	uint32_t mode;
+    uint32_t mode;
 
-	/* Special check only for Software control Half-Duplex Mode
-	 * as DE and RE are mutually exclusive here. */
+    /* Special check only for Software control Half-Duplex Mode
+     * as DE and RE are mutually exclusive here. */
 
-	/* Check rs485 transfer mode. */
-	mode = uart_rs485_get_transfer_mode(uart);
+    /* Check rs485 transfer mode. */
+    mode = uart_rs485_get_transfer_mode(uart);
 
-	if(mode == UART_RS485_SW_CONTROL_HALF_DULPLX_MODE)
-	{
-		/* In Software control Half-Duplex Mode DE and RE are mutually exclusive.
-		 * so anyone either DE or RE can be enable at a time.
-		 */
+    if(mode == UART_RS485_SW_CONTROL_HALF_DULPLX_MODE)
+    {
+        /* In Software control Half-Duplex Mode DE and RE are mutually exclusive.
+         * so anyone either DE or RE can be enable at a time.
+         */
 
-		/* in S/W Half-Duplex Mode first disable DE signal before enabling RE signal. */
-		/* disable DE. */
-		uart->UART_DE_EN = UART_DE_EN_DISABLE;
-	}
+        /* in S/W Half-Duplex Mode first disable DE signal before enabling RE signal. */
+        /* disable DE. */
+        uart->UART_DE_EN = UART_DE_EN_DISABLE;
+    }
 
-	/* enable RE Receiver Enable signal. */
-	uart->UART_RE_EN = UART_RE_EN_ENABLE;
+    /* enable RE Receiver Enable signal. */
+    uart->UART_RE_EN = UART_RE_EN_ENABLE;
 }
 
 /**
- * @fn		void uart_rs485_disable_re_en (UART_Type *uart)
- * @brief	Disable RS485 RE Receiver Enable Signal State
- * @note	none
- * @param	uart	: Pointer to uart register set structure
- * @retval	none
+ * @fn      void uart_rs485_disable_re_en (UART_Type *uart)
+ * @brief   Disable RS485 RE Receiver Enable Signal State
+ * @note    none
+ * @param   uart    : Pointer to uart register set structure
+ * @retval  none
  */
 static inline void uart_rs485_disable_re_en (UART_Type *uart)
 {
-	/* Disable the RE Receiver Enable signal. */
-	uart->UART_RE_EN = UART_RE_EN_DISABLE;
+    /* Disable the RE Receiver Enable signal. */
+    uart->UART_RE_EN = UART_RE_EN_DISABLE;
 }
 
 /* ---------------------- END of RS485 Functions ---------------------------- */
 
 /**
- * @fn		void uart_flush_rxfifo (UART_Type *uart, UART_TRANSFER *transfer)
- * @brief	flush receiver fifo
- * @note	\ref uart_abort_rx
- * @param	uart     : Pointer to uart register set structure
- * @param	transfer : Pointer to uart transfer structure
- * @retval	none
+ * @fn      void uart_flush_rxfifo (UART_Type *uart, UART_TRANSFER *transfer)
+ * @brief   flush receiver fifo
+ * @note    \ref uart_abort_rx
+ * @param   uart     : Pointer to uart register set structure
+ * @param   transfer : Pointer to uart transfer structure
+ * @retval  none
  */
 void uart_flush_rxfifo (UART_Type *uart, UART_TRANSFER *transfer);
 
 /**
- * @fn		void uart_set_baudrate (UART_Type *uart,uint32_t clk, uint32_t baudrate)
- * @brief	set uart baudrate
- * @note	added support for fraction in dlf divisor latch fraction register
- * @param	uart     : Pointer to uart register set structure
- * @param	clk      : clock
- * @param	baudrate : baudrate
- * @retval	none
+ * @fn      void uart_set_baudrate (UART_Type *uart,uint32_t clk, uint32_t baudrate)
+ * @brief   set uart baudrate
+ * @note    added support for fraction in dlf divisor latch fraction register
+ * @param   uart     : Pointer to uart register set structure
+ * @param   clk      : clock
+ * @param   baudrate : baudrate
+ * @retval  none
  */
 void uart_set_baudrate (UART_Type  *uart, uint32_t clk, uint32_t baudrate);
 
 /**
- * @fn		void uart_set_data_parity_stop_bits(UART_Type       *uart,
+ * @fn      void uart_set_data_parity_stop_bits(UART_Type       *uart,
                                                 UART_DATA_BITS   data_bits,
                                                 UART_PARITY      parity,
                                                 UART_STOP_BITS   stop_bits)
- * @brief	set data, parity and stop bits.
- * @note	none
- * @param	uart      : Pointer to uart register set structure
- * @param	data_bits : data bits
- * @param	parity    : parity
- * @param	stop_bits : stop bits
- * @retval	none
+ * @brief   set data, parity and stop bits.
+ * @note    none
+ * @param   uart      : Pointer to uart register set structure
+ * @param   data_bits : data bits
+ * @param   parity    : parity
+ * @param   stop_bits : stop bits
+ * @retval  none
  */
 void uart_set_data_parity_stop_bits(UART_Type       *uart,
                                     UART_DATA_BITS   data_bits,
@@ -1011,30 +936,50 @@ void uart_set_data_parity_stop_bits(UART_Type       *uart,
                                     UART_STOP_BITS   stop_bits);
 
 /**
- * @fn		void uart_set_flow_control(UART_Type         *uart,
+ * @fn      void uart_set_flow_control(UART_Type         *uart,
                                        UART_FLOW_CONTROL  flow_control)
  * @brief   set flow control(RTS/CTS)
- * @note	none
- * @param	uart         : Pointer to uart register set structure
- * @param	flow_control : flow control (RTS/CTS)
- * @retval	none
+ * @note    none
+ * @param   uart         : Pointer to uart register set structure
+ * @param   flow_control : flow control (RTS/CTS)
+ * @retval  none
  */
 void uart_set_flow_control(UART_Type         *uart,
                            UART_FLOW_CONTROL  flow_control);
 
 /**
- * @fn		void uart_irq_handler (UART_Type *uart, UART_TRANSFER *transfer)
- * @brief	uart interrupt handler
- * @note	only one combined interrupt for
+ * @fn      void uart_send_blocking (UART_Type *uart, UART_TRANSFER *transfer)
+ * @brief   uart send using blocking/polling method,
+ *           this will block till uart sends all the data.
+ * @param   uart     : Pointer to uart register set structure
+ * @param   transfer : Pointer to uart transfer structure
+ * @retval  none
+ */
+void uart_send_blocking (UART_Type *uart, UART_TRANSFER *transfer);
+
+/**
+ * @fn      void uart_receive_blocking (UART_Type *uart, UART_TRANSFER *transfer)
+ * @brief   uart receive using blocking/polling method,
+ *           this will block till uart receives all the data.
+ * @param   uart     : Pointer to uart register set structure
+ * @param   transfer : Pointer to uart transfer structure
+ * @retval  none
+ */
+void uart_receive_blocking (UART_Type *uart, UART_TRANSFER *transfer);
+
+/**
+ * @fn      void uart_irq_handler (UART_Type *uart, UART_TRANSFER *transfer)
+ * @brief   uart interrupt handler
+ * @note    only one combined interrupt for
  *              -TX / RX
  *              -RX_Character_Timeout
  *              -Modem status
  *              -Receiver Line status
  *          in RX_Timeout case not clearing rx busy flag, it is up to user to decide whether
  *          to wait for remaining bytes or call the abort rx. \ref abort_rx
- * @param	uart     : Pointer to uart register set structure
- * @param	transfer : Pointer to uart transfer structure
- * @retval	none
+ * @param   uart     : Pointer to uart register set structure
+ * @param   transfer : Pointer to uart transfer structure
+ * @retval  none
  */
 void uart_irq_handler (UART_Type *uart, UART_TRANSFER *transfer);
 

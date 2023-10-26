@@ -36,6 +36,9 @@
 /* PINMUX Driver */
 #include "pinconf.h"
 
+/* SE Services */
+#include "se_services_port.h"
+
 #define I2C_TOUCH_ENABLE         1
 
 /* Selecting LVGL color depth in matching with CDC200 controller pixel format */
@@ -95,6 +98,26 @@ void hw_disp_cb(uint32_t event)
 static void hw_disp_init(void)
 {
     int ret = 0;
+    uint32_t  service_error_code;
+    uint32_t  error_code;
+
+    /* Initialize the SE services */
+    se_services_port_init();
+
+    /* Enable MIPI Clocks */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 100MHz clock enable = %d\n", error_code);
+        return;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, true, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 38.4Mhz(HFOSC) clock enable = %d\n", error_code);
+        goto error_disable_100mhz_clk;
+    }
 
     /* Initialize CDC200 controller */
     ret = CDCdrv->Initialize(hw_disp_cb);
@@ -102,7 +125,7 @@ static void hw_disp_init(void)
     {
         /* Error in CDC200 initialize */
         printf("\r\n Error: CDC200 initialization failed.\r\n");
-        return;
+        goto error_disable_hfosc_clk;
     }
 
     /* Power ON CDC200 controller */
@@ -160,6 +183,16 @@ error_CDC200_uninitialize:
         printf("ERROR: Could not unintialize CDC200\n");
         return;
     }
+
+error_disable_hfosc_clk:
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, false, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+        printf("SE: MIPI 38.4Mhz(HFOSC)  clock disable = %d\n", error_code);
+
+error_disable_100mhz_clk:
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, false, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+        printf("SE: MIPI 100MHz clock disable = %d\n", error_code);
 }
 
 #if(I2C_TOUCH_ENABLE == 1)

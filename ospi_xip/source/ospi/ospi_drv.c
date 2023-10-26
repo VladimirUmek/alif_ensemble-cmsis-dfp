@@ -164,13 +164,13 @@ void ospi_setup_write(ospi_flash_cfg_t *ospi_cfg, uint32_t addr_len)
 }
 
 /**
-  \fn      void ospi_send(ospi_flash_cfg_t *ospi_cfg, uint32_t data)
+  \fn      void ospi_send_blocking(ospi_flash_cfg_t *ospi_cfg, uint32_t data)
   \brief   Send the last byte of data/command after sending address and remaining bytes of command/ data using ospi_push()
   \param[in] ospi_cfg : OSPI configuration structure
   \param[in] data : Last byte of data
   \return  none
 */
-void ospi_send(ospi_flash_cfg_t *ospi_cfg, uint32_t data)
+void ospi_send_blocking(ospi_flash_cfg_t *ospi_cfg, uint32_t data)
 {
     ospi_writel(ospi_cfg, data_reg, data);
     ospi_writel(ospi_cfg, ser, ospi_cfg->ser);
@@ -191,13 +191,13 @@ void ospi_push(ospi_flash_cfg_t *ospi_cfg, uint32_t data)
 }
 
 /**
-  \fn        void ospi_recv(ospi_flash_cfg_t *ospi_cfg, uint32_t command)
+  \fn        void ospi_recv_blocking(ospi_flash_cfg_t *ospi_cfg, uint32_t command)
   \brief     Send the command and read the data into RX buffer
   \param[in] ospi_cfg : OSPI configuration structure
   \param[in] command : Flash command
   \return    none
 */
-void ospi_recv(ospi_flash_cfg_t *ospi_cfg, uint32_t command, uint8_t *buffer)
+void ospi_recv_blocking(ospi_flash_cfg_t *ospi_cfg, uint32_t command, uint8_t *buffer)
 {
     uint32_t val;
 

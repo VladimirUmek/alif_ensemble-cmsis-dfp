@@ -136,24 +136,26 @@ static int32_t ADC_PowerControl(ADC_RESOURCES *ADC, ARM_POWER_STATE state)
             NVIC_EnableIRQ (ADC->intr_cmpa_irq_num);
             NVIC_EnableIRQ (ADC->intr_cmpb_irq_num);;
 
-            /* Adc clock enable */
-            ADC_Core_Clk_Control(ADC, true);
+            /* adc clock enable */
+            adc_set_clk_control(ADC->drv_instance, true);
 
-            /* Enabling adc0 and comparator clock */
-            enable_adc_cmp_periph_clk();
+            /* Enabling comparator clock */
+            enable_cmp_periph_clk();
 
             /*function include vbat and comparator address and it value */
             Analog_Config();
 
-            /* Check for ADC24 instance is not set */
-            if (!(ADC->drv_instance == ADC24_INSTANCE))
-            {
-                /*function reg1 register*/
-                ADC_Config(ADC, ADC->reg1_value);
-            }
+            /* set differential control for ADC12 */
+            adc_set_differential_ctrl(ADC->drv_instance,
+                                      ADC->vcm_rdiv_en,
+                                      ADC->differential_enable);
 
-            if (ADC->conv.differential_status == ADC_DIFFERENTIAL_ENABLE || \
-               (ADC->drv_instance == ADC24_INSTANCE))
+            adc_set_comparator_ctrl(ADC->drv_instance,
+                                    ADC->comparator_enable,
+                                    ADC->comparator_bias);
+
+            if (ADC->differential_enable == ADC_DIFFERENTIAL_ENABLE || \
+               (ADC->drv_instance == ADC_INSTANCE_ADC24_0))
             {
                 /* check adc instances pga enabled */
                 if (ADC->pga_enable)
@@ -163,7 +165,7 @@ static int32_t ADC_PowerControl(ADC_RESOURCES *ADC, ARM_POWER_STATE state)
                 }
             }
 
-            if (ADC->drv_instance == ADC24_INSTANCE)
+            if (ADC->drv_instance == ADC_INSTANCE_ADC24_0)
             {
                 /* enable adc24 from control register */
                 enable_adc24();
@@ -235,8 +237,8 @@ static int32_t ADC_PowerControl(ADC_RESOURCES *ADC, ARM_POWER_STATE state)
             /* Disable the interrupt (mask the interrupt(0xF)) */
             adc_mask_interrupt(ADC->regs);
 
-            if (ADC->conv.differential_status == ADC_DIFFERENTIAL_ENABLE || \
-               (ADC->drv_instance == ADC24_INSTANCE))
+            if (ADC->differential_enable == ADC_DIFFERENTIAL_ENABLE || \
+               (ADC->drv_instance == ADC_INSTANCE_ADC24_0))
             {
                 /* check adc instances pga enabled */
                 if (ADC->pga_value)
@@ -246,7 +248,7 @@ static int32_t ADC_PowerControl(ADC_RESOURCES *ADC, ARM_POWER_STATE state)
                 }
             }
 
-            if (ADC->drv_instance == ADC24_INSTANCE)
+            if (ADC->drv_instance == ADC_INSTANCE_ADC24_0)
             {
                 /* disable adc24 from control register */
                 disable_adc24();
@@ -255,11 +257,11 @@ static int32_t ADC_PowerControl(ADC_RESOURCES *ADC, ARM_POWER_STATE state)
                 set_adc24_output_rate(0U);
             }
 
-            /* Disabling ADC and CMP clock */
-            disable_adc_cmp_periph_clk();
+            /* Disabling CMP clock */
+            disable_cmp_periph_clk();
 
-            /* Adc clock enable */
-            ADC_Core_Clk_Control(ADC, false);
+            /* adc clock disable */
+            adc_set_clk_control(ADC->drv_instance, false);
 
             /* Reset the power status of ADC */
             ADC->state &= ~ADC_FLAG_DRV_POWER_DONE;
@@ -413,7 +415,7 @@ static int32_t ADC_Control(ADC_RESOURCES *ADC, uint32_t Control, uint32_t arg)
             if(!(arg < ADC_MAX_INIT_CHANNEL))
                  return ARM_DRIVER_ERROR_PARAMETER;
 
-            if(ADC->conv.differential_status == ADC_DIFFERENTIAL_ENABLE)
+            if(ADC->differential_enable == ADC_DIFFERENTIAL_ENABLE)
             {
                 /* check for differential input channels
                  * 3 input channels are used in differential mode
@@ -423,7 +425,7 @@ static int32_t ADC_Control(ADC_RESOURCES *ADC, uint32_t Control, uint32_t arg)
                     return ARM_DRIVER_ERROR_PARAMETER;
             }
 
-            if(ADC->drv_instance == ADC24_INSTANCE)
+            if(ADC->drv_instance == ADC_INSTANCE_ADC24_0)
             {
                 /* 4 Differential input channels  are there in ADC24 */
                 if (arg > ADC24_MAX_DIFFERENTIAL_CHANNEL)
@@ -506,9 +508,9 @@ static int32_t ADC_Control(ADC_RESOURCES *ADC, uint32_t Control, uint32_t arg)
 
 static ADC_RESOURCES ADC120_RES = {
   .cb_event                = NULL,                                    /* ARM_ADC_SignalEvent_t        */
-  .regs                    = (ADC120_Type *)ADC120_BASE,              /* ADC register base address    */
+  .regs                    = (ADC_Type *)ADC120_BASE,                 /* ADC register base address    */
   .conv.user_input         = RTE_ADC120_INPUT_NUM,                    /* user input                   */
-  .drv_instance            = ADC_INSTANCE_0,                          /* Driver instances             */
+  .drv_instance            = ADC_INSTANCE_ADC12_0,                    /* Driver instances             */
   .intr_done0_irq_num      = (IRQn_Type) ADC120_DONE0_IRQ_IRQn,       /* ADC DONE0 IRQ number         */
   .intr_done1_irq_num      = (IRQn_Type) ADC120_DONE1_IRQ_IRQn,       /* ADC DONE1 IRQ number         */
   .intr_cmpa_irq_num       = (IRQn_Type) ADC120_CMPA_IRQ_IRQn,        /* ADC CMPA IRQ number          */
@@ -523,10 +525,10 @@ static ADC_RESOURCES ADC120_RES = {
   .sample_width            = RTE_ADC120_SAMPLE_WIDTH,                 /* sample width                 */
   .shift_n_bit             = RTE_ADC120_SHIFT_N_BIT,                  /* number of shift bit          */
   .shift_left_or_right     = RTE_ADC120_SHIFT_LEFT_OR_RIGHT,          /* shifting left to right       */
-  .reg1_value              = (RTE_ADC120_DIFFERENTIAL_EN << ADC120_DIFFERENTIAL_EN_Pos) |
-                             (RTE_ADC120_COMPARATOR_EN << ADC120_COMPARATOR_EN_Pos)     |
-                             (RTE_ADC120_COMPARATOR_BIAS << ADC120_COMPARATOR_BIAS_Pos) |
-                             (RTE_ADC120_VCM_RDIV_EN << ADC120_VCM_DIV_Pos),
+  .differential_enable     = RTE_ADC120_DIFFERENTIAL_EN,
+  .comparator_enable       = RTE_ADC120_COMPARATOR_EN,
+  .comparator_bias         = RTE_ADC120_COMPARATOR_BIAS,
+  .vcm_rdiv_en             = RTE_ADC120_VCM_RDIV_EN,
   .pga_enable              = RTE_ADC120_PGA_EN,
   .pga_value               = RTE_ADC120_PGA_GAIN
 };
@@ -757,9 +759,9 @@ ARM_DRIVER_ADC Driver_ADC120 ={
 
 static ADC_RESOURCES ADC121_RES = {
   .cb_event                = NULL,                                    /* ARM_ADC_SignalEvent_t        */
-  .regs                    = (ADC120_Type *)ADC121_BASE,              /* ADC register base address    */
+  .regs                    = (ADC_Type *)ADC121_BASE,                 /* ADC register base address    */
   .conv.user_input         = RTE_ADC121_INPUT_NUM,                    /* user input                   */
-  .drv_instance            = ADC_INSTANCE_1,                          /* Driver instances             */
+  .drv_instance            = ADC_INSTANCE_ADC12_1,                    /* Driver instances             */
   .intr_done0_irq_num      = (IRQn_Type) ADC121_DONE0_IRQ_IRQn,       /* ADC DONE0 number             */
   .intr_done1_irq_num      = (IRQn_Type) ADC121_DONE1_IRQ_IRQn,       /* ADC DONE1 IRQ number         */
   .intr_cmpa_irq_num       = (IRQn_Type) ADC121_CMPA_IRQ_IRQn,        /* ADC CMPA IRQ number          */
@@ -774,10 +776,10 @@ static ADC_RESOURCES ADC121_RES = {
   .sample_width            = RTE_ADC121_SAMPLE_WIDTH,                 /* sample width                 */
   .shift_n_bit             = RTE_ADC121_SHIFT_N_BIT,                  /* number of shift bit          */
   .shift_left_or_right     = RTE_ADC121_SHIFT_LEFT_OR_RIGHT,          /* shifting left to right       */
-  .reg1_value              = (RTE_ADC121_DIFFERENTIAL_EN << ADC121_DIFFERENTIAL_EN_Pos) |
-                             (RTE_ADC121_COMPARATOR_EN << ADC121_COMPARATOR_EN_Pos)     |
-                             (RTE_ADC121_COMPARATOR_BIAS << ADC121_COMPARATOR_BIAS_Pos) |
-                             (RTE_ADC121_VCM_RDIV_EN << ADC121_VCM_DIV_Pos),
+  .differential_enable     = RTE_ADC121_DIFFERENTIAL_EN,
+  .comparator_enable       = RTE_ADC121_COMPARATOR_EN,
+  .comparator_bias         = RTE_ADC121_COMPARATOR_BIAS,
+  .vcm_rdiv_en             = RTE_ADC121_VCM_RDIV_EN,
   .pga_enable              = RTE_ADC121_PGA_EN,
   .pga_value               = RTE_ADC121_PGA_GAIN
 };
@@ -1008,9 +1010,9 @@ ARM_DRIVER_ADC Driver_ADC121 ={
 
 static ADC_RESOURCES ADC122_RES = {
   .cb_event                = NULL,                                    /* ARM_ADC_SignalEvent_t        */
-  .regs                    = (ADC120_Type *)ADC122_BASE,              /* ADC register base address    */
+  .regs                    = (ADC_Type *)ADC122_BASE,                 /* ADC register base address    */
   .conv.user_input         = RTE_ADC122_INPUT_NUM,                    /* user input                   */
-  .drv_instance            = ADC_INSTANCE_2,                          /* Driver instances             */
+  .drv_instance            = ADC_INSTANCE_ADC12_2,                    /* Driver instances             */
   .intr_done0_irq_num      = (IRQn_Type) ADC122_DONE0_IRQ_IRQn,       /* ADC DONE0 IRQ number         */
   .intr_done1_irq_num      = (IRQn_Type) ADC122_DONE1_IRQ_IRQn,       /* ADC DONE1 IRQ number         */
   .intr_cmpa_irq_num       = (IRQn_Type) ADC122_CMPA_IRQ_IRQn,        /* ADC CMPA IRQ number          */
@@ -1025,10 +1027,10 @@ static ADC_RESOURCES ADC122_RES = {
   .sample_width            = RTE_ADC122_SAMPLE_WIDTH,                 /* sample width                 */
   .shift_n_bit             = RTE_ADC122_SHIFT_N_BIT,                  /* number of shift bit          */
   .shift_left_or_right     = RTE_ADC122_SHIFT_LEFT_OR_RIGHT,          /* shifting left to right       */
-  .reg1_value              = (RTE_ADC122_DIFFERENTIAL_EN << ADC122_DIFFERENTIAL_EN_Pos) |
-                             (RTE_ADC122_COMPARATOR_EN << ADC122_COMPARATOR_EN_Pos)     |
-                             (RTE_ADC122_COMPARATOR_BIAS << ADC122_COMPARATOR_BIAS_Pos) |
-                             (RTE_ADC122_VCM_RDIV_EN << ADC122_VCM_DIV_Pos),
+  .differential_enable     = RTE_ADC122_DIFFERENTIAL_EN,
+  .comparator_enable       = RTE_ADC122_COMPARATOR_EN,
+  .comparator_bias         = RTE_ADC122_COMPARATOR_BIAS,
+  .vcm_rdiv_en             = RTE_ADC122_VCM_RDIV_EN,
   .pga_enable              = RTE_ADC122_PGA_EN,
   .pga_value               = RTE_ADC122_PGA_GAIN
 };
@@ -1259,9 +1261,9 @@ ARM_DRIVER_ADC Driver_ADC122 ={
 
 static ADC_RESOURCES ADC24_RES = {
   .cb_event                = NULL,                                   /* ARM_ADC_SignalEvent_t        */
-  .regs                    = (ADC120_Type *)ADC24_BASE,              /* ADC register base address    */
+  .regs                    = (ADC_Type *)ADC24_BASE,                 /* ADC register base address    */
   .conv.user_input         = RTE_ADC24_INPUT_NUM,                    /* user input                   */
-  .drv_instance            = ADC24_INSTANCE,                         /* Driver instances             */
+  .drv_instance            = ADC_INSTANCE_ADC24_0,                   /* Driver instances             */
   .intr_done0_irq_num      = (IRQn_Type) ADC24_DONE0_IRQ_IRQn,       /* ADC DONE0 IRQ number         */
   .intr_done1_irq_num      = (IRQn_Type) ADC24_DONE1_IRQ_IRQn,       /* ADC DONE1 IRQ number         */
   .intr_cmpa_irq_num       = (IRQn_Type) ADC24_CMPA_IRQ_IRQn,        /* ADC CMPA IRQ number          */
@@ -1277,8 +1279,8 @@ static ADC_RESOURCES ADC24_RES = {
   .shift_left_or_right     = RTE_ADC24_SHIFT_LEFT_OR_RIGHT,          /* shifting left to right       */
   .pga_enable              = RTE_ADC24_PGA_EN,
   .pga_value               = RTE_ADC24_PGA_GAIN,
-  .bias                    = (RTE_ADC24_BIAS << 20),
-  .output_rate             = (RTE_ADC24_OUTPUT_RATE << 13)
+  .bias                    = RTE_ADC24_BIAS,
+  .output_rate             = RTE_ADC24_OUTPUT_RATE
 };
 
 /**

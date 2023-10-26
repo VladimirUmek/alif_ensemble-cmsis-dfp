@@ -78,6 +78,21 @@ typedef enum _DPHY_DATA_LANE
 }DPHY_DATA_LANE;
 
 /**
+ * @struct  _pll_config_t
+ * @brief   pll configuration parameters description.
+ */
+typedef struct _pll_config_t
+{
+    uint8_t  pll_gmp_ctrl;      /* Controls the effective loop-filter resistance   */
+    uint16_t pll_m;             /* Control of the input frequency division ratio   */
+    uint8_t  pll_n;             /* Control of the feedback multiplication ratio    */
+    uint8_t  pll_cpbias_ctrl;   /* Charge pump bias control                        */
+    uint8_t  pll_int_ctrl;      /* Integral charge pump control                    */
+    uint8_t  pll_prop_ctrl;     /* Proportional charge pump control                */
+    uint8_t  pll_vco_ctrl;      /* VCO operating range                             */
+} pll_config_t;
+
+/**
   \fn          static inline void enable_dphy_pll_force_lock (void)
   \brief       Enable Force lock to device.
   \return      none.
@@ -155,6 +170,36 @@ static inline void enable_dphy_pll_shadow_clear (void)
 static inline void disable_dphy_pll_shadow_clear (void)
 {
     CLKCTL_PER_MST->DPHY_PLL_CTRL0 &= ~DPHY_PLL_CTRL0_SHADOW_CLEAR;
+}
+
+/**
+  \fn          static inline void set_dphy_pll_configuration (pll_config_t *info)
+  \brief       Set dphy pll configuration.
+  \param[in]    info   Pointer to pll configuration structure.
+  \return      none.
+*/
+static inline void set_dphy_pll_configuration (pll_config_t *info)
+{
+    CLKCTL_PER_MST->DPHY_PLL_CTRL0 &= ~DPHY_PLL_CTRL0_GMP_CTRL_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL0 |= (info->pll_gmp_ctrl << DPHY_PLL_CTRL0_GMP_CTRL_Pos);
+
+    CLKCTL_PER_MST->DPHY_PLL_CTRL1 &= ~DPHY_PLL_CTRL1_FEEDBACK_MULT_RATIO_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL1 |= (info->pll_m << DPHY_PLL_CTRL1_FEEDBACK_MULT_RATIO_Pos);
+
+    CLKCTL_PER_MST->DPHY_PLL_CTRL1 &= ~DPHY_PLL_CTRL1_INPUT_DIV_FACTOR_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL1 |= (info->pll_n << DPHY_PLL_CTRL1_INPUT_DIV_FACTOR_Pos);
+
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 &= ~DPHY_PLL_CTRL2_CPBIAS_CTRL_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 |= (info->pll_cpbias_ctrl << DPHY_PLL_CTRL2_CPBIAS_CTRL_Pos);
+
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 &= ~DPHY_PLL_CTRL2_INT_CTRL_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 |= (info->pll_int_ctrl << DPHY_PLL_CTRL2_INT_CTRL_Pos);
+
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 &= ~DPHY_PLL_CTRL2_PROP_CTRL_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 |= (info->pll_prop_ctrl << DPHY_PLL_CTRL2_PROP_CTRL_Pos);
+
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 &= ~DPHY_PLL_CTRL2_VCO_CTRL_Msk;
+    CLKCTL_PER_MST->DPHY_PLL_CTRL2 |= (info->pll_vco_ctrl << DPHY_PLL_CTRL2_VCO_CTRL_Pos);
 }
 
 /**

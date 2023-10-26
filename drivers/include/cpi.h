@@ -39,7 +39,7 @@ typedef struct {                                      /*!< LPCPI/CPI Structure  
     volatile       uint32_t  CAM_VIDEO_FCFG;          /*!< (@ 0x00000028) Camera Video Frame Configuration Register               */
     volatile       uint32_t  CAM_CSI_CMCFG;           /*!< (@ 0x0000002C) Camera MIPI CSI Color Mode Configuration Register       */
     volatile       uint32_t  CAM_FRAME_ADDR;          /*!< (@ 0x00000030) Camera Video Frame A Start Address Register             */
-} LPCPI_Type;                                         /*!< Size = 52 (0x34)                                                       */
+} CPI_Type;                                           /*!< Size = 52 (0x34)                                                       */
 
 /* Camera Control Register (CAM_CTRL) bit Definition, Macros, Offsets and Masks
  * these include CPI capture mode, capture status, software reset, start/stop capture and FIFO clock select.
@@ -328,90 +328,90 @@ typedef struct _cpi_cfg_info_t
 
 
 /**
-  \fn          CPI_VIDEO_CAPTURE_STATUS cpi_get_capture_status(LPCPI_Type *cpi)
+  \fn          CPI_VIDEO_CAPTURE_STATUS cpi_get_capture_status(CPI_Type *cpi)
   \brief       Get the capture status of the CPI.
   \param[in]   cpi      Pointer to the CPI register map.
   \return      Capture status of the CPI.
 */
-static inline CPI_VIDEO_CAPTURE_STATUS cpi_get_capture_status(LPCPI_Type *cpi)
+static inline CPI_VIDEO_CAPTURE_STATUS cpi_get_capture_status(CPI_Type *cpi)
 {
     return (cpi->CAM_CTRL & CAM_CTRL_BUSY) ? \
             CPI_VIDEO_CAPTURE_STATUS_CAPTURING : CPI_VIDEO_CAPTURE_STATUS_NOT_CAPTURING;
 }
 
 /**
-  \fn          uint32_t cpi_get_interrupt_status(LPCPI_Type *cpi)
+  \fn          uint32_t cpi_get_interrupt_status(CPI_Type *cpi)
   \brief       Get the interrupt status from the CPI.
   \param[in]   cpi      Pointer to the CPI register map.
   \return      interrupt status from the CPI.
 */
-static inline uint32_t cpi_get_interrupt_status(LPCPI_Type *cpi)
+static inline uint32_t cpi_get_interrupt_status(CPI_Type *cpi)
 {
     return (cpi->CAM_INTR & cpi->CAM_INTR_ENA);
 }
 
 /**
-  \fn           void cpi_enable_interrupt(LPCPI_Type *cpi, uint32_t irq_bitmask)
+  \fn           void cpi_enable_interrupt(CPI_Type *cpi, uint32_t irq_bitmask)
   \brief        Enable CPI interrupt.
   \param[in]    cpi         Pointer to CPI register map.
   \param[in]    irq_bitmask Possible camera events (refer CPI_INTR_* macros Bitmask).
   \return       none
 */
-static inline void cpi_enable_interrupt(LPCPI_Type *cpi, uint32_t irq_bitmask)
+static inline void cpi_enable_interrupt(CPI_Type *cpi, uint32_t irq_bitmask)
 {
     cpi->CAM_INTR_ENA |= irq_bitmask;
 }
 
 /**
-  \fn           void cpi_disable_interrupt(LPCPI_Type *cpi, uint32_t irq_bitmask)
+  \fn           void cpi_disable_interrupt(CPI_Type *cpi, uint32_t irq_bitmask)
   \brief        Disable CPI interrupt.
   \param[in]    cpi         Pointer to CPI register map.
   \param[in]    irq_bitmask Possible camera events (refer CPI_INTR_* macros Bitmask).
   \return       none
 */
-static inline void cpi_disable_interrupt(LPCPI_Type *cpi, uint32_t irq_bitmask)
+static inline void cpi_disable_interrupt(CPI_Type *cpi, uint32_t irq_bitmask)
 {
     cpi->CAM_INTR_ENA &= ~irq_bitmask;
 }
 
 /**
-  \fn           void cpi_irq_handler_clear_intr_status(LPCPI_Type *cpi, uint32_t irq_bitmask)
+  \fn           void cpi_irq_handler_clear_intr_status(CPI_Type *cpi, uint32_t irq_bitmask)
   \brief        Clear CPI interrupt.
   \param[in]    cpi         Pointer to CPI register map
   \param[in]    irq_bitmask CPI interrupt status (refer CPI_INTR_* macros Bitmask)
   \return       none.
 */
-static inline void cpi_irq_handler_clear_intr_status(LPCPI_Type *cpi, uint32_t irq_bitmask)
+static inline void cpi_irq_handler_clear_intr_status(CPI_Type *cpi, uint32_t irq_bitmask)
 {
     cpi->CAM_INTR |= irq_bitmask;
     (void)cpi->CAM_INTR;
 }
 
 /**
-  \fn          void cpi_set_framebuff_start_addr(LPCPI_Type *cpi, uint32_t addr)
+  \fn          void cpi_set_framebuff_start_addr(CPI_Type *cpi, uint32_t addr)
   \brief       Set the Video frame start address.
   \param[in]   cpi   Pointer to the CPI register map.
   \param[in]   addr  Video frame start address.
   \return      none.
 */
-static inline void cpi_set_framebuff_start_addr(LPCPI_Type *cpi, uint32_t addr)
+static inline void cpi_set_framebuff_start_addr(CPI_Type *cpi, uint32_t addr)
 {
     cpi->CAM_FRAME_ADDR = addr;
 }
 
 /**
-  \fn          void cpi_stop_capture(LPCPI_Type *cpi)
+  \fn          void cpi_stop_capture(CPI_Type *cpi)
   \brief       CPI Stop capturing frame.
   \param[in]   cpi   Pointer to the CPI register map.
   \return      none.
 */
-static inline void cpi_stop_capture(LPCPI_Type *cpi)
+static inline void cpi_stop_capture(CPI_Type *cpi)
 {
     cpi->CAM_CTRL = 0;
 }
 
 /**
-  \fn          void cpi_start_capture(LPCPI_Type *cpi, CPI_MODE_SELECT mode)
+  \fn          void cpi_start_capture(CPI_Type *cpi, CPI_MODE_SELECT mode)
   \brief       Capture frame in snapshot/ continuous capture mode.
                    -Set CAM_CTRL = 0—prepare for soft reset
                    -Set CAM_CTRL = 0x100—activate soft reset
@@ -424,16 +424,16 @@ static inline void cpi_stop_capture(LPCPI_Type *cpi)
   \param[in]   mode     Select to capture one frame and stop/ or to capture video frames continuously
   \return      none.
 */
-void cpi_start_capture(LPCPI_Type *cpi, CPI_MODE_SELECT mode);
+void cpi_start_capture(CPI_Type *cpi, CPI_MODE_SELECT mode);
 
 /**
-  \fn           void cpi_set_config(LPCPI_Type *cpi, cpi_cfg_info_t *info)
+  \fn           void cpi_set_config(CPI_Type *cpi, cpi_cfg_info_t *info)
   \brief        Configure the cpi with given information.
   \param[in]    cpi    Pointer to CPI register map
   \param[in]    info   Pointer to cpi configuration structure.
   \return       none
 */
-void cpi_set_config(LPCPI_Type *cpi, cpi_cfg_info_t *info);
+void cpi_set_config(CPI_Type *cpi, cpi_cfg_info_t *info);
 
 #ifdef __cplusplus
 }

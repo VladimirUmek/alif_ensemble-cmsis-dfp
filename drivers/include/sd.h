@@ -31,9 +31,6 @@ extern "C" {
 //#define SDMMC_PRINTF_DEBUG
 //#define SDMMC_PRINTF_SD_STATE_DEBUG
 //#define SDMMC_PRINT_SEC_DATA
-#define SDMMC_4BIT_MODE
-//#define SDMMC_8BIT_MODE
-#define SDMMC_ADMA2_MODE
 
 /**
  * @brief  SD driver status enum definition
@@ -109,13 +106,14 @@ typedef struct _sd_handle_t{
     SD_CARD_STATE           state;          /*!< SD card State                          */
     uint16_t                hc_version;     /*!< Host controller version                */
     uint8_t                 bus_width;      /*!< 1Bit, 4Bit, 8Bit Mode                  */
+    uint8_t                 dma_mode;       /*!< SDMA, ADMA2, and ADMA3 Mode            */
 }sd_handle_t;
 
 /**
  * @brief  Disk IO Driver structure definition
  */
 typedef struct _diskio_t{
-    SD_DRV_STATUS (*disk_initialize)    (uint8_t);                                  /*!< Initialize Disk Drive      */
+    SD_DRV_STATUS (*disk_initialize)    (uint8_t, uint8_t, uint8_t);                /*!< Initialize Disk Drive      */
     SD_DRV_STATUS (*disk_uninitialize)  (uint8_t);                                  /*!< Un-initialize Disk Drive   */
     SD_CARD_STATE (*disk_status)        (sd_handle_t *);                            /*!< Get Disk Status            */
     SD_DRV_STATUS (*disk_read)          (uint32_t, uint16_t, volatile uint8_t *);   /*!< Read Sector(s)             */
@@ -126,10 +124,10 @@ extern const diskio_t SD_Driver;
 
 /* SD Driver function forward declaration */
 SD_CARD_STATE sd_state(sd_handle_t *);
-SD_DRV_STATUS sd_init(uint8_t);
+SD_DRV_STATUS sd_init(uint8_t, uint8_t, uint8_t);
 SD_DRV_STATUS sd_uninit(uint8_t);
 SD_DRV_STATUS sd_io_init(sd_handle_t *);
-SD_DRV_STATUS sd_host_init(sd_handle_t *);
+SD_DRV_STATUS sd_host_init(sd_handle_t *, uint8_t, uint8_t);
 SD_DRV_STATUS sd_card_init(sd_handle_t *);
 SD_DRV_STATUS sd_write(uint32_t, uint32_t, volatile unsigned char *);
 SD_DRV_STATUS sd_read(uint32_t, uint16_t, volatile unsigned char *);

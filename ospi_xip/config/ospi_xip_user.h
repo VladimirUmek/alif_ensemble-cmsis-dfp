@@ -48,13 +48,24 @@ extern "C"
 #define OSPI_XIP_INSTANCE                        OSPI1
 
 /**
+  \def OSPI_XIP_IMAGE_ADDRESS
+  \brief Address of the OSPI flash image (in XIP address space)
+*/
+
+//   <o> OSPI XIP Image address
+//   <i> Defines the base (XIP) address of the OSPI flash image.
+//   <i> Default: 0xC0000000
+
+#define OSPI_XIP_IMAGE_ADDRESS                   0xC0000000
+
+/**
   \def OSPI_CLOCK_MHZ
   \brief Required ospi clock output (sclk_out).
 */
 
 //   <o> OSPI Clock (in MHz)
 //   <i> Defines the frequency of sclk_out of SPI controller.
-//   <i> Default:50
+//   <i> Default:100
 
 #define OSPI_CLOCK_MHZ                           100
 #define OSPI_CLOCK                               (OSPI_CLOCK_MHZ * 1000000)

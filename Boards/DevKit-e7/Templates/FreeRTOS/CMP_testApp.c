@@ -47,7 +47,6 @@
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
 
-
 /* LED configurations */
 #define GPIO12_PORT                     12     /* Use LED0_R,LED0_B GPIO port */
 #define LED0_R                          PIN_3  /* LED0_R gpio pin             */
@@ -68,8 +67,10 @@
 extern  ARM_DRIVER_GPIO ARM_Driver_GPIO_(GPIO12_PORT);
 ARM_DRIVER_GPIO *ledDrv = &ARM_Driver_GPIO_(GPIO12_PORT);
 
-
 #if(CMP_INSTANCE == LPCMP)
+#if !defined(M55_HE)
+#error "This Demo application works only on RTSS_HE"
+#endif
 extern ARM_DRIVER_CMP Driver_LPCMP;
 static ARM_DRIVER_CMP *CMPdrv = &Driver_LPCMP;
 #else

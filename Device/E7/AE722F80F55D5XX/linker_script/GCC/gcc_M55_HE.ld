@@ -52,6 +52,9 @@ SECTIONS
 
     *startup_M55_*.c.obj(.text .rodata*)
     *system_M55.c.obj(.text .rodata*)
+    *system_utils.c.obj(.text .rodata*)
+    *pm.c.obj(.text .rodata*)
+    *tgu_M55.c.obj(.text .rodata*)
     *mpu_M55.c.obj(.text .rodata*)
 
     *lv_*.c.obj(.text .rodata*)
@@ -78,8 +81,6 @@ SECTIONS
     LONG (SIZEOF(.bss)/4)
     LONG (ADDR(.bss.at_sram0))
     LONG (SIZEOF(.bss.at_sram0)/4)
-    LONG (ADDR(.bss.at_sram1))
-    LONG (SIZEOF(.bss.at_sram1)/4)
     __zero_table_end__ = .;
   } > MRAM
 
@@ -108,15 +109,11 @@ SECTIONS
 
   .bss.at_sram0 (NOLOAD) : ALIGN(8)
   {
-    * (.bss.lcd_crop_and_interpolate_buf)  /* LCD crop and intrepolate image processing buffer. */
-    * (.bss.lcd_frame_buf)                 /* LCD frame Buffer. */
+    *(lcd_crop_and_interpolate_buf)  /* LCD crop and intrepolate image processing buffer. */
+    *(lcd_frame_buf)                 /* LCD frame Buffer. */
+    *(camera_frame_buf)              /* Camer Frame Buffer */
+    *(camera_frame_bayer_to_rgb_buf) /* (Optional) Camera Frame Buffer for Bayer to RGB Conversion. */
   } > SRAM0
-
-  .bss.at_sram1 (NOLOAD) :
-  {
-    * (.bss.camera_frame_buf)              /* Camer Frame Buffer */
-    * (.bss.camera_frame_bayer_to_rgb_buf) /* (Optional) Camera Frame Buffer for Bayer to RGB Conversion. */
-  } > SRAM1
 
   .bss (NOLOAD) : ALIGN(8)
   {
@@ -129,7 +126,7 @@ SECTIONS
     __bss_end__ = .;
   } > DTCM
 
-  .__app_heap :
+  .__app_heap (NOLOAD) : ALIGN(8)
   {
      . = ALIGN(8);
      __RAM_segment_used_end__ = .;

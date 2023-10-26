@@ -1255,60 +1255,6 @@ static inline void dsi_irq1_force(DSI_Type *dsi, uint32_t irqs)
 }
 
 /**
-  \fn          void dsi_dpi_set_dataen_polarity(DSI_Type *dsi, DSI_POLARITY polarity)
-  \brief       Set dsi dpi dataen line polarity.
-  \param[in]   dsi     Pointer to the dsi register map.
-  \param[in]   polarity   dsi dataen polarity to set.
-  \return      none.
-*/
-void dsi_dpi_set_dataen_polarity(DSI_Type *dsi, DSI_POLARITY polarity);
-
-/**
-  \fn          void dsi_dpi_set_vsync_polarity(DSI_Type *dsi, DSI_POLARITY polarity)
-  \brief       Set dsi dpi vsync line polarity.
-  \param[in]   dsi     Pointer to the dsi register map.
-  \param[in]   polarity   dsi vsync polarity to set.
-  \return      none.
-*/
-void dsi_dpi_set_vsync_polarity(DSI_Type *dsi, DSI_POLARITY polarity);
-
-/**
-  \fn          void dsi_dpi_set_hsync_polarity(DSI_Type *dsi, DSI_POLARITY polarity)
-  \brief       Set dsi dpi hsync line polarity.
-  \param[in]   dsi     Pointer to the dsi register map.
-  \param[in]   polarity   dsi hsync polarity to set.
-  \return      none.
-*/
-void dsi_dpi_set_hsync_polarity(DSI_Type *dsi, DSI_POLARITY polarity);
-
-/**
-  \fn          void dsi_dpi_set_hsync_polarity(DSI_Type *dsi, DSI_POLARITY polarity)
-  \brief       Set dsi dpi hsync line polarity.
-  \param[in]   dsi     Pointer to the dsi register map.
-  \param[in]   polarity   dsi hsync polarity to set.
-  \return      none.
-*/
-void dsi_dpi_set_hsync_polarity(DSI_Type *dsi, DSI_POLARITY polarity);
-
-/**
-  \fn          void dsi_dpi_set_shutd_polarity(DSI_Type *dsi, DSI_POLARITY polarity)
-  \brief       Set dsi dpi shutd line polarity.
-  \param[in]   dsi     Pointer to the dsi register map.
-  \param[in]   polarity   dsi shutd polarity to set.
-  \return      none.
-*/
-void dsi_dpi_set_shutd_polarity(DSI_Type *dsi, DSI_POLARITY polarity);
-
-/**
-  \fn          void dsi_dpi_set_colorm_polarity(DSI_Type *dsi, DSI_POLARITY polarity)
-  \brief       Set dsi dpi colorm line polarity.
-  \param[in]   dsi     Pointer to the dsi register map.
-  \param[in]   polarity   dsi colorm polarity to set.
-  \return      none.
-*/
-void dsi_dpi_set_colorm_polarity(DSI_Type *dsi, DSI_POLARITY polarity);
-
-/**
   \fn          void dsi_dcs_short_write(DSI_Type *dsi, uint8_t cmd, uint8_t data, uint8_t vc_id)
   \brief       Perform dsi dcs Short write.
   \param[in]   cmd is DCS command info.

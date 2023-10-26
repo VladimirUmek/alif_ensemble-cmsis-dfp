@@ -161,8 +161,9 @@ typedef struct {
                                                      I2C_IC_INTR_STAT_TX_ABRT | \
                                                      I2C_IC_INTR_STAT_STOP_DET)
 
-#define I2C_IC_INT_SLV_TX_ENABLE                    (I2C_IC_INTR_STAT_RD_REQ| \
-                                                     I2C_IC_INTR_STAT_TX_ABRT)
+#define I2C_IC_INT_SLV_TX_ENABLE                    (I2C_IC_INTR_STAT_RD_REQ  | \
+                                                     I2C_IC_INTR_STAT_TX_ABRT | \
+                                                     I2C_IC_INTR_STAT_STOP_DET)
 
 #define I2C_IC_INT_SLV_RX_ENABLE                    (I2C_IC_INTR_STAT_RX_FULL  | \
                                                      I2C_IC_INTR_STAT_RX_OVER  | \

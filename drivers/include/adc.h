@@ -14,35 +14,26 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-/* Structure ADC_Type : Register map for ADC */
 typedef struct {
-  volatile uint32_t  ADC_START_SRC;                /*!< (@ 0x00000000) ADC Start-of-Conversion Source Register                    */
-  volatile uint32_t  ADC_COMP_THRESH_A;            /*!< (@ 0x00000004) ADC Comparator Threshold A Register                        */
-  volatile uint32_t  ADC_COMP_THRESH_B;            /*!< (@ 0x00000008) ADC Comparator Threshold B Register                        */
-  volatile uint32_t  ADC_CLK_DIVISOR;              /*!< (@ 0x0000000C) ADC Clock Divider Value Register                           */
-  volatile uint32_t  ADC_INTERRUPT;                /*!< (@ 0x00000010) ADC Interrupt Status and Clear Register                    */
-  volatile uint32_t  ADC_INTERRUPT_MASK;           /*!< (@ 0x00000014) ADC Interrupt Mask Register                                */
-  volatile uint32_t  ADC_SAMPLE_WIDTH;             /*!< (@ 0x00000018) ADC Sampling Signal Duration Register                      */
-  volatile const uint32_t RESERVED;
-  volatile uint32_t  ADC_AVG_NUM;                  /*!< (@ 0x00000020) ADC Number of Samples for Averaging Register               */
-  volatile uint32_t  ADC_SHIFT_CONTROL;            /*!< (@ 0x00000024) ADC Data Shift Select Register                             */
-  volatile const uint32_t RESERVED1[2];
-  volatile uint32_t  ADC_CONTROL;                  /*!< (@ 0x00000030) ADC Single-shot Conversion Start and Comparator
-                                                         Threshold Mode Register                                    */
-  volatile uint32_t  ADC_SEQUENCER_CTRL;           /*!< (@ 0x00000034) ADC Sequencer Control Register                             */
-  volatile uint32_t  ADC_REG1;                     /*!< (@ 0x00000038) ADC Analog Control Register for ADC12 Modules              */
-  volatile uint32_t  ADC_SEL;                      /*!< (@ 0x0000003C) ADC Sample Register Selected (read-only value of n) */
-  volatile const uint32_t RESERVED2[4];
-  volatile uint32_t  ADC_SAMPLE_REG_0;             /*!< (@ 0x00000050) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_1;             /*!< (@ 0x00000054) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_2;             /*!< (@ 0x00000058) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_3;             /*!< (@ 0x0000005C) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_4;             /*!< (@ 0x00000060) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_5;             /*!< (@ 0x00000064) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_6;             /*!< (@ 0x00000068) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_7;             /*!< (@ 0x0000006C) ADC Sampled Value From Input n Register                    */
-  volatile uint32_t  ADC_SAMPLE_REG_8;             /*!< (@ 0x00000070) ADC Sampled Value From Input n Register                    */
-} ADC120_Type;                                  /*!< Size = 116 (0x74)                                                         */
+  volatile       uint32_t  ADC_START_SRC;                /*!< (@ 0x00000000) ADC Start-of-Conversion Source Register                    */
+  volatile       uint32_t  ADC_COMP_THRESH_A;            /*!< (@ 0x00000004) ADC Comparator Threshold A Register                        */
+  volatile       uint32_t  ADC_COMP_THRESH_B;            /*!< (@ 0x00000008) ADC Comparator Threshold B Register                        */
+  volatile       uint32_t  ADC_CLK_DIVISOR;              /*!< (@ 0x0000000C) ADC Clock Divider Value Register                           */
+  volatile       uint32_t  ADC_INTERRUPT;                /*!< (@ 0x00000010) ADC Interrupt Status and Clear Register                    */
+  volatile       uint32_t  ADC_INTERRUPT_MASK;           /*!< (@ 0x00000014) ADC Interrupt Mask Register                                */
+  volatile       uint32_t  ADC_SAMPLE_WIDTH;             /*!< (@ 0x00000018) ADC Sampling Signal Duration Register                      */
+  volatile const uint32_t  RESERVED;
+  volatile       uint32_t  ADC_AVG_NUM;                  /*!< (@ 0x00000020) ADC Number of Samples for Averaging Register               */
+  volatile       uint32_t  ADC_SHIFT_CONTROL;            /*!< (@ 0x00000024) ADC Data Shift Select Register                             */
+  volatile const uint32_t  RESERVED1[2];
+  volatile       uint32_t  ADC_CONTROL;                  /*!< (@ 0x00000030) ADC Single-shot Conversion Start and Comparator
+                                                                    Threshold Mode Register                                             */
+  volatile       uint32_t  ADC_SEQUENCER_CTRL;           /*!< (@ 0x00000034) ADC Sequencer Control Register                             */
+  volatile       uint32_t  ADC_REG1;                     /*!< (@ 0x00000038) ADC Analog Control Register for ADC12 Modules              */
+  volatile const uint32_t  ADC_SEL;                      /*!< (@ 0x0000003C) ADC Sample Register Selected (read-only value of n)        */
+  volatile const uint32_t  RESERVED2[4];
+  volatile       uint32_t  ADC_SAMPLE_REG_[9];           /*!< (@ 0x00000050) ADC Sampled Value From Input n Register                    */
+} ADC_Type;                                              /*!< Size = 116 (0x74)                                                         */
 
 /****ADC Register macros****/
 #define ADC_START_CONTINUOUS_CONV                (1U << 6)    /* start continuous conversion           */
@@ -71,22 +62,6 @@ typedef struct {
 
 /* ADC external trigger mask macro */
 #define ADC_EXTERNAL_TRIGGER_MAX_VAL             (0x3F)        /* ADC External trigger max value */
-
-/* ADC reg1 position macro */
-#define ADC120_DIFFERENTIAL_EN_Pos               (1)
-#define ADC120_COMPARATOR_EN_Pos                 (2)
-#define ADC120_COMPARATOR_BIAS_Pos               (3)
-#define ADC120_VCM_DIV_Pos                       (5)
-
-#define ADC121_DIFFERENTIAL_EN_Pos               (7)
-#define ADC121_COMPARATOR_EN_Pos                 (8)
-#define ADC121_COMPARATOR_BIAS_Pos               (9)
-#define ADC121_VCM_DIV_Pos                       (11)
-
-#define ADC122_DIFFERENTIAL_EN_Pos               (13)
-#define ADC122_COMPARATOR_EN_Pos                 (14)
-#define ADC122_COMPARATOR_BIAS_Pos               (15)
-#define ADC122_VCM_DIV_Pos                       (17)
 
 /********Interrupt mask macro*******/
 #define ADC_INTR_CMPA_POS                        (2)                                    /* Interrupt comparator A mask position   */
@@ -177,17 +152,16 @@ typedef struct conv_info{
   ADC_SCAN_MODE                   sequencer_ctrl_status;  /* sequencer control status       */
   volatile ADC_CONV_STAT          status;                 /* Conversion status              */
   volatile ADC_CONV_MODE          mode;                   /* Conversion status control      */
-  bool                            differential_status;    /* ADC Differential enable status */
   volatile uint8_t                read_channel;           /* Store channel                  */
 }conv_info_t;
 
 /**
- * @fn        : void adc_enable_single_shot_conv(ADC120_Type *adc)
+ * @fn        : void adc_enable_single_shot_conv(ADC_Type *adc)
  * @brief     : Enable the single shot conversion
  * @param[in] : adc : Pointer to the ADC register map
  * @return    : none
 */
-static inline void adc_enable_single_shot_conv(ADC120_Type *adc)
+static inline void adc_enable_single_shot_conv(ADC_Type *adc)
 {
     adc->ADC_START_SRC |= ADC_START_ENABLE;
 
@@ -195,74 +169,74 @@ static inline void adc_enable_single_shot_conv(ADC120_Type *adc)
 }
 
 /**
- * @fn        : void adc_disable_single_shot_conv(ADC120_Type *adc)
+ * @fn        : void adc_disable_single_shot_conv(ADC_Type *adc)
  * @brief     : disable the single shot conversion
  * @param[in] : adc : Pointer to the ADC register map
  * @return    : none
 */
-static inline void adc_disable_single_shot_conv(ADC120_Type *adc)
+static inline void adc_disable_single_shot_conv(ADC_Type *adc)
 {
-    adc->ADC_START_SRC |= ~(ADC_START_ENABLE);
+    adc->ADC_START_SRC &= ~(ADC_START_ENABLE);
 
     adc->ADC_CONTROL &= ~ADC_START_SINGLE_SHOT_CONV;
 }
 
 /**
- * @fn        : void adc_enable_continuous_conv(ADC120_Type *adc)
+ * @fn        : void adc_enable_continuous_conv(ADC_Type *adc)
  * @brief     : Enable the continuous conversion
  * @param[in] : adc : Pointer to the ADC register map
  * @return    : none
 */
-static inline void adc_enable_continuous_conv(ADC120_Type *adc)
+static inline void adc_enable_continuous_conv(ADC_Type *adc)
 {
     adc->ADC_START_SRC |= ADC_START_CONTINUOUS_CONV;
 }
 
 /**
- * @fn        : void adc_disable_continuous_conv(ADC120_Type *adc)
+ * @fn        : void adc_disable_continuous_conv(ADC_Type *adc)
  * @brief     : Disable the continuous conversion
  * @param[in] : adc : Pointer to the ADC register map
  * @return    : none
 */
-static inline void adc_disable_continuous_conv(ADC120_Type *adc)
+static inline void adc_disable_continuous_conv(ADC_Type *adc)
 {
     adc->ADC_START_SRC &= ~ADC_START_CONTINUOUS_CONV;
 }
 
 /**
- * @fn        : void adc_enable_external_trigger(ADC120_Type *adc, uint8_t arg)
+ * @fn        : void adc_enable_external_trigger(ADC_Type *adc, uint8_t arg)
  * @brief     : Enable external trigger from UTIMER and QEC
  * @param[in] : adc : Pointer to the ADC register map
  * @param[in] : arg : Enable trigger bit fields
  * @return    : none
 */
-static inline void adc_enable_external_trigger(ADC120_Type *adc, uint8_t arg)
+static inline void adc_enable_external_trigger(ADC_Type *adc, uint8_t arg)
 {
     adc->ADC_START_SRC |= arg;
 }
 
 /**
- * @fn        : void adc_disable_external_trigger(ADC120_Type *adc)
+ * @fn        : void adc_disable_external_trigger(ADC_Type *adc)
  * @brief     : Disable conversion from external trigger from UTIMER and QEC
  * @param[in] : adc : Pointer to the ADC register map
  * @param[in] : arg : Disable trigger bit fields
  * @return    : none
 */
-static inline void adc_disable_external_trigger(ADC120_Type *adc, uint8_t arg)
+static inline void adc_disable_external_trigger(ADC_Type *adc, uint8_t arg)
 {
     adc->ADC_START_SRC &= ~arg;
 
 }
 
 /*
- * @func         : void adc_init_channel_select(ADC120_Type *adc, uint32_t arg)
+ * @func         : void adc_init_channel_select(ADC_Type *adc, uint32_t arg)
  * @brief        : control to select initial channel for storing sample value
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : arg  : selecting initial channel
  * @return       : ARM_DRIVER_OK              : if driver initialized successfully
  *               : ARM_DRIVER_ERROR_PARAMETER : if parameter is invalid or not
  */
-static inline void adc_init_channel_select(ADC120_Type *adc, uint32_t channel)
+static inline void adc_init_channel_select(ADC_Type *adc, uint32_t channel)
 {
     /* clearing the channels */
     adc->ADC_SEQUENCER_CTRL &= ~(ADC_MSK_INIT_CHANNEL << ADC_SEQUENCER_INIT_Pos);
@@ -272,57 +246,57 @@ static inline void adc_init_channel_select(ADC120_Type *adc, uint32_t channel)
 }
 
 /*
- * @func         : void adc_set_clock_divisor(ADC120_Type *adc, uint32_t divisor)
+ * @func         : void adc_set_clock_divisor(ADC_Type *adc, uint32_t divisor)
  * @brief        : Setting the value for the clock divisor and
  *                  clock value should be between 2 to 64
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : clock_value : value to set clock divisor
  * @return       : NONE
  */
-static inline void adc_set_clk_div(ADC120_Type *adc, uint32_t divisor)
+static inline void adc_set_clk_div(ADC_Type *adc, uint32_t divisor)
 {
     adc->ADC_CLK_DIVISOR = divisor;
 }
 
 /*
- * @func         : void adc_set_avg_sample(ADC120_Type *adc, uint32_t average)
+ * @func         : void adc_set_avg_sample(ADC_Type *adc, uint32_t average)
  * @brief        : Setting the average value, the value must be
  *                 up to 256 and value should be power of 2
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : average : value to set average number
  * @return       : NONE
  */
-static inline void adc_set_avg_sample(ADC120_Type *adc, uint32_t average)
+static inline void adc_set_avg_sample(ADC_Type *adc, uint32_t average)
 {
     adc->ADC_AVG_NUM = average;
 }
 
 /*
- * @func         : void adc_set_sample_width(ADC120_Type *adc, uint32_t width)
+ * @func         : void adc_set_sample_width(ADC_Type *adc, uint32_t width)
  * @brief        : Setting the sample width and value must be between
  *                 2 to 32
  * @parameter[1] : adc   : Pointer to the ADC register map
  * @parameter[2] : width : value to set sample width
  * @return       : NONE
  */
-static inline void adc_set_sample_width(ADC120_Type *adc, uint32_t width)
+static inline void adc_set_sample_width(ADC_Type *adc, uint32_t width)
 {
     adc->ADC_SAMPLE_WIDTH = width;
 }
 
 /*
- * @func         : void set_adc24_sample_width(ADC120_Type *adc)
+ * @func         : void set_adc24_sample_width(ADC_Type *adc)
  * @brief        : Set sample hold bit for adc24
  * @parameter[1] : adc   : Pointer to the ADC register map
  * @return       : NONE
  */
-static inline void set_adc24_sample_width(ADC120_Type *adc)
+static inline void set_adc24_sample_width(ADC_Type *adc)
 {
     adc->ADC_SAMPLE_WIDTH = (1 << ADC24_SAMPLE_HOLD_ENABLE_Pos);
 }
 
 /*
- * @func         : void adc_set_n_shift_bit(ADC120_Type *adc,
+ * @func         : void adc_set_n_shift_bit(ADC_Type *adc,
                                             uint32_t shift_number,
                                             uint32_t shift_left_right_control)
  * @brief        : Setting the number of shift to bit (as per user input)
@@ -332,7 +306,7 @@ static inline void set_adc24_sample_width(ADC120_Type *adc)
  *                                            1 for right
  *    @return       : NONE
 */
-static inline void adc_set_n_shift_bit(ADC120_Type *adc,
+static inline void adc_set_n_shift_bit(ADC_Type *adc,
                                        uint32_t shift_number,
                                        uint32_t shift_left_right_control)
 {
@@ -340,35 +314,35 @@ static inline void adc_set_n_shift_bit(ADC120_Type *adc,
 }
 
 /*
- * @func         : void adc_unmask_interrupt(ADC120_Type *adc)
+ * @func         : void adc_unmask_interrupt(ADC_Type *adc)
  * @brief        : Enable the interrupts
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @return       : NONE
 */
-static inline void adc_unmask_interrupt(ADC120_Type *adc)
+static inline void adc_unmask_interrupt(ADC_Type *adc)
 {
     adc->ADC_INTERRUPT_MASK = 0x0;
 }
 
 /*
- * @func         : void adc_mask_interrupt(ADC120_Type *adc)
+ * @func         : void adc_mask_interrupt(ADC_Type *adc)
  * @brief        : Disable the interrupts
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @return       : NONE
 */
-static inline void adc_mask_interrupt(ADC120_Type *adc)
+static inline void adc_mask_interrupt(ADC_Type *adc)
 {
     adc->ADC_INTERRUPT_MASK = 0xF;
 }
 
 /*
- * @func         : void adc_sequencer_msk_ch_control(ADC120_Type *adc, uint32_t mask_channel)
+ * @func         : void adc_sequencer_msk_ch_control(ADC_Type *adc, uint32_t mask_channel)
  * @brief        : Masking the channel which are not required
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : arg  : value for masking the un-required channel
  * @return       : NONE
  */
-static inline void adc_sequencer_msk_ch_control(ADC120_Type *adc, uint32_t mask_channel)
+static inline void adc_sequencer_msk_ch_control(ADC_Type *adc, uint32_t mask_channel)
 {
     /* clearing the previous mask bits */
     adc->ADC_SEQUENCER_CTRL &= ~(ADC_MSK_ALL_CHANNELS);
@@ -378,71 +352,71 @@ static inline void adc_sequencer_msk_ch_control(ADC120_Type *adc, uint32_t mask_
 }
 
 /*
- * @func         : void adc_set_comparator_A(ADC120_Type *adc, uint32_t threshold)
+ * @func         : void adc_set_comparator_A(ADC_Type *adc, uint32_t threshold)
  * @brief        : setting comparator A threshold value
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : arg  : value for threshold
  * @return       : NONE
  */
-static inline void adc_set_comparator_A(ADC120_Type *adc, uint32_t threshold)
+static inline void adc_set_comparator_A(ADC_Type *adc, uint32_t threshold)
 {
     adc->ADC_COMP_THRESH_A = threshold;
 }
 
 /*
- * @func         : void adc_set_comparator_B(ADC120_Type *adc, uint32_t threshold)
+ * @func         : void adc_set_comparator_B(ADC_Type *adc, uint32_t threshold)
  * @brief        : setting comparator A threshold value
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : arg  : value for threshold
  * @return       : NONE
  */
-static inline void adc_set_comparator_B(ADC120_Type *adc, uint32_t threshold)
+static inline void adc_set_comparator_B(ADC_Type *adc, uint32_t threshold)
 {
     adc->ADC_COMP_THRESH_B = threshold;
 }
 
 /*
- * @func         : void adc_set_comparator_ctrl_bit(ADC120_Type *adc, uint32_t arg)
+ * @func         : void adc_set_comparator_ctrl_bit(ADC_Type *adc, uint32_t arg)
  * @brief        : setting comparator control bit
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @parameter[2] : arg  : value for threshold
  * @return       : NONE
  */
-static inline void adc_set_comparator_ctrl_bit(ADC120_Type *adc, uint32_t arg)
+static inline void adc_set_comparator_ctrl_bit(ADC_Type *adc, uint32_t arg)
 {
     adc->ADC_CONTROL = (arg << 16);
 }
 
 /*
- * @func         : void adc_output_right_shift(ADC120_Type *adc)
+ * @func         : void adc_output_right_shift(ADC_Type *adc)
  * @brief        : control for right shift of bit
  * @parameter[1] : adc  : Pointer to the ADC register map
  * @return       : NONE
  */
-static inline void adc_output_right_shift(ADC120_Type *adc)
+static inline void adc_output_right_shift(ADC_Type *adc)
 {
     adc->ADC_SHIFT_CONTROL |= (ADC_SHIFT_CTRL_RIGHT_OR_LEFT);
 }
 
 /*
- * @func         : void adc_output_left_shift(ADC120_Type *adc)
+ * @func         : void adc_output_left_shift(ADC_Type *adc)
  * @brief        : control for left shift of bit
  * @parameter    : adc  : Pointer to the ADC register map
  * @return       : NONE
  */
-static inline void adc_output_left_shift(ADC120_Type *adc)
+static inline void adc_output_left_shift(ADC_Type *adc)
 {
     adc->ADC_SHIFT_CONTROL &= ~(ADC_SHIFT_CTRL_RIGHT_OR_LEFT);
 }
 
 /*
- * @func         : void adc_set_single_ch_scan_mode(ADC120_Type *adc, conv_info_t *conv_info)
+ * @func         : void adc_set_single_ch_scan_mode(ADC_Type *adc, conv_info_t *conv_info)
  * @brief        : control to single channel scan
  * @parameter[1] : adc       : Pointer to the ADC register map
  * @parameter[2] : conv_info : Pointer to the conv_info_t structure
  * @return       : NONE
  */
-static inline void adc_set_single_ch_scan_mode(ADC120_Type *adc, conv_info_t *conv_info)
+static inline void adc_set_single_ch_scan_mode(ADC_Type *adc, conv_info_t *conv_info)
 {
     /* set to single input scan */
     adc->ADC_SEQUENCER_CTRL |= (ADC_SEQUENCER_CTRL_FIXED_OR_ROTATE);
@@ -450,13 +424,13 @@ static inline void adc_set_single_ch_scan_mode(ADC120_Type *adc, conv_info_t *co
 }
 
 /*
- * @func         : void adc_set_multi_ch_scan_mode(ADC120_Type *adc, conv_info_t *conv_info)
+ * @func         : void adc_set_multi_ch_scan_mode(ADC_Type *adc, conv_info_t *conv_info)
  * @brief        : control to rotate through all channels
  * @parameter[1] : adc       : Pointer to the ADC register map
  * @parameter[2] : conv_info : Pointer to the conv_info_t structure
  * @return       : NONE
  */
-static inline void adc_set_multi_ch_scan_mode(ADC120_Type *adc, conv_info_t *conv_info)
+static inline void adc_set_multi_ch_scan_mode(ADC_Type *adc, conv_info_t *conv_info)
 {
     /* Set to continuous input scan */
     adc->ADC_SEQUENCER_CTRL &= ~(ADC_SEQUENCER_CTRL_FIXED_OR_ROTATE);
@@ -464,39 +438,39 @@ static inline void adc_set_multi_ch_scan_mode(ADC120_Type *adc, conv_info_t *con
 }
 
 /**
- * @fn       : void adc_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle DONE0 (avg sample ready)interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_done0_irq_handler(ADC120_Type *adc, conv_info_t *conversion);
+void adc_done0_irq_handler(ADC_Type *adc, conv_info_t *conversion);
 
 /**
- * @fn       : void adc_done1_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_done1_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle DONE1 (all sample taken)interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_done1_irq_handler(ADC120_Type *adc, conv_info_t *conversion);
+void adc_done1_irq_handler(ADC_Type *adc, conv_info_t *conversion);
 
 /**
- * @fn       : void adc_cmpa_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_cmpa_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle CMPA interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_cmpa_irq_handler(ADC120_Type *adc, conv_info_t *conversion);
+void adc_cmpa_irq_handler(ADC_Type *adc, conv_info_t *conversion);
 
 /**
- * @fn       : void adc_cmpb_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_cmpb_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle CMPB interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_cmpb_irq_handler(ADC120_Type *adc, conv_info_t *conversion);
+void adc_cmpb_irq_handler(ADC_Type *adc, conv_info_t *conversion);
 
 #endif /* ADC_H_ */

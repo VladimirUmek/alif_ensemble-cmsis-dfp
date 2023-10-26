@@ -33,6 +33,9 @@
 /* PINMUX Driver */
 #include "pinconf.h"
 
+/* SE Services */
+#include "se_services_port.h"
+
 /*RTOS Includes */
 #include "FreeRTOS.h"
 #include "FreeRTOSConfig.h"
@@ -431,7 +434,8 @@ void camera_demo_thread_entry(void *pvParameters)
 {
     int32_t ret            = 0;
     uint32_t actual_events = 0;
-
+    uint32_t service_error_code;
+    uint32_t error_code;
     ARM_DRIVER_VERSION version;
 
     printf("\r\n \t\t >>> ARX3A0 Camera Sensor demo with FreeRTOS is starting up!!! <<< \r\n");
@@ -457,6 +461,24 @@ void camera_demo_thread_entry(void *pvParameters)
         return;
     }
 
+    /* Initialize the SE services */
+    se_services_port_init();
+
+    /* Enable MIPI Clocks */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, true, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 100MHz clock enable = %d\n", error_code);
+        return;
+    }
+
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, true, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+    {
+        printf("SE: MIPI 38.4Mhz(HFOSC) clock enable = %d\n", error_code);
+        goto error_disable_100mhz_clk;
+    }
+
     version = CAMERAdrv->GetVersion();
     printf("\r\n Camera driver version api:0x%X driver:0x%X \r\n",version.api, version.drv);
 
@@ -464,7 +486,7 @@ void camera_demo_thread_entry(void *pvParameters)
     if(ret != ARM_DRIVER_OK)
     {
         printf("\r\n Error: CAMERA Initialize failed.\r\n");
-        return;
+        goto error_disable_hfosc_clk;
     }
 
     /* Power up Camera peripheral */
@@ -615,6 +637,16 @@ error_uninitialize_camera:
     ret = CAMERAdrv->Uninitialize();
     if(ret != ARM_DRIVER_OK)
         printf("\r\n Error: CAMERA Uninitialize failed.\r\n");
+
+error_disable_hfosc_clk:
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSC, false, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+        printf("SE: MIPI 38.4Mhz(HFOSC)  clock disable = %d\n", error_code);
+
+error_disable_100mhz_clk:
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_100M, false, &service_error_code);
+    if(error_code != SERVICES_REQ_SUCCESS)
+        printf("SE: MIPI 100MHz clock disable = %d\n", error_code);
 
     printf("\r\n XXX Camera demo thread is exiting XXX...\r\n");
 

@@ -171,9 +171,12 @@ typedef struct _adma2_desc_t{
 #define SDMMC_BASE_CLK                          SD_CLK_100_MHZ
 
 /* Supported Data Bus */
-#define SDMMC_1_BIT_WIDTH                       0x1U    /*!< Bus Width 1 */
-#define SDMMC_4_BIT_WIDTH                       0x2U    /*!< Bus Width 4 */
-#define SDMMC_8_BIT_WIDTH                       0x20U   /*!< Bus Width 8 */
+#define SDMMC_1_BIT_MODE                        0x0U
+#define SDMMC_4_BIT_MODE                        0x1U
+#define SDMMC_8_BIT_MODE                        0x2U
+#define SDMMC_1_BIT_WIDTH_Msk                   0x1U    /*!< Bus Width 1 */
+#define SDMMC_4_BIT_WIDTH_Msk                   0x2U    /*!< Bus Width 4 */
+#define SDMMC_8_BIT_WIDTH_Msk                   0x20U   /*!< Bus Width 8 */
 
 /* Card Types */
 #define SDMMC_CARD_SDSC                         1U      /*!< SDSC, Ver 1 Cards  */
@@ -376,6 +379,8 @@ typedef struct _adma2_desc_t{
 #define SDMMC_HOST_CTRL1_4_BIT_WIDTH            0x2U /*!< Host control 1 4bit mode */
 #define SDMMC_HOST_CTRL1_HIGH_SPEED_MODE_EN     0x4U /*!< Host control 1 High speed enable */
 #define SDMMC_HOST_CTRL1_SDMA_MODE              0x0U
+#define SDMMC_HOST_CTRL1_ADMA2_MODE             0x1U
+#define SDMMC_HOST_CTRL1_ADMA3_MODE             0x2U
 #define SDMMC_HOST_CTRL1_ADMA32_MODE_Msk        (0x2U << 3U)
 #define SDMMC_HOST_CTRL1_ADMA64MODE             0x3U
 #define SDMMC_HOST_CTRL1_DMA_SEL                SD_SEL_SDMA

@@ -99,7 +99,7 @@ static void set_irq_enable(MHU_sender_frame_register_t * sender_reg_base,
 static void clear_irq(MHU_sender_frame_register_t * sender_reg_base,
                                  uint32_t mask)
 {
-  SET_REGISTER_BITS_U32(&sender_reg_base->INT_CLR, mask);
+  WRITE_REGISTER_U32(&sender_reg_base->INT_CLR, mask);
 }
 
 /**
@@ -162,7 +162,7 @@ void MHU_send_message_irq_handler(uint32_t sender_id)
       if (chcomb_status & (1 << channel))
       {
         // clear the channel status interrupt
-        SET_REGISTER_BITS_U32(&sender_reg_base->CHANNEL[channel].CH_INT_CLR, MHU_CH_CLR);
+        WRITE_REGISTER_U32(&sender_reg_base->CHANNEL[channel].CH_INT_CLR, MHU_CH_CLR);
         // Disable channel interrupt
         CLEAR_REGISTER_BITS_U32(&sender_reg_base->CHANNEL[channel].CH_INT_EN, MHU_CH_CLR);
         // Invoke the user callback
@@ -266,7 +266,7 @@ mhu_send_status_t MHU_send_message(uint32_t sender_id,
     SET_REGISTER_BITS_U32(&sender_reg_base->CHANNEL[ch_num].CH_INT_EN, MHU_CH_CLR);
     // Write message to send channel
     sender_reg_base->CHANNEL[ch_num].CH_SET = message_data;
-	
+
     send_status = MHU_SEND_OK;
   }
 

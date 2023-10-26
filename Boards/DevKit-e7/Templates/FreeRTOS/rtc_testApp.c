@@ -130,7 +130,6 @@ void rtc_demo_Thread(void *pvParameters)
     uint32_t  val      = 0;
     uint32_t  iter     = 5;
     uint32_t  timeout  = 5;
-    uint64_t  events   = 0;
     int       ret      = 0;
     BaseType_t xReturned;
 

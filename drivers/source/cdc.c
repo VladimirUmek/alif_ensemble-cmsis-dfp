@@ -73,6 +73,82 @@ void cdc_set_cfg (CDC_Type *const cdc, const cdc_cfg_info_t *const info)
 }
 
 /**
+ * @fn      void cdc_set_hsync_polarity(CDC_Type *const cdc, const CDC_POLARITY hsync_pol)
+ * @brief   CDC hsync polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   hsync_pol  CDC HSYNC polarity
+ * @retval  none.
+ */
+void cdc_set_hsync_polarity(CDC_Type *const cdc, const CDC_POLARITY hsync_pol)
+{
+    if(hsync_pol == CDC_POLARITY_ACTIVE_HIGH)
+    {
+        cdc->CDC_GLB_CTRL |= CDC_GLB_CTRL_HSPOL;
+    }
+    else
+    {
+        cdc->CDC_GLB_CTRL &= ~CDC_GLB_CTRL_HSPOL;
+    }
+}
+
+/**
+ * @fn      void cdc_set_vsync_polarity(CDC_Type *const cdc, const CDC_POLARITY vsync_pol)
+ * @brief   CDC vsync polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   vsync_pol  CDC VSYNC polarity
+ * @retval  none.
+ */
+void cdc_set_vsync_polarity(CDC_Type *const cdc, const CDC_POLARITY vsync_pol)
+{
+    if(vsync_pol == CDC_POLARITY_ACTIVE_HIGH)
+    {
+        cdc->CDC_GLB_CTRL |= CDC_GLB_CTRL_VSPOL;
+    }
+    else
+    {
+        cdc->CDC_GLB_CTRL &= ~CDC_GLB_CTRL_VSPOL;
+    }
+}
+
+/**
+ * @fn      void cdc_set_pclkout_polarity(CDC_Type *const cdc, const CDC_PIXCLK_POLARITY pclkout_pol)
+ * @brief   CDC pixel clock output polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   pclkout_pol  CDC pixel clock output polarity
+ * @retval  none.
+ */
+void cdc_set_pclkout_polarity(CDC_Type *const cdc, const CDC_PIXCLK_POLARITY pclkout_pol)
+{
+    if(pclkout_pol == CDC_PIXCLK_POLARITY_INVERTED)
+    {
+        cdc->CDC_GLB_CTRL |= CDC_GLB_CTRL_PCLKPOL;
+    }
+    else
+    {
+        cdc->CDC_GLB_CTRL &= ~CDC_GLB_CTRL_PCLKPOL;
+    }
+}
+
+/**
+ * @fn      void cdc_set_blank_polarity(CDC_Type *const cdc, const CDC_POLARITY blank_pol)
+ * @brief   CDC blank polarity.
+ * @param   cdc  Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
+ * @param   blank_pol  CDC blank polarity
+ * @retval  none.
+ */
+void cdc_set_blank_polarity(CDC_Type *const cdc, const CDC_POLARITY blank_pol)
+{
+    if(blank_pol == CDC_POLARITY_ACTIVE_HIGH)
+    {
+        cdc->CDC_GLB_CTRL |= CDC_GLB_CTRL_BLPOL;
+    }
+    else
+    {
+        cdc->CDC_GLB_CTRL &= ~CDC_GLB_CTRL_BLPOL;
+    }
+}
+
+/**
  * @fn      void cdc_set_layer_cfg (CDC_Type *const cdc, const CDC_LAYER layer, const cdc_layer_info_t *const info)
  * @brief   Configure the CDC layer with given information.
  * @param   cdc   Pointer to the cdc register map structure. See {@ref CDC_Type} for details.
@@ -84,6 +160,8 @@ void cdc_set_layer_cfg (CDC_Type *const cdc, const CDC_LAYER layer, const cdc_la
 {
     /* Color FB Length variable */
     uint32_t fb_length;
+    /* CDC Layer configuration */
+    volatile CDC_CDC_LAYER_CFG_Type *cdc_layer = &(cdc->CDC_LAYER_CFG[layer]);
 
     /* Calculate frame buffer length */
     switch (info->pix_format)
@@ -115,90 +193,44 @@ void cdc_set_layer_cfg (CDC_Type *const cdc, const CDC_LAYER layer, const cdc_la
             return ;
     }
 
+    /* Mask the global shadow reload */
+    cdc_layer->CDC_L_REL_CTRL = CDC_Ln_REL_CTRL_SH_MASK;
 
-    if (layer == CDC_LAYER_1)
+    /* Set layer Window */
+    cdc_layer->CDC_L_WIN_HPOS = ((info->win_info.h_stop_pos << 16) |
+                                 info->win_info.h_start_pos         );
+    cdc_layer->CDC_L_WIN_VPOS = ((info->win_info.v_stop_pos << 16) |
+                                 info->win_info.v_start_pos         );
+
+    /* Set pixel format */
+    cdc_layer->CDC_L_PIX_FORMAT = info->pix_format;
+
+    /* Set constant Alpha */
+    cdc_layer->CDC_L_CONST_ALPHA = info->const_alpha;
+
+    /* Set layer blending factor */
+    if (info->blend_factor == CDC_BLEND_FACTOR_CONST_ALPHA)
     {
-        /* Mask the global shadow reload */
-        cdc->CDC_L1_REL_CTRL = CDC_Ln_REL_CTRL_SH_MASK;
-
-        /* Set layer Window */
-        cdc->CDC_L1_WIN_HPOS = ((info->win_info.h_stop_pos << 16) |
-                                info->win_info.h_start_pos         );
-        cdc->CDC_L1_WIN_VPOS = ((info->win_info.v_stop_pos << 16) |
-                                info->win_info.v_start_pos         );
-
-        /* Set pixel format */
-        cdc->CDC_L1_PIX_FORMAT = info->pix_format;
-
-        /* Set constant Alpha */
-        cdc->CDC_L1_CONST_ALPHA = info->const_alpha;
-
-        /* Set layer blending factor */
-        if (info->blend_factor == CDC_BLEND_FACTOR_CONST_ALPHA)
-        {
-            cdc->CDC_L1_BLEND_CFG = ((CDC_BLEND_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                     (CDC_BLEND_CONST_ALPHA_INV)                               );
-        }
-        else
-        {
-            cdc->CDC_L1_BLEND_CFG = ((CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                     (CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA_INV)                               );
-        }
-
-        /* Set color frame buffer Address */
-        cdc->CDC_L1_CFB_ADDR = info->fb_addr;
-
-        /* Set the pitch and the line length of the color frame buffer*/
-        cdc->CDC_L1_CFB_LENGTH = fb_length;
-
-        /* Set color frame buffer lines */
-        cdc->CDC_L1_CFB_LINES = info->num_lines;
-
-        /* Trigger shadow register update */
-        cdc->CDC_L1_REL_CTRL |= (1UL << info->sh_rld);
+        cdc_layer->CDC_L_BLEND_CFG = ((CDC_BLEND_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
+                                                              (CDC_BLEND_CONST_ALPHA_INV)       );
     }
     else
     {
-        /* Mask the global shadow reload */
-        cdc->CDC_L2_REL_CTRL = CDC_Ln_REL_CTRL_SH_MASK;
-
-        /* Set layer Window */
-        cdc->CDC_L2_WIN_HPOS = ((info->win_info.h_stop_pos << 16) |
-                                info->win_info.h_start_pos         );
-        cdc->CDC_L2_WIN_VPOS = ((info->win_info.v_stop_pos << 16) |
-                                info->win_info.v_start_pos         );
-
-        /* Set pixel format */
-        cdc->CDC_L2_PIX_FORMAT = info->pix_format;
-
-        /* Set constant Alpha */
-        cdc->CDC_L2_CONST_ALPHA = info->const_alpha;
-
-        /* Set layer blending factor */
-        if (info->blend_factor == CDC_BLEND_FACTOR_CONST_ALPHA)
-        {
-            cdc->CDC_L2_BLEND_CFG = ((CDC_BLEND_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                     (CDC_BLEND_CONST_ALPHA_INV)                               );
-        }
-        else
-        {
-            cdc->CDC_L2_BLEND_CFG = ((CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                     (CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA_INV)                               );
-        }
-
-        /* Set color frame buffer Address */
-        cdc->CDC_L2_CFB_ADDR = info->fb_addr;
-
-        /* Set the pitch and the line length of the color frame buffer*/
-        cdc->CDC_L2_CFB_LENGTH = fb_length;
-
-        /* Set color frame buffer lines */
-        cdc->CDC_L2_CFB_LINES = info->num_lines;
-
-        /* Trigger shadow register update */
-        cdc->CDC_L2_REL_CTRL |= (1UL << info->sh_rld);
+        cdc_layer->CDC_L_BLEND_CFG = ((CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
+                                                              (CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA_INV)       );
     }
 
+    /* Set color frame buffer Address */
+    cdc_layer->CDC_L_CFB_ADDR = info->fb_addr;
+
+    /* Set the pitch and the line length of the color frame buffer*/
+    cdc_layer->CDC_L_CFB_LENGTH = fb_length;
+
+    /* Set color frame buffer lines */
+    cdc_layer->CDC_L_CFB_LINES = info->num_lines;
+
+    /* Trigger shadow register update */
+    cdc_layer->CDC_L_REL_CTRL |= (1UL << info->sh_rld);
 }
 
 /**
@@ -211,22 +243,11 @@ void cdc_set_layer_cfg (CDC_Type *const cdc, const CDC_LAYER layer, const cdc_la
  */
 void cdc_layer_on (CDC_Type *const cdc, const CDC_LAYER layer, const CDC_SHADOW_RELOAD sh_rld)
 {
-    if (layer == CDC_LAYER_1)
-    {
-        /* Enable Layer on */
-        cdc->CDC_L1_CTRL |= CDC_LAYER_ON;
+    /* Enable Layer on */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_CTRL |= CDC_Ln_CTRL_LAYER_EN;
 
-        /* Trigger shadow register update */
-        cdc->CDC_L1_REL_CTRL |= (1UL << sh_rld);
-    }
-    else
-    {
-        /* Enable Layer on */
-        cdc->CDC_L2_CTRL |= CDC_LAYER_ON;
-
-        /* Trigger shadow register update */
-        cdc->CDC_L2_REL_CTRL |= (1UL << sh_rld);
-    }
+    /* Trigger shadow register update */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_REL_CTRL |= (1UL << sh_rld);
 }
 
 /**
@@ -239,22 +260,11 @@ void cdc_layer_on (CDC_Type *const cdc, const CDC_LAYER layer, const CDC_SHADOW_
  */
 void cdc_layer_off (CDC_Type *const cdc, const CDC_LAYER layer, const CDC_SHADOW_RELOAD sh_rld)
 {
-    if (layer == CDC_LAYER_1)
-    {
-        /* Enable Layer off */
-        cdc->CDC_L1_CTRL &= ~CDC_LAYER_ON;
+    /* Enable Layer off */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_CTRL &= ~CDC_Ln_CTRL_LAYER_EN;
 
-        /* Trigger shadow register update */
-        cdc->CDC_L1_REL_CTRL |= (1UL << sh_rld);
-    }
-    else
-    {
-        /* Enable Layer off */
-        cdc->CDC_L2_CTRL &= ~CDC_LAYER_ON;
-
-        /* Trigger shadow register update */
-        cdc->CDC_L2_REL_CTRL |= (1UL << sh_rld);
-    }
+    /* Trigger shadow register update */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_REL_CTRL |= (1UL << sh_rld);
 }
 
 /**
@@ -270,22 +280,11 @@ void cdc_layer_off (CDC_Type *const cdc, const CDC_LAYER layer, const CDC_SHADOW
 void cdc_set_layer_fb_addr (CDC_Type *const cdc, const CDC_LAYER layer,
                             const CDC_SHADOW_RELOAD sh_rld, const uint32_t fb_addr)
 {
-    if (layer == CDC_LAYER_1)
-    {
-        /* Set layer frame buffer */
-        cdc->CDC_L1_CFB_ADDR = fb_addr;
+    /* Set layer frame buffer */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_CFB_ADDR = fb_addr;
 
-        /* Trigger shadow register update */
-        cdc->CDC_L1_REL_CTRL |= (1UL << sh_rld);
-    }
-    else
-    {
-        /* Set layer frame buffer */
-        cdc->CDC_L2_CFB_ADDR = fb_addr;
-
-        /* Trigger shadow register update */
-        cdc->CDC_L2_REL_CTRL |= (1UL << sh_rld);
-    }
+    /* Trigger shadow register update */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_REL_CTRL |= (1UL << sh_rld);
 }
 
 /**
@@ -301,28 +300,14 @@ void cdc_set_layer_fb_addr (CDC_Type *const cdc, const CDC_LAYER layer,
 void cdc_set_layer_fb_window (CDC_Type *const cdc, const CDC_LAYER layer,
                               const CDC_SHADOW_RELOAD sh_rld, const cdc_window_info_t *win_info)
 {
-    if (layer == CDC_LAYER_1)
-    {
-        /* Set layer Window */
-        cdc->CDC_L1_WIN_HPOS = ((win_info->h_stop_pos << 16) |
-                                win_info->h_start_pos         );
-        cdc->CDC_L1_WIN_VPOS = ((win_info->v_stop_pos << 16) |
-                                win_info->v_start_pos         );
+    /* Set layer Window */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_WIN_HPOS = ((win_info->h_stop_pos << 16) |
+                                                win_info->h_start_pos         );
+    cdc->CDC_LAYER_CFG[layer].CDC_L_WIN_VPOS = ((win_info->v_stop_pos << 16) |
+                                                win_info->v_start_pos         );
 
-        /* Trigger shadow register update */
-        cdc->CDC_L1_REL_CTRL |= (1UL << sh_rld);
-    }
-    else
-    {
-        /* Set layer Window */
-        cdc->CDC_L2_WIN_HPOS = ((win_info->h_stop_pos << 16) |
-                                win_info->h_start_pos         );
-        cdc->CDC_L2_WIN_VPOS = ((win_info->v_stop_pos << 16) |
-                                win_info->v_start_pos         );
-
-        /* Trigger shadow register update */
-        cdc->CDC_L2_REL_CTRL |= (1UL << sh_rld);
-    }
+    /* Trigger shadow register update */
+    cdc->CDC_LAYER_CFG[layer].CDC_L_REL_CTRL |= (1UL << sh_rld);
 }
 
 /**
@@ -339,44 +324,24 @@ void cdc_set_layer_fb_window (CDC_Type *const cdc, const CDC_LAYER layer,
 void cdc_set_layer_blending (CDC_Type *const cdc, const CDC_LAYER layer, const CDC_SHADOW_RELOAD sh_rld,
                              const uint8_t const_alpha, const CDC_BLEND_FACTOR blend_factor             )
 {
-    if (layer == CDC_LAYER_1)
+    /* CDC Layer configuration */
+    volatile CDC_CDC_LAYER_CFG_Type *cdc_layer = &(cdc->CDC_LAYER_CFG[layer]);
+
+    /* Set constant alpha */
+    cdc_layer->CDC_L_CONST_ALPHA = const_alpha;
+
+    /* Set layer blending factor */
+    if (blend_factor == CDC_BLEND_FACTOR_CONST_ALPHA)
     {
-        /* Set constant alpha */
-        cdc->CDC_L1_CONST_ALPHA = const_alpha;
-
-        /* Set layer blending factor */
-        if (blend_factor == CDC_BLEND_FACTOR_CONST_ALPHA)
-        {
-            cdc->CDC_L1_BLEND_CFG = ((CDC_BLEND_CONST_ALPHA  << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                     (CDC_BLEND_CONST_ALPHA_INV)                                );
-        }
-        else
-        {
-            cdc->CDC_L1_BLEND_CFG = ((CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                     (CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA_INV)                               );
-        }
-
-        /* Trigger shadow register update */
-        cdc->CDC_L1_REL_CTRL |= (1UL << sh_rld);
+        cdc_layer->CDC_L_BLEND_CFG = ((CDC_BLEND_CONST_ALPHA  << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
+                                      (CDC_BLEND_CONST_ALPHA_INV)                                );
     }
     else
     {
-        /* Set constant alpha */
-         cdc->CDC_L2_CONST_ALPHA = const_alpha;
-
-         /* Set layer blending factor */
-         if (blend_factor == CDC_BLEND_FACTOR_CONST_ALPHA)
-         {
-             cdc->CDC_L2_BLEND_CFG = ((CDC_BLEND_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
-                                      (CDC_BLEND_CONST_ALPHA_INV)                               );
-         }
-         else
-         {
-             cdc->CDC_L2_BLEND_CFG = ((CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT ) |
-                                      (CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA_INV)                                );
-         }
-
-         /* Trigger shadow register update */
-         cdc->CDC_L2_REL_CTRL |= (1UL << sh_rld);
+        cdc_layer->CDC_L_BLEND_CFG = ((CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA << CDC_Ln_BLEND_CFG_F1_SEL_SHIFT) |
+                                      (CDC_BLEND_PIXEL_ALPHA_X_CONST_ALPHA_INV)                               );
     }
+
+    /* Trigger shadow register update */
+    cdc_layer->CDC_L_REL_CTRL |= (1UL << sh_rld);
 }

@@ -55,7 +55,8 @@ uint32_t SERVICES_boot_process_toc_entry(uint32_t services_handle,
   process_toc_entry_svc_t * p_svc = (process_toc_entry_svc_t *)
     SERVICES_prepare_packet_buffer(sizeof(process_toc_entry_svc_t));
 
-  strncpy((char *)p_svc->send_entry_id, (const char *)image_id, IMAGE_NAME_LENGTH);
+  strncpy((char *)p_svc->send_entry_id, (const char *)image_id,
+          IMAGE_NAME_LENGTH);
 
   uint32_t ret = SERVICES_send_request(services_handle,
                                SERVICE_BOOT_PROCESS_TOC_ENTRY, NULL);
@@ -106,7 +107,7 @@ uint32_t SERVICES_boot_set_vtor(uint32_t services_handle,
   p_svc->send_address = address;
 
   uint32_t ret = SERVICES_send_request(services_handle,
-                               SERVICE_BOOT_SET_VTOR, NULL);
+                                       SERVICE_BOOT_SET_VTOR, NULL);
   *error_code = p_svc->resp_error_code;
   return ret;
 }
@@ -148,7 +149,7 @@ uint32_t SERVICES_boot_release_cpu(uint32_t services_handle,
   p_svc->send_cpu_id = cpu_id;
 
   uint32_t ret = SERVICES_send_request(services_handle,
-                               SERVICE_BOOT_RELEASE_CPU, NULL);
+                                       SERVICE_BOOT_RELEASE_CPU, NULL);
   *error_code = p_svc->resp_error_code;
   return ret;
 }

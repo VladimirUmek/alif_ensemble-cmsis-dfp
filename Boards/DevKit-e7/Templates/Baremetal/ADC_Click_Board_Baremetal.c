@@ -30,7 +30,12 @@
 
 /* include for ADC Driver */
 #include "Driver_ADC.h"
+
+/* PINMUX include */
+#include "pinconf.h"
+
 #include "se_services_port.h"
+#include "RTE_Components.h"
 #if defined(RTE_Compiler_IO_STDOUT)
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
@@ -44,16 +49,32 @@ extern ARM_DRIVER_ADC Driver_ADC121;
 static ARM_DRIVER_ADC *ADCdrv = &Driver_ADC121;
 
 #define CLICK_BOARD_INPUT        ARM_ADC_CHANNEL_0
-#define MAX_NUM_THRESHOLDS       (6)
 #define NUM_CHANNELS             (8)
-
-/* store comparator result */
-uint32_t comp_value[MAX_NUM_THRESHOLDS] = {0};
 
 /* Demo purpose adc_sample*/
 uint32_t adc_sample[NUM_CHANNELS];
 
 volatile uint32_t num_samples = 0;
+
+/**
+ * @fn      static int32_t pinmux_config(void)
+ * @brief   ADC potentiometer pinmux configuration
+ * @retval  execution status.
+ */
+static int32_t pinmux_config(void)
+{
+    int32_t ret = 0U;
+
+    ret = pinconf_set(PORT_0, PIN_7, PINMUX_ALTERNATE_FUNCTION_7,
+                      PADCTRL_READ_ENABLE );
+    if(ret)
+    {
+        printf("ERROR: Failed to configure PINMUX \r\n");
+        return ret;
+    }
+
+    return ret;
+}
 
 /*
  * @func   : void adc_conversion_callback(uint32_t event, uint8_t channel, uint32_t sample_output)
@@ -90,18 +111,29 @@ void adc_click_board_demo()
     /* Initialize the SE services */
     se_services_port_init();
 
-    /* enable the HFOSC clock */
+    /* enable the 160 MHz clock */
     error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
                            /*clock_enable_t*/ CLKEN_CLK_160M,
                            /*bool enable   */ true,
                                               &service_error_code);
     if(error_code)
-        printf("SE: clk enable = %d\n", error_code);
+    {
+        printf("SE Error: 160 MHz clk enable = %d\n", error_code);
+        return;
+    }
 
     printf("\t\t\n >>> ADC demo starting up!!! <<< \r\n");
 
     version = ADCdrv->GetVersion();
     printf("\r\n ADC version api:%X driver:%X...\r\n",version.api, version.drv);
+
+    /* PINMUX */
+    ret = pinmux_config();
+    if(ret != 0)
+    {
+        printf("Error in pin-mux configuration\n");
+        return;
+    }
 
     /* Initialize ADC driver */
     ret = ADCdrv->Initialize(adc_conversion_callback);
@@ -162,13 +194,6 @@ error_poweroff:
     {
         printf("\r\n Error: ADC Power OFF failed.\r\n");
     }
-    /* disable the HFOSC clock */
-    error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
-                           /*clock_enable_t*/ CLKEN_CLK_160M,
-                           /*bool enable   */ false,
-                                              &service_error_code);
-    if(error_code)
-        printf("SE: clk enable = %d\n", error_code);
 
 error_uninitialize:
 
@@ -177,6 +202,16 @@ error_uninitialize:
     if(ret != ARM_DRIVER_OK)
     {
         printf("\r\n Error: ADC Uninitialize failed.\r\n");
+    }
+    /* disable the 160 MHz clock */
+    error_code = SERVICES_clocks_enable_clock(se_services_s_handle,
+                           /*clock_enable_t*/ CLKEN_CLK_160M,
+                           /*bool enable   */ false,
+                                              &service_error_code);
+    if(error_code)
+    {
+        printf("SE Error: 160 MHz clk disable = %d\n", error_code);
+        return;
     }
 
     printf("\r\n ADC demo exiting...\r\n");

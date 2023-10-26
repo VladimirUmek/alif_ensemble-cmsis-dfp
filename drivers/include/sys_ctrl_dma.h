@@ -31,82 +31,92 @@ extern "C"
 {
 #endif
 
-static inline void enable_dma0_periph_clk(void)
+/**
+ * enum DMA_INSTANCE
+ * DMA instances
+ */
+typedef enum _DMA_INSTANCE
+{
+    DMA_INSTANCE_0,                         /**< DMA0       */
+    DMA_INSTANCE_LOCAL,                     /**< DMALOCAL   */
+} DMA_INSTANCE;
+
+static inline void dma0_enable_periph_clk(void)
 {
     CLKCTL_PER_MST->PERIPH_CLK_ENA |= PERIPH_CLK_ENA_DMA_CKEN;
 }
 
-static inline void disable_dma0_periph_clk(void)
+static inline void dma0_disable_periph_clk(void)
 {
     CLKCTL_PER_MST->PERIPH_CLK_ENA &= ~PERIPH_CLK_ENA_DMA_CKEN;
 }
 
-static inline void set_dma0_boot_manager_sec(void)
+static inline void dma0_set_boot_manager_secure(void)
 {
     CLKCTL_PER_MST->DMA_CTRL &= ~DMA_CTRL_BOOT_MANAGER;
 }
 
-static inline void set_dma0_boot_manager_nsec(void)
+static inline void dma0_set_boot_manager_nonsecure(void)
 {
     CLKCTL_PER_MST->DMA_CTRL |= DMA_CTRL_BOOT_MANAGER;
 }
 
-static inline void set_dma0_boot_irq_ns_mask(uint32_t boot_irq_ns_mask)
+static inline void dma0_set_boot_irq_ns_mask(uint32_t boot_irq_ns_mask)
 {
     CLKCTL_PER_MST->DMA_IRQ = boot_irq_ns_mask;
 }
 
-static inline void set_dma0_boot_periph_ns_mask(uint32_t boot_periph_ns_mask)
+static inline void dma0_set_boot_periph_ns_mask(uint32_t boot_periph_ns_mask)
 {
     CLKCTL_PER_MST->DMA_PERIPH = boot_periph_ns_mask;
 }
 
-static inline void reset_dma0(void)
+static inline void dma0_reset(void)
 {
     CLKCTL_PER_MST->DMA_CTRL |= DMA_CTRL_SW_RST;
 }
 
-static inline void enable_dmalocal_periph_clk(void)
+static inline void dmalocal_enable_periph_clk(void)
 {
     M55LOCAL_CFG->CLK_ENA |= CLK_ENA_DMA_CKEN;
 }
 
-static inline void disable_dmalocal_periph_clk(void)
+static inline void dmalocal_disable_periph_clk(void)
 {
     M55LOCAL_CFG->CLK_ENA &= ~CLK_ENA_DMA_CKEN;
 }
 
-static inline void set_dmalocal_boot_manager_sec(void)
+static inline void dmalocal_set_boot_manager_secure(void)
 {
     M55LOCAL_CFG->DMA_CTRL &= ~DMA_CTRL_BOOT_MANAGER;
 }
 
-static inline void set_dmalocal_boot_manager_nsec(void)
+static inline void dmalocal_set_boot_manager_nonsecure(void)
 {
     M55LOCAL_CFG->DMA_CTRL |= DMA_CTRL_BOOT_MANAGER;
 }
 
-static inline void set_dmalocal_boot_irq_ns_mask(uint32_t boot_irq_ns_mask)
+static inline void dmalocal_set_boot_irq_ns_mask(uint32_t boot_irq_ns_mask)
 {
     M55LOCAL_CFG->DMA_IRQ = boot_irq_ns_mask;
 }
 
-static inline void set_dmalocal_boot_periph_ns_mask(uint32_t boot_periph_ns_mask)
+static inline void dmalocal_set_boot_periph_ns_mask(uint32_t boot_periph_ns_mask)
 {
     M55LOCAL_CFG->DMA_PERIPH = boot_periph_ns_mask;
 }
 
-static inline void reset_dmalocal(void)
+static inline void dmalocal_reset(void)
 {
     M55LOCAL_CFG->DMA_CTRL |= DMA_CTRL_SW_RST;
 }
 
-static inline void set_dma0_glitch_filter(uint32_t glitch_filter)
+static inline void dma0_set_glitch_filter(uint32_t glitch_filter)
 {
     CLKCTL_PER_MST->DMA_GLITCH_FLT = glitch_filter;
 }
 
-static inline void set_dmalocal_glitch_filter(uint8_t glitch_filter)
+static inline void dmalocal_set_glitch_filter(uint8_t glitch_filter)
 {
     M55LOCAL_CFG->DMA_SEL |= (glitch_filter << DMA_SEL_FLT_ENA_Pos);
 }

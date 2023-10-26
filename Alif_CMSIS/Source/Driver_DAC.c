@@ -142,7 +142,7 @@ static int32_t DAC_PowerControl(ARM_POWER_STATE state,
 
                disable_dac_periph_clk(DAC->instance);
 
-               disable_adc_cmp_periph_clk();
+               disable_cmp_periph_clk();
 
                break;
 
@@ -161,7 +161,7 @@ static int32_t DAC_PowerControl(ARM_POWER_STATE state,
                /* Set the power flag enabled */
                DAC->flags |= DAC_FLAG_DRV_POWER_DONE;
 
-               enable_adc_cmp_periph_clk();
+               enable_cmp_periph_clk();
 
                enable_dac_periph_clk(DAC->instance);
 
@@ -300,7 +300,7 @@ static int32_t DAC_SetInput(DAC_RESOURCES *DAC, uint32_t value)
 
 /* DAC configuration */
 static DAC_RESOURCES DAC0 = {
-        .regs           = (DAC120_Type *)DAC120_BASE,
+        .regs           = (DAC_Type *)DAC120_BASE,
         .flags          = 0,
         .input_mux_val  = (RTE_DAC1_INPUT_BYP_MUX_EN),
         .bypass_val     = (RTE_DAC1_BYP_VAL),
@@ -370,7 +370,7 @@ ARM_DRIVER_DAC Driver_DAC0 =
 
 /* DAC1 configuration */
 static DAC_RESOURCES DAC1 = {
-        .regs           = (DAC120_Type *)DAC121_BASE,
+        .regs           = (DAC_Type *)DAC121_BASE,
         .flags          = 0,
         .input_mux_val  = (RTE_DAC1_INPUT_BYP_MUX_EN),
         .bypass_val     = (RTE_DAC1_BYP_VAL),

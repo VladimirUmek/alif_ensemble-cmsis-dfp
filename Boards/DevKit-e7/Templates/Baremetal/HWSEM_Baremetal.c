@@ -25,30 +25,22 @@
 #include <RTE_Components.h>
 #include CMSIS_device_header
 
-/* System Includes */
 #include <stdio.h>
 #include <string.h>
 
-/* Project Includes */
-/* include for UART Driver */
 #include "Driver_USART.h"
+#include <pinconf.h>
+#include "Driver_HWSEM.h"
+
 #if defined(RTE_Compiler_IO_STDOUT)
 #include "retarget_stdout.h"
 #endif  /* RTE_Compiler_IO_STDOUT */
 
-
-/* pin configuration Driver */
-#include <pinconf.h>
-/* include for HWSEM Driver */
-#include "Driver_HWSEM.h"
-
 #ifdef M55_HP
-const char * startup_msg = "\n<<<<M55_HP : HWSEM testApp starting up>>>>\r\n";
 const char * msg = "\nPrinting from M55_HP";
 const char * acq_msg = "\nM55_HP acquiring the semaphore, printing 10 messages\r\n";
 const char * rel_msg = "\nM55_HP releasing the semaphore\r\n\n";
 #else
-const char * startup_msg = "\nM55_HE : HWSEM testApp\r\n";
 const char * msg = "\nPrinting from M55_HE";
 const char * acq_msg = "\nM55_HE acquiring the semaphore, printing 10 messages\r\n";
 const char * rel_msg = "\nM55_HE releasing the semaphore\r\n\n";
@@ -121,13 +113,13 @@ static void myHWSEM_callback(int32_t event, uint8_t sem_id)
 }
 
 /**
- * @function    static int32_t pimux_setup(void)
+ * @function    static int32_t pinmux_setup(void)
  * @brief       pinmux setup
  * @note        none
  * @param       void
  * @retval      execution status
  */
-static int32_t pimux_setup(void)
+static int32_t pinmux_setup(void)
 {
     int32_t ret;
 
@@ -383,11 +375,11 @@ int main()
         goto error_uninitialize;
     }
 
-    ret = pimux_setup();
+    ret = pinmux_setup();
 
     if (ret != 0)
     {
-        printf("\r\n Error in pimux_setup.\r\n");
+        printf("\r\n Error in pinmux_setup.\r\n");
         goto error_unlock;
     }
 

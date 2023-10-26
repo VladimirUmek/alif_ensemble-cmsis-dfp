@@ -16,9 +16,9 @@
         <TargetCommonOption>
           <Device>AE722F80F55D5AS:M55_HP</Device>
           <Vendor>Alif Semiconductor</Vendor>
-          <PackID>AlifSemiconductor.Ensemble.0.9.6</PackID>
+          <PackID>AlifSemiconductor.Ensemble.1.0.0-rc2</PackID>
           <PackURL>https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/</PackURL>
-          <Cpu>IRAM(0x02000000,0x00400000) IRAM2(0x08000000,0x00280000) IROM(0x80000000,0x00580000) XRAM(0x50000000,0x00040000) XRAM2(0x50800000,0x00100000) XRAM3(0x58000000,0x00040000) CPUTYPE("Cortex-M55") FPU3(DFPU) DSP TZ MVE(FP) CLOCK(12000000) ESEL ELITTLE</Cpu>
+          <Cpu>IRAM(0x02000000,0x00400000) IRAM2(0x08000000,0x00280000) IROM(0x80000000,0x00580000) XRAM(0x50000000,0x00040000) XRAM2(0x50800000,0x00100000) XRAM3(0x58000000,0x00040000) CPUTYPE("Cortex-M55") FPU3(DFPU) DSP TZ MVE(FP) CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
           <StartupFile></StartupFile>
           <FlashDriverDll>UL2V8M(-S0 -C0 -P0 -FD00000000 -FC20000 -FN1 -FF0Ensemble -FS080000000 -FL0580000 -FP0($$Device:AE722F80F55D5AS$Flash\algorithms\Ensemble.FLM))</FlashDriverDll>
@@ -191,7 +191,7 @@
             <hadIROM2>0</hadIROM2>
             <StupSel>0</StupSel>
             <useUlib>0</useUlib>
-            <EndSel>1</EndSel>
+            <EndSel>0</EndSel>
             <uLtcg>0</uLtcg>
             <nSecure>0</nSecure>
             <RoSelD>3</RoSelD>
@@ -395,6 +395,9 @@
           <GroupName>::CMSIS</GroupName>
         </Group>
         <Group>
+          <GroupName>::CMSIS-Compiler</GroupName>
+        </Group>
+        <Group>
           <GroupName>::Device</GroupName>
         </Group>
       </Groups>
@@ -404,32 +407,38 @@
   <RTE>
     <apis/>
     <components>
+      <component Cclass="CMSIS-Compiler" Cgroup="I/O" Csub="STDOUT" Cvariant="User" Cvendor="ARM" Cversion="1.0.0" condition="CortexDevice">
+        <package name="CMSIS-Compiler" schemaVersion="1.7.7" url="https://www.keil.com/pack/" vendor="ARM" version="1.0.0"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </component>
       <component Cclass="CMSIS" Cgroup="CORE" Cvendor="ARM" Cversion="5.6.0" condition="ARMv6_7_8-M Device">
         <package name="CMSIS" schemaVersion="1.7.7" url="http://www.keil.com/pack/" vendor="ARM" version="5.9.0"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
-      <component Cclass="Device" Cgroup="SOC Peripherals" Csub="DMA" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="Ensemble">
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+      <component Cclass="Device" Cgroup="Retarget IO" Csub="STDOUT" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="Retarget IO STDOUT">
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
-      <component Cclass="Device" Cgroup="SOC Peripherals" Csub="PINCONF" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="Ensemble CMSIS_Driver">
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+      <component Cclass="Device" Cgroup="SOC Peripherals" Csub="PINCONF" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="Ensemble CMSIS_Driver">
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
-      <component Cclass="Device" Cgroup="SOC Peripherals" Csub="USART" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="Ensemble CMSIS_Driver">
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+      <component Cclass="Device" Cgroup="SOC Peripherals" Csub="USART" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="Ensemble CMSIS_Driver">
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </component>
-      <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core">
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+      <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core">
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
@@ -438,64 +447,64 @@
     <files>
       <file attr="config" category="linkerScript" condition="ARMCC6" name="Device\E7\AE722F80F55D5XX\linker_script\ARM\M55_HP.sct" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\M55_HP.sct</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </file>
       <file attr="config" category="header" name="Device\core\M55_HP\config\M55_HP_Config.h" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\M55_HP_Config.h</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </file>
       <file attr="config" category="header" name="Device\core\M55_HP\include\M55_HP_map.h" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\M55_HP_map.h</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </file>
       <file attr="config" category="header" name="Device\E7\AE722F80F55D5XX\RTE_Device.h" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\RTE_Device.h</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </file>
       <file attr="config" category="header" name="Device\common\include\app_map.h" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\app_map.h</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
-        <targetInfos>
-          <targetInfo name="Target 1"/>
-        </targetInfos>
-      </file>
-      <file attr="config" category="header" name="Alif_CMSIS\Include\config\dma_config.h" version="1.0.0">
-        <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\dma_config.h</instance>
-        <component Cclass="Device" Cgroup="SOC Peripherals" Csub="DMA" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="Ensemble"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </file>
       <file attr="config" category="header" name="Device\common\include\global_map.h" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\global_map.h</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>
       </file>
       <file attr="config" category="header" name="Device\core\M55_HP\config\partition_M55_HP.h" version="1.0.0">
         <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\partition_M55_HP.h</instance>
-        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="0.9.5" condition="M55_HP CMSIS-Core"/>
-        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="0.9.6"/>
+        <component Cclass="Device" Cgroup="Startup" Cvariant="C Startup" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="M55_HP CMSIS-Core"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
+        <targetInfos>
+          <targetInfo name="Target 1"/>
+        </targetInfos>
+      </file>
+      <file attr="config" category="header" name="libs\retarget_io\config\retarget_config.h" version="1.0.0">
+        <instance index="0">RTE\Device\AE722F80F55D5AS_M55_HP\retarget_config.h</instance>
+        <component Cclass="Device" Cgroup="Retarget IO" Csub="STDOUT" Cvendor="AlifSemiconductor" Cversion="1.0.0" condition="Retarget IO STDOUT"/>
+        <package name="Ensemble" schemaVersion="1.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/raw/main/" vendor="AlifSemiconductor" version="1.0.0-rc2"/>
         <targetInfos>
           <targetInfo name="Target 1"/>
         </targetInfos>

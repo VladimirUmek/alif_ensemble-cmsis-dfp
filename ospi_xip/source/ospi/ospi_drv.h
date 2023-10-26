@@ -44,9 +44,9 @@ typedef struct {
 /* Function Prototypes */
 void ospi_init(ospi_flash_cfg_t *ospi_cfg);
 void ospi_xip_enter(ospi_flash_cfg_t *ospi_cfg, uint16_t incr_command, uint16_t wrap_command);
-void ospi_recv(ospi_flash_cfg_t *ospi_cfg, uint32_t command, uint8_t *buffer);
+void ospi_recv_blocking(ospi_flash_cfg_t *ospi_cfg, uint32_t command, uint8_t *buffer);
 void ospi_push(ospi_flash_cfg_t *ospi_cfg, uint32_t data);
-void ospi_send(ospi_flash_cfg_t *ospi_cfg, uint32_t data);
+void ospi_send_blocking(ospi_flash_cfg_t *ospi_cfg, uint32_t data);
 void ospi_setup_write(ospi_flash_cfg_t *ospi_cfg, uint32_t addr_len);
 void ospi_setup_write_sdr(ospi_flash_cfg_t *ospi_cfg, uint32_t addr_len);
 void ospi_setup_read(ospi_flash_cfg_t *ospi_cfg, uint32_t addr_len, uint32_t read_len, uint32_t wait_cycles);

@@ -34,12 +34,16 @@ typedef enum _DPHY_CLK_MODE {
 
 #if (RTE_MIPI_DSI)
 /**
-  \fn          int32_t DSI_DPHY_Initialize (uint32_t frequency)
+  \fn          int32_t DSI_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes,
+                                            DPHY_CLK_MODE clk_mode)
   \brief       Initialize MIPI DSI DPHY Interface.
   \param[in]   frequency to configure DPHY PLL.
+  \param[in]   n_lanes number of lanes.
+  \param[in]   clk_mode select DPHY clock mode \ref DPHY_CLK_MODE.
   \return      \ref execution_status
   */
-int32_t DSI_DPHY_Initialize (uint32_t frequency);
+int32_t DSI_DPHY_Initialize (uint32_t frequency,  uint8_t n_lanes,
+                             DPHY_CLK_MODE clk_mode);
 
 /**
   \fn          int32_t DSI_DPHY_Uninitialize (void)
@@ -51,14 +55,16 @@ int32_t DSI_DPHY_Uninitialize (void);
 
 #if (RTE_MIPI_CSI2)
 /**
-  \fn          int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE clk_mode)
+  \fn          int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes,
+                                             DPHY_CLK_MODE clk_mode)
   \brief       Initialize MIPI CSI2 DPHY Interface.
   \param[in]   frequency to configure DPHY PLL.
   \param[in]   n_lanes number of lanes.
   \param[in]   clk_mode select DPHY clock mode \ref DPHY_CLK_MODE.
   \return      \ref execution_status
   */
-int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE clk_mode);
+int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes,
+                              DPHY_CLK_MODE clk_mode);
 
 /**
   \fn          int32_t CSI2_DPHY_Uninitialize (void)
@@ -67,6 +73,5 @@ int32_t CSI2_DPHY_Initialize (uint32_t frequency, uint8_t n_lanes, DPHY_CLK_MODE
   */
 int32_t CSI2_DPHY_Uninitialize (void);
 #endif
-
 
 #endif /* DPHY_INIT_H_ */

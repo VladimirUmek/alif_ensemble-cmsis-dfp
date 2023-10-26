@@ -22,13 +22,13 @@
 #include "spi.h"
 
 /**
-  \fn          void spi_set_mode(LPSPI_Type *spi, SPI_MODE mode)
+  \fn          void spi_set_mode(SPI_Type *spi, SPI_MODE mode)
   \brief       Set the SPI mode for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   mode    The mode to be set.
   \return      none
 */
-void spi_set_mode(LPSPI_Type *spi, SPI_MODE mode)
+void spi_set_mode(SPI_Type *spi, SPI_MODE mode)
 {
     uint32_t val;
 
@@ -64,13 +64,13 @@ void spi_set_mode(LPSPI_Type *spi, SPI_MODE mode)
 }
 
 /**
-  \fn          void spi_set_protocol(LPSPI_Type *spi, SPI_PROTO format)
+  \fn          void spi_set_protocol(SPI_Type *spi, SPI_PROTO format)
   \brief       Set the protocol format for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   format  The protocol to be set
   \return      none
 */
-void spi_set_protocol(LPSPI_Type *spi, SPI_PROTO format)
+void spi_set_protocol(SPI_Type *spi, SPI_PROTO format)
 {
     uint32_t val;
 
@@ -96,13 +96,13 @@ void spi_set_protocol(LPSPI_Type *spi, SPI_PROTO format)
 }
 
 /**
-  \fn          void spi_set_dfs(LPSPI_Type *spi, uint8_t dfs)
+  \fn          void spi_set_dfs(SPI_Type *spi, uint8_t dfs)
   \brief       Set the data frame size for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   dfs     The data frame size
   \return      none
 */
-void spi_set_dfs(LPSPI_Type *spi, uint8_t dfs)
+void spi_set_dfs(SPI_Type *spi, uint8_t dfs)
 {
     uint32_t val = 0;
 
@@ -117,13 +117,13 @@ void spi_set_dfs(LPSPI_Type *spi, uint8_t dfs)
 }
 
 /**
-  \fn          void spi_set_tmod(LPSPI_Type *spi, SPI_TMOD tmod)
+  \fn          void spi_set_tmod(SPI_Type *spi, SPI_TMOD tmod)
   \brief       Set the transfer mode for the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \param[in]   tmod    Transfer mode
   \return      none
 */
-void spi_set_tmod(LPSPI_Type *spi, SPI_TMOD tmod)
+void spi_set_tmod(SPI_Type *spi, SPI_TMOD tmod)
 {
     uint32_t val = 0;
 
@@ -155,12 +155,12 @@ void spi_set_tmod(LPSPI_Type *spi, SPI_TMOD tmod)
 }
 
 /**
-  \fn          SPI_TMOD spi_get_tmod(LPSPI_Type *spi)
+  \fn          SPI_TMOD spi_get_tmod(SPI_Type *spi)
   \brief       Get the transfer mode of the SPI instance.
   \param[in]   spi     Pointer to the SPI register map
   \return      The current transfer mode
 */
-SPI_TMOD spi_get_tmod(LPSPI_Type *spi)
+SPI_TMOD spi_get_tmod(SPI_Type *spi)
 {
     uint32_t val = spi->SPI_CTRLR0;
 
@@ -183,13 +183,13 @@ SPI_TMOD spi_get_tmod(LPSPI_Type *spi)
 }
 
 /**
-  \fn          void spi_set_tx_threshold(LPSPI_Type *spi, uint8_t threshold)
+  \fn          void spi_set_tx_threshold(SPI_Type *spi, uint8_t threshold)
   \brief       Set Transmit FIFO interrupt threshold for the SPI instance
   \param[in]   spi        Pointer to the SPI register map
   \param[in]   threshold  Transmit FIFO threshold
   \return      none
 */
-void spi_set_tx_threshold(LPSPI_Type *spi, uint8_t threshold)
+void spi_set_tx_threshold(SPI_Type *spi, uint8_t threshold)
 {
     uint32_t val = spi->SPI_TXFTLR;
     val &= ~(SPI_TXFTLR_TFT_MASK);
@@ -198,25 +198,25 @@ void spi_set_tx_threshold(LPSPI_Type *spi, uint8_t threshold)
 }
 
 /**
-  \fn          void spi_set_rx_threshold(LPSPI_Type *spi, uint8_t threshold)
+  \fn          void spi_set_rx_threshold(SPI_Type *spi, uint8_t threshold)
   \brief       Set Receive FIFO interrupt threshold for the SPI instance
   \param[in]   spi        Pointer to the SPI register map
   \param[in]   threshold  Receive FIFO threshold
   \return      none
 */
-void spi_set_rx_threshold(LPSPI_Type *spi, uint8_t threshold)
+void spi_set_rx_threshold(SPI_Type *spi, uint8_t threshold)
 {
     spi->SPI_RXFTLR = threshold;
 }
 
 /**
-  \fn          void spi_set_tx_fifo_start_level(LPSPI_Type *spi, uint16_t level)
+  \fn          void spi_set_tx_fifo_start_level(SPI_Type *spi, uint16_t level)
   \brief       Set Transmit FIFO start level
   \param[in]   spi    Pointer to the SPI register map
   \param[in]   level  Transmit FIFO start level
   \return      none
 */
-void spi_set_tx_fifo_start_level(LPSPI_Type *spi, uint16_t level)
+void spi_set_tx_fifo_start_level(SPI_Type *spi, uint16_t level)
 {
     uint32_t val = spi->SPI_TXFTLR;
     val &= ~(SPI_TXFTLR_TXFTHR_MASK);
@@ -225,14 +225,14 @@ void spi_set_tx_fifo_start_level(LPSPI_Type *spi, uint16_t level)
 }
 
 /**
-  \fn          void spi_control_ss(LPSPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
+  \fn          void spi_control_ss(SPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
   \brief       Control the slave select line
   \param[in]   spi    Pointer to the SPI register map
   \param[in]   slave  The slave to be selected
   \param[in]   state  The state of the slave select line
   \return      none
 */
-void spi_control_ss(LPSPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
+void spi_control_ss(SPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
 {
     spi_disable(spi);
 
@@ -248,13 +248,13 @@ void spi_control_ss(LPSPI_Type *spi, uint8_t slave, SPI_SS_STATE state)
 }
 
 /**
-  \fn          void spi_set_sste(LPSPI_Type *spi, bool enable)
+  \fn          void spi_set_sste(SPI_Type *spi, bool enable)
   \brief       Enable/Disable Slave Select Toggle for the SPI instance
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   enable    Enable/Disable control
   \return      none
 */
-void spi_set_sste(LPSPI_Type *spi, bool enable)
+void spi_set_sste(SPI_Type *spi, bool enable)
 {
     uint32_t val = spi->SPI_CTRLR0;
 
@@ -274,12 +274,12 @@ void spi_set_sste(LPSPI_Type *spi, bool enable)
 }
 
 /**
-  \fn          void spi_send(LPSPI_Type *spi)
+  \fn          void spi_send(SPI_Type *spi)
   \brief       Prepare the SPI instance for transmission
   \param[in]   spi       Pointer to the SPI register map
   \return      none
 */
-void spi_send(LPSPI_Type *spi)
+void spi_send(SPI_Type *spi)
 {
     spi_set_tmod(spi, SPI_TMOD_TX);
     spi->SPI_IMR = (SPI_IMR_TX_FIFO_EMPTY_INTERRUPT_MASK |
@@ -288,13 +288,13 @@ void spi_send(LPSPI_Type *spi)
 }
 
 /**
-  \fn          void spi_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
+  \fn          void spi_receive(SPI_Type *spi, spi_transfer_t *transfer)
   \brief       Prepare the SPI instance for reception
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   transfer  Pointer to transfer structure
   \return      none
 */
-void spi_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
+void spi_receive(SPI_Type *spi, spi_transfer_t *transfer)
 {
     spi_set_tmod(spi, SPI_TMOD_RX);
     spi_disable(spi);
@@ -307,18 +307,18 @@ void spi_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
     if (transfer->is_master)
     {
         /* Initiate the receive operation by writing a dummy byte to the FIFO */
-        spi->SPI_DR0 = 0x0;
+        spi->SPI_DR[0] = 0x0;
     }
 }
 
 /**
-  \fn          void spi_transfer(LPSPI_Type *spi, uint32_t total_cnt)
+  \fn          void spi_transfer(SPI_Type *spi, uint32_t total_cnt)
   \brief       Prepare the SPI instance for transfer
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   total_cnt total number of data count
   \return      none
 */
-void spi_transfer(LPSPI_Type *spi, uint32_t total_cnt)
+void spi_transfer(SPI_Type *spi, uint32_t total_cnt)
 {
     spi_set_tmod(spi, SPI_TMOD_TX_AND_RX);
     spi_disable(spi);
@@ -333,13 +333,13 @@ void spi_transfer(LPSPI_Type *spi, uint32_t total_cnt)
 }
 
 /**
-  \fn          void lpspi_set_mode(LPSPI_Type *spi, SPI_MODE mode)
+  \fn          void lpspi_set_mode(SPI_Type *spi, SPI_MODE mode)
   \brief       Set the mode for the LPSPI instance.
   \param[in]   spi     Pointer to the LPSPI register map
   \param[in]   mode    The mode to be set.
   \return      none
 */
-void lpspi_set_mode(LPSPI_Type *lpspi, SPI_MODE mode)
+void lpspi_set_mode(SPI_Type *lpspi, SPI_MODE mode)
 {
     uint32_t val;
 
@@ -375,13 +375,13 @@ void lpspi_set_mode(LPSPI_Type *lpspi, SPI_MODE mode)
 }
 
 /**
-  \fn          void lpspi_set_protocol(LPSPI_Type *lpspi, SPI_PROTO format)
+  \fn          void lpspi_set_protocol(SPI_Type *lpspi, SPI_PROTO format)
   \brief       Set the protocol format for the LPSPI instance.
   \param[in]   spi     Pointer to the LPSPI register map
   \param[in]   format  The protocol to be set
   \return      none
 */
-void lpspi_set_protocol(LPSPI_Type *lpspi, SPI_PROTO format)
+void lpspi_set_protocol(SPI_Type *lpspi, SPI_PROTO format)
 {
     uint32_t val;
 
@@ -407,13 +407,13 @@ void lpspi_set_protocol(LPSPI_Type *lpspi, SPI_PROTO format)
 }
 
 /**
-  \fn          void lpspi_set_dfs(LPSPI_Type *lpspi, uint8_t dfs)
+  \fn          void lpspi_set_dfs(SPI_Type *lpspi, uint8_t dfs)
   \brief       Set the data frame size for the LPSPI instance.
   \param[in]   spi     Pointer to the LPSPI register map
   \param[in]   dfs     The data frame size
   \return      none
 */
-void lpspi_set_dfs(LPSPI_Type *lpspi, uint8_t dfs)
+void lpspi_set_dfs(SPI_Type *lpspi, uint8_t dfs)
 {
     uint32_t val = 0;
 
@@ -428,13 +428,13 @@ void lpspi_set_dfs(LPSPI_Type *lpspi, uint8_t dfs)
 }
 
 /**
-  \fn          void lpspi_set_tmod(LPSPI_Type *lpspi, SPI_TMOD tmod)
+  \fn          void lpspi_set_tmod(SPI_Type *lpspi, SPI_TMOD tmod)
   \brief       Set the transfer mode for the LPSPI instance.
   \param[in]   lpspi   Pointer to the LPSPI register map
   \param[in]   tmod    Transfer mode
   \return      none
 */
-void lpspi_set_tmod(LPSPI_Type *lpspi, SPI_TMOD tmod)
+void lpspi_set_tmod(SPI_Type *lpspi, SPI_TMOD tmod)
 {
     uint32_t val = 0;
 
@@ -466,12 +466,12 @@ void lpspi_set_tmod(LPSPI_Type *lpspi, SPI_TMOD tmod)
 }
 
 /**
-  \fn          SPI_TMOD lpspi_get_tmod(LPSPI_Type *lpspi)
+  \fn          SPI_TMOD lpspi_get_tmod(SPI_Type *lpspi)
   \brief       Get the transfer mode of the LPSPI instance.
   \param[in]   lpspi     Pointer to the LPSPI register map
   \return      The current transfer mode
 */
-SPI_TMOD lpspi_get_tmod(LPSPI_Type *lpspi)
+SPI_TMOD lpspi_get_tmod(SPI_Type *lpspi)
 {
     uint32_t val = lpspi->SPI_CTRLR0;
 
@@ -494,12 +494,12 @@ SPI_TMOD lpspi_get_tmod(LPSPI_Type *lpspi)
 }
 
 /**
-  \fn          void lpspi_send(LPSPI_Type *lpspi)
+  \fn          void lpspi_send(SPI_Type *lpspi)
   \brief       Prepare the SPI instance for transmission
   \param[in]   lpspi       Pointer to the LPSPI register map
   \return      none
 */
-void lpspi_send(LPSPI_Type *lpspi)
+void lpspi_send(SPI_Type *lpspi)
 {
     lpspi_set_tmod(lpspi, SPI_TMOD_TX);
     lpspi->SPI_IMR = (SPI_IMR_TX_FIFO_EMPTY_INTERRUPT_MASK |
@@ -508,13 +508,13 @@ void lpspi_send(LPSPI_Type *lpspi)
 }
 
 /**
-  \fn          void lpspi_receive(LPSPI_Type *lpspi, uint32_t total_cnt)
+  \fn          void lpspi_receive(SPI_Type *lpspi, uint32_t total_cnt)
   \brief       Prepare the LPSPI instance for reception
   \param[in]   lpspi     Pointer to the LPSPI register map
   \param[in]   total_cnt total number of data count
   \return      none
 */
-void lpspi_receive(LPSPI_Type *lpspi, uint32_t total_cnt)
+void lpspi_receive(SPI_Type *lpspi, uint32_t total_cnt)
 {
     lpspi_set_tmod(lpspi, SPI_TMOD_RX);
     spi_disable(lpspi);
@@ -525,17 +525,17 @@ void lpspi_receive(LPSPI_Type *lpspi, uint32_t total_cnt)
     spi_enable(lpspi);
 
     /* Initiate the receive operation by writing a dummy byte to the FIFO */
-    lpspi->SPI_DR0 = 0x0;
+    lpspi->SPI_DR[0] = 0x0;
 }
 
 /**
-  \fn          void lpspi_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
+  \fn          void lpspi_transfer(SPI_Type *lpspi, uint32_t total_cnt)
   \brief       Prepare the LPSPI instance for transfer
   \param[in]   lpspi      Pointer to the LPSPI register map
   \param[in]   total_cnt  total number of data count
   \return      none
 */
-void lpspi_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
+void lpspi_transfer(SPI_Type *lpspi, uint32_t total_cnt)
 {
     lpspi_set_tmod(lpspi, SPI_TMOD_TX_AND_RX);
     spi_disable(lpspi);
@@ -551,12 +551,12 @@ void lpspi_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
 
 
 /**
-  \fn          void spi_dma_send(LPSPI_Type *spi, uint8_t data_level)
+  \fn          void spi_dma_send(SPI_Type *spi, uint8_t data_level)
   \brief       Prepare the SPI instance for DMA send
   \param[in]   spi        Pointer to the SPI register map
   \return      none
 */
-void spi_dma_send(LPSPI_Type *spi)
+void spi_dma_send(SPI_Type *spi)
 {
     spi_set_tmod(spi, SPI_TMOD_TX);
 
@@ -568,13 +568,13 @@ void spi_dma_send(LPSPI_Type *spi)
 }
 
 /**
-  \fn          void spi_dma_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
+  \fn          void spi_dma_receive(SPI_Type *spi, spi_transfer_t *transfer)
   \brief       Prepare the SPI instance for DMA reception
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   transfer  Pointer to transfer structure
   \return      none
 */
-void spi_dma_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
+void spi_dma_receive(SPI_Type *spi, spi_transfer_t *transfer)
 {
     spi_set_tmod(spi, SPI_TMOD_RX);
     spi_disable(spi);
@@ -598,13 +598,13 @@ void spi_dma_receive(LPSPI_Type *spi, spi_transfer_t *transfer)
 }
 
 /**
-  \fn          void spi_dma_transfer(LPSPI_Type *spi, uint32_t total_cnt)
+  \fn          void spi_dma_transfer(SPI_Type *spi, uint32_t total_cnt)
   \brief       Prepare the SPI instance for DMA transfer
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   total_cnt total number of data count
   \return      none
 */
-void spi_dma_transfer(LPSPI_Type *spi, uint32_t total_cnt)
+void spi_dma_transfer(SPI_Type *spi, uint32_t total_cnt)
 {
     spi_set_tmod(spi, SPI_TMOD_TX_AND_RX);
     spi_disable(spi);
@@ -622,12 +622,12 @@ void spi_dma_transfer(LPSPI_Type *spi, uint32_t total_cnt)
 }
 
 /**
-  \fn          void lpspi_dma_send(LPSPI_Type *spi)
+  \fn          void lpspi_dma_send(SPI_Type *spi)
   \brief       Prepare the SPI instance for DMA transmission
   \param[in]   lpspi       Pointer to the LPSPI register map
   \return      none
 */
-void lpspi_dma_send(LPSPI_Type *lpspi)
+void lpspi_dma_send(SPI_Type *lpspi)
 {
     lpspi_set_tmod(lpspi, SPI_TMOD_TX);
 
@@ -639,13 +639,13 @@ void lpspi_dma_send(LPSPI_Type *lpspi)
 }
 
 /**
-  \fn          void lpspi_dma_receive(LPSPI_Type *lpspi, spi_transfer_t *transfer)
+  \fn          void lpspi_dma_receive(SPI_Type *lpspi, spi_transfer_t *transfer)
   \brief       Prepare the LPSPI instance for DMA reception
   \param[in]   lpspi     Pointer to the LPSPI register map
   \param[in]   transfer  Pointer to transfer structure
   \return      none
 */
-void lpspi_dma_receive(LPSPI_Type *lpspi, spi_transfer_t *transfer)
+void lpspi_dma_receive(SPI_Type *lpspi, spi_transfer_t *transfer)
 {
     lpspi_set_tmod(lpspi, SPI_TMOD_RX);
     spi_disable(lpspi);
@@ -666,13 +666,13 @@ void lpspi_dma_receive(LPSPI_Type *lpspi, spi_transfer_t *transfer)
 }
 
 /**
-  \fn          void lpspi_dma_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
+  \fn          void lpspi_dma_transfer(SPI_Type *lpspi, uint32_t total_cnt)
   \brief       Prepare the LPSPI instance for DMA transfer
   \param[in]   lpspi      Pointer to the LPSPI register map
   \param[in]   total_cnt  total number of data count
   \return      none
 */
-void lpspi_dma_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
+void lpspi_dma_transfer(SPI_Type *lpspi, uint32_t total_cnt)
 {
     lpspi_set_tmod(lpspi, SPI_TMOD_TX_AND_RX);
     spi_disable(lpspi);
@@ -690,13 +690,13 @@ void lpspi_dma_transfer(LPSPI_Type *lpspi, uint32_t total_cnt)
 }
 
 /**
-  \fn          void spi_irq_handler(LPSPI_Type *spi, spi_master_transfer_t *transfer)
+  \fn          void spi_irq_handler(SPI_Type *spi, spi_master_transfer_t *transfer)
   \brief       Handle interrupts for the SPI instance.
   \param[in]   spi       Pointer to the SPI register map
   \param[in]   transfer  The transfer structure for the SPI instance
   \return      none
 */
-void spi_irq_handler(LPSPI_Type *spi, spi_transfer_t *transfer)
+void spi_irq_handler(SPI_Type *spi, spi_transfer_t *transfer)
 {
     uint32_t event, tx_data, index, curr_fifo_level;
     uint32_t tx_count, rx_count;
@@ -746,7 +746,7 @@ void spi_irq_handler(LPSPI_Type *spi, spi_transfer_t *transfer)
                 }
             }
 
-            spi->SPI_DR0 = tx_data;
+            spi->SPI_DR[0] = tx_data;
             transfer->tx_current_cnt++;
         }
     }
@@ -759,7 +759,7 @@ void spi_irq_handler(LPSPI_Type *spi, spi_transfer_t *transfer)
         {
             for (index = 0; index < rx_count; index++)
             {
-                *((uint32_t *) transfer->rx_buff) = spi->SPI_DR0;
+                *((uint32_t *) transfer->rx_buff) = spi->SPI_DR[0];
 
                 transfer->rx_buff += sizeof(uint32_t);
                 transfer->rx_current_cnt++;
@@ -769,7 +769,7 @@ void spi_irq_handler(LPSPI_Type *spi, spi_transfer_t *transfer)
         {
             for (index = 0; index < rx_count; index++)
             {
-                *((uint16_t *) transfer->rx_buff) = (uint16_t) (spi->SPI_DR0);
+                *((uint16_t *) transfer->rx_buff) = (uint16_t) (spi->SPI_DR[0]);
 
                 transfer->rx_buff += sizeof(uint16_t);
                 transfer->rx_current_cnt++;
@@ -779,7 +779,7 @@ void spi_irq_handler(LPSPI_Type *spi, spi_transfer_t *transfer)
         {
             for (index = 0; index < rx_count; index++)
             {
-                *((uint8_t *) transfer->rx_buff) = (uint8_t) (spi->SPI_DR0);
+                *((uint8_t *) transfer->rx_buff) = (uint8_t) (spi->SPI_DR[0]);
 
                 transfer->rx_buff += sizeof(uint8_t);
                 transfer->rx_current_cnt++;

@@ -45,7 +45,7 @@ typedef volatile struct _CMP_DRIVER_STATE {
  */
 typedef struct _CMP_RESOURCES{
     ARM_Comparator_SignalEvent_t  cb_event;        /* Comparator application event callback */
-    CMP0_Type                     *regs;           /* Comparator register base address      */
+    CMP_Type                     *regs;            /* Comparator register base address      */
     CMP_INSTANCE                  drv_instance;    /* Driver instance                       */
     CMP_DRIVER_STATE              state;           /* Comparator Driver state               */
     IRQn_Type                     irq_num;         /* Comparator interrupt number           */

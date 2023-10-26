@@ -136,7 +136,7 @@ typedef struct _dma_loop_t {
 /* DMA Opcode buffer information */
 typedef struct _dma_opcode_buf {
     uint8_t  *buf;            /*!< Start address of the opcode buffer   */
-    uint16_t off;                   /*!< Current Offset from start address    */
+    uint16_t off;             /*!< Current Offset from start address    */
     uint8_t  buf_size;        /*!< Total buffer size                    */
 } dma_opcode_buf;
 

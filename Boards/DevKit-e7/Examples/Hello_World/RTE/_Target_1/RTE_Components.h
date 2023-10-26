@@ -16,11 +16,12 @@
  */
 #define CMSIS_device_header "M55_HP.h"
 
-/* AlifSemiconductor::Device:SOC Peripherals:DMA:0.9.5 */
-#define RTE_Drivers_DMA	1   /* Driver DMA*/
-/* AlifSemiconductor::Device:SOC Peripherals:PINCONF:0.9.5 */
+/* ARM::CMSIS-Compiler:I/O:STDOUT:User:1.0.0 */
+#define RTE_Compiler_IO_STDOUT          /* Compiler I/O: STDOUT */
+        #define RTE_Compiler_IO_STDOUT_User     /* Compiler I/O: STDOUT User */
+/* AlifSemiconductor::Device:SOC Peripherals:PINCONF:1.0.0 */
 #define RTE_Drivers_LL_PINCONF   1           /* Driver PinPAD and PinMux */
-/* AlifSemiconductor::Device:SOC Peripherals:USART:0.9.5 */
+/* AlifSemiconductor::Device:SOC Peripherals:USART:1.0.0 */
 #define RTE_Drivers_USART0   1           /* Driver UART0 */
         #define RTE_Drivers_USART1   1           /* Driver UART1 */
 	    #define RTE_Drivers_USART2   1           /* Driver UART2 */

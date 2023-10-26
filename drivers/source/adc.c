@@ -12,15 +12,15 @@
 #include "adc.h"
 
 /**
- * \fn          void adc_done0_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * \fn          void adc_done0_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * \brief       Handle DONE0 (avg sample ready)interrupts for the ADC instance.
  * \param[in]   adc        : Pointer to the ADC register map
  * \param[in]   conversion : The conversion structure for the ADC instance
  * \return      none
 */
-void adc_done0_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+void adc_done0_irq_handler(ADC_Type *adc, conv_info_t *conversion)
 {
-    volatile uint32_t *sample_reg_ptr = &adc->ADC_SAMPLE_REG_0;
+    volatile uint32_t *sample_reg_ptr = &adc->ADC_SAMPLE_REG_[0];
 
     /* Clearing the done0 IRQ*/
     adc->ADC_INTERRUPT = ADC_INTR_DONE0_CLEAR;
@@ -41,15 +41,15 @@ void adc_done0_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
 }
 
 /**
- * @fn       : void adc_done1_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_done1_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle DONE1 (all sample taken)interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_done1_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+void adc_done1_irq_handler(ADC_Type *adc, conv_info_t *conversion)
 {
-    volatile uint32_t *sample_reg_ptr = &adc->ADC_SAMPLE_REG_0;
+    volatile uint32_t *sample_reg_ptr = &adc->ADC_SAMPLE_REG_[0];
 
     /* Clearing the done IRQ*/
     adc->ADC_INTERRUPT = ADC_INTR_DONE1_CLEAR;
@@ -66,13 +66,13 @@ void adc_done1_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
 }
 
 /**
- * @fn       : void adc_cmpa_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_cmpa_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle CMPA interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_cmpa_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+void adc_cmpa_irq_handler(ADC_Type *adc, conv_info_t *conversion)
 {
     /* Clearing CMPA interrupt */
     adc->ADC_INTERRUPT = ADC_INTR_COMPA_CLEAR;
@@ -92,13 +92,13 @@ void adc_cmpa_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
 }
 
 /**
- * @fn       : void adc_cmpb_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+ * @fn       : void adc_cmpb_irq_handler(ADC_Type *adc, conv_info_t *conversion)
  * @brief    : Handle CMPB interrupts for the ADC instance.
  * @param[1] : adc        : Pointer to the ADC register map
  * @param[2] : conversion : The conversion structure for the ADC instance
  * @return   : none
 */
-void adc_cmpb_irq_handler(ADC120_Type *adc, conv_info_t *conversion)
+void adc_cmpb_irq_handler(ADC_Type *adc, conv_info_t *conversion)
 {
     adc->ADC_INTERRUPT = ADC_INTR_COMPB_CLEAR;
 

@@ -196,11 +196,10 @@ typedef int (*print_msg_t)(const char * fmt, ...);
  */
 typedef enum
 {
-  FUSION_A32_0   = 0,                /**< A32_0 CPU         */
-  FUSION_A32_1   = 1,                /**< A32_1 CPU         */
-  FUSION_M55_HP  = 2,                /**< M55 HP CPU        */
-  FUSION_M55_HE  = 3,                /**< M55 HE CPU        */
-  FUSION_EXTERNAL_SYS0 = 4           /**< CPU in Ext SYS0   */
+  HOST_CPU_0   = 0,                /**< A32_0 CPU               */
+  HOST_CPU_1   = 1,                /**< A32_1 CPU               */
+  EXTSYS_0     = 2,                /**< M55 HP CPU or other CPU */
+  EXTSYS_1     = 3,                /**< M55 HE CPU              */
 } SERVICES_cpuid_t;
 
 /**
@@ -208,7 +207,7 @@ typedef enum
  */
 typedef struct
 {
-  uint8_t   image_identifier[TOC_NAME_LENGTH]; /**< TOC name         */
+  uint8_t   image_identifier[TOC_NAME_LENGTH]; /**< TOC name      */
   uint32_t  version;                  /**< TOC Version      */
   uint32_t  cpu;                      /**< TOC Cpu ID       */
   uint32_t  store_address;            /**< TOC MRAM address */
@@ -512,10 +511,14 @@ uint32_t SERVICES_system_get_device_data(uint32_t services_handle,
                                          uint32_t * error_code);
 uint32_t SERVICES_get_se_revision(uint32_t services_handle,
                                   uint8_t *revision_data, uint32_t *error_code);
-uint32_t SERVICES_system_read_otp     (uint32_t services_handle,
-                                       uint32_t otp_offset,
-                                       uint32_t *otp_value_word,
-                                       uint32_t *error_code);
+uint32_t SERVICES_system_read_otp(uint32_t services_handle,
+                                  uint32_t otp_offset,
+                                  uint32_t *otp_value_word,
+                                  uint32_t *error_code);
+uint32_t SERVICES_system_write_otp(uint32_t services_handle,
+                                   uint32_t otp_offset,
+                                   uint32_t otp_value_word,
+                                   uint32_t *error_code);
 
 uint32_t SERVICES_boot_process_toc_entry(uint32_t services_handle, 
                                          const uint8_t * image_id,
@@ -568,6 +571,18 @@ SERVICES_power_m55_hp_vtor_save(uint32_t services_handle,
                                 uint32_t se_vtor_addr,
                                 services_power_profile_t power_profile);
 
+uint32_t
+SERVICES_power_dcdc_voltage_control(uint32_t services_handle,
+                                    uint32_t dcdc_vout_sel,
+                                    uint32_t dcdc_vout_trim,
+                                    uint32_t *error_code);
+
+
+uint32_t
+SERVICES_power_ldo_voltage_control(uint32_t services_handle,
+                                   uint32_t ret_ldo_voltage,
+                                   uint32_t aon_ldo_voltage,
+                                   uint32_t *error_code);
 
 // Clocks services
 uint32_t SERVICES_clocks_select_osc_source(uint32_t services_handle,
