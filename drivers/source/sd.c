@@ -298,7 +298,7 @@ SD_DRV_STATUS sd_read(uint32_t sec, uint16_t BlkCnt, volatile unsigned char *Des
     pHsd->state = SD_CARD_STATE_DATA;
 
 retry:
-    hc_read_setup(pHsd, (uint32_t)LocalToGlobal(DestBuff), sec, BlkCnt);
+    hc_read_setup(pHsd, (uint32_t)LocalToGlobal((const volatile void *)DestBuff), sec, BlkCnt);
 
     if(hc_check_xfer_done(pHsd, timeout_cnt) == SDMMC_HC_STATUS_OK)
         RTSS_InvalidateDCache_by_Addr(DestBuff, BlkCnt * SDMMC_BLK_SIZE_512_Msk);
@@ -351,7 +351,7 @@ SD_DRV_STATUS sd_write(uint32_t sector, uint32_t BlkCnt, volatile unsigned char 
     RTSS_CleanDCache_by_Addr(SrcBuff, BlkCnt * SDMMC_BLK_SIZE_512_Msk);
 
 retry:
-    hc_write_setup(pHsd, (uint32_t)LocalToGlobal(SrcBuff), sector, BlkCnt);
+    hc_write_setup(pHsd, (uint32_t)LocalToGlobal((const volatile void *)SrcBuff), sector, BlkCnt);
 
     if(hc_check_xfer_done(pHsd, timeout_cnt) != SDMMC_HC_STATUS_OK){
         hc_reset(pHsd, (uint8_t)(SDMMC_SW_RST_DAT_Msk | SDMMC_SW_RST_CMD_Msk));

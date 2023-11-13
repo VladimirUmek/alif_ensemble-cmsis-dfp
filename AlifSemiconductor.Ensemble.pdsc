@@ -12,7 +12,7 @@
   -->
 
   <releases>
-    <release version="1.0.0-rc2" date="2023-10-20">
+    <release version="1.0.0-rc4" date="2023-11-10">
       Initial release
     </release>
   </releases>
@@ -37,6 +37,7 @@
 	The Alif Semiconductor Ensemble family of Microcontrollers and Fusion processors are built on the latest generation embedded processing technology that scale from single Arm® Cortex-M55 MCUs to a new class of multi-core devices — fusion processors — that blend up to two Cortex-M55 MCU cores, up to two Cortex-A32 microprocessors (MPU) cores capable of running high-level operating systems, and up to two Arm Ethos-U55 microNPUs for artificial intelligence (AI) and machine learning (ML) acceleration. Ensemble family devices contain an advanced secure enclave that provides multiple layers of security, such as device integrity protection, secure identity and strong root-of-trust, secure lifecycle management, large on-chip SRAM and nonvolatile memory, accelerated graphics, imaging, and class-leading power characteristics.
       </description>
       <algorithm name="Flash/algorithms/Ensemble.FLM" start="0x80000000" size="0x00580000" RAMstart="0x00000000" RAMsize="0x20000" default="1"/>
+      <algorithm name="Flash/algorithms/Ensemble_IS25WX256.FLM" start="0xC0000000" size="0x02000000" RAMstart="0x00000000" RAMsize="0x40000" default="1"/>
       <sequences>
         <sequence name="DebugDeviceUnlock">
           <block>
@@ -47,10 +48,11 @@
 
       <subFamily DsubFamily="E7">
         <!-- ******************************  E7  ******************************* -->
-
         <!-- Device processor attributes -->
         <processor Dcore="Cortex-M55" DcoreVersion="r1p0" Dfpu="DP_FPU" Dmpu="MPU" Dmve="FP_MVE" Ddsp="DSP" Dtz="TZ" Dendian="Little-endian" Dclock="400000000" Pname="M55_HP"/>
         <processor Dcore="Cortex-M55" DcoreVersion="r1p0" Dfpu="DP_FPU" Dmpu="MPU" Dmve="FP_MVE" Ddsp="DSP" Dtz="TZ" Dendian="Little-endian" Dclock="160000000" Pname="M55_HE"/>
+        <!-- DebugConfig for E7 -->
+        <debugconfig sdf="Debug/SDF/E7/Ensemble E7.sdf" dormant="true"/>
         <!-- On-chip NVM Region -->
         <memory name="MRAM" start="0x80000000" size="0x00580000" access="rx" default="1"/>
         <!-- On-Chip RAM Regions 13.5MB-->
@@ -71,8 +73,6 @@
         <!-- Cortex-M55 Access Ports -->
         <accessportV2 __apid="0" address="0x00200000"/>
         <accessportV2 __apid="1" address="0x00300000"/>
-        <debug Pname="M55_HP" __apid="0"/>
-        <debug Pname="M55_HE" __apid="1"/>
         <!-- Documents -->
         <book name="https://alifsemi.com/download/ADTS0005" title="E7 Datasheet"/>
         <book name="https://alifsemi.com/download/AHRM0005" title="E7 Hardware Reference Manual"/>
@@ -140,11 +140,15 @@
         <device Dname="AE722F80F55D5AS">
           <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE722F80F55D5AS_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE722F80F55D5AS_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="CSP" n="208" name="WLCSP Package"/>
         </device>
         <device Dname="AE722F80F55D5LS">
           <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE722F80F55D5LS_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE722F80F55D5LS_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
         </device>
       </subFamily>
@@ -155,6 +159,8 @@
         <!-- Device processor attributes -->
         <processor Dcore="Cortex-M55" DcoreVersion="r1p0" Dfpu="DP_FPU" Dmpu="MPU" Dmve="FP_MVE" Ddsp="DSP" Dtz="TZ" Dendian="Little-endian" Dclock="400000000" Pname="M55_HP"/>
         <processor Dcore="Cortex-M55" DcoreVersion="r1p0" Dfpu="DP_FPU" Dmpu="MPU" Dmve="FP_MVE" Ddsp="DSP" Dtz="TZ" Dendian="Little-endian" Dclock="160000000" Pname="M55_HE"/>
+        <!-- DebugConfig for E5 -->
+        <debugconfig sdf="Debug/SDF/E5/Ensemble E5.sdf" dormant="true"/>
         <!-- On-chip NVM Region -->
         <memory name="MRAM" start="0x80000000" size="0x00580000" access="rx" default="1"/>
 
@@ -163,8 +169,6 @@
         <!-- Cortex-M55 Access Ports -->
         <accessportV2 __apid="0" address="0x00200000"/>
         <accessportV2 __apid="1" address="0x00300000"/>
-        <debug Pname="M55_HP" __apid="0"/>
-        <debug Pname="M55_HE" __apid="1"/>
         <!-- Documents -->
         <book name="https://alifsemi.com/download/ADTS0006" title="E5 Datasheet"/>
         <book name="https://alifsemi.com/download/AHRM0006" title="E5 Hardware Reference Manual"/>
@@ -246,6 +250,8 @@
           <!-- processor & Compile headers-->
           <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE512F80F55D5AS_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE512F80F55D5AS_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="CSP" n="208" name="WLCSP Package"/>
         </device>
 		    <device Dname="AE512F80F5582AS">
@@ -259,6 +265,8 @@
           <!-- processor & Compile headers-->
           <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE512F80F5582AS_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE512F80F5582AS_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="CSP" n="208" name="WLCSP Package"/>
         </device>
 
@@ -280,6 +288,8 @@
           <!-- processor & Compile headers-->
           <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE512F80F55D5LS_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE512F80F55D5LS_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
         </device>
 
@@ -295,6 +305,8 @@
           <!-- processor & Compile headers-->
           <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE512F80F5582LS_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE512F80F5582LS_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
         </device>
       </subFamily>
@@ -310,8 +322,6 @@
         <!-- Cortex-M55 Access Ports -->
         <accessportV2 __apid="0" address="0x00200000"/>
         <accessportV2 __apid="1" address="0x00300000"/>
-        <debug Pname="M55_HP" __apid="0"/>
-        <debug Pname="M55_HE" __apid="1"/>
         <!-- Documents -->
         <book name="https://alifsemi.com/download/ADTS0007" title="E3 Datasheet"/>
         <book name="https://alifsemi.com/download/AERR0007" title="E3 Errata and Specification Changes"/>
@@ -376,6 +386,8 @@
         <feature type="VCC" n="1.71" m="4.2"/>
         <feature type="Temp" n="-40" m="85"/>
        <device Dname="AE302F80F55D5AE">
+        <!-- DebugConfig for E3 -->
+        <debugconfig sdf="Debug/SDF/E3/Ensemble E3.sdf" dormant="true"/>
 		  <!-- On-chip NVM Region -->
           <memory name="MRAM" start="0x80000000" size="0x00580000" access="rx" default="1"/>
 
@@ -391,14 +403,18 @@
           <memory name="SRAM7" start="0x63000000" size="0x00080000" access="rwx" default="1"/>
           <memory name="SRAM8" start="0x63200000" size="0x00200000" access="rwx" default="1"/>
           <memory name="SRAM9" start="0x60000000" size="0x000C0000" access="rwx" default="1"/>
-		  <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
-		      <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
+          <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE302F80F55D5AE_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE302F80F55D5AE_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="CSP" n="208" name="WLCSP Package"/>
           <feature type="CoreOther" n="1" name="Neural Processing Unit (NPU) Ethos-U55 HP"/>
           <feature type="CAN" n="1"  name="CAN-FD Controller"/>
         </device>
-		    <device Dname="AE302F80F5582AE">
-		  <!-- On-chip NVM Region -->
+       <device Dname="AE302F80F5582AE">
+            <!-- DebugConfig for E3 -->
+          <debugconfig sdf="Debug/SDF/E3/Ensemble E3.sdf" dormant="true"/>   
+                   <!-- On-chip NVM Region -->
           <memory name="MRAM" start="0x80000000" size="0x00580000" access="rx" default="1"/>
 
           <!-- On-Chip RAM Regions 8.25MB -->
@@ -409,14 +425,18 @@
           <memory name="SRAM4" start="0x58000000" size="0x00040000" access="rwx" default="1"/>
           <memory name="SRAM5" start="0x58800000" size="0x00040000" access="rwx" default="1"/>
           <!-- processor & Compile headers-->
-		      <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
-		      <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
+          <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE302F80F5582AE_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE302F80F5582AE_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="CSP" n="208" name="WLCSP Package"/>
           <feature type="CoreOther" n="1" name="Neural Processing Unit (NPU) Ethos-U55 HP"/>
           <feature type="CAN" n="1"  name="CAN-FD Controller"/>
         </device>
 
         <device Dname="AE302F80F55D5LE">
+         <!-- DebugConfig for E3 -->
+        <debugconfig sdf="Debug/SDF/E3/Ensemble E3.sdf" dormant="true"/>
 		  <!-- On-chip NVM Region -->
           <memory name="MRAM" start="0x80000000" size="0x00580000" access="rx" default="1"/>
 
@@ -433,14 +453,18 @@
           <memory name="SRAM8" start="0x63200000" size="0x00200000" access="rwx" default="1"/>
           <memory name="SRAM9" start="0x60000000" size="0x000C0000" access="rwx" default="1"/>
           <!-- processor & Compile headers-->
-		      <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
-		      <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
+          <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE302F80F55D5LE_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE302F80F55D5LE_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
           <feature type="CoreOther" n="1" name="Neural Processing Unit (NPU) Ethos-U55 HP"/>
           <feature type="CAN" n="1"  name="CAN-FD Controller"/>
         </device>
 
         <device Dname="AE302F80F5582LE">
+          <!-- DebugConfig for E3 -->
+          <debugconfig sdf="Debug/SDF/E3/Ensemble E3.sdf" dormant="true"/>  
 		  <!-- On-chip NVM Region -->
           <memory name="MRAM" start="0x80000000" size="0x00580000" access="rx" default="1"/>
 
@@ -452,14 +476,18 @@
           <memory name="SRAM4" start="0x58000000" size="0x00040000" access="rwx" default="1"/>
           <memory name="SRAM5" start="0x58800000" size="0x00040000" access="rwx" default="1"/>
           <!-- processor & Compile headers-->
-		  <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
-		      <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
+          <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE302F80F5582LE_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE302F80F5582LE_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
           <feature type="CoreOther" n="1" name="Neural Processing Unit (NPU) Ethos-U55 HP"/>
           <feature type="CAN" n="1"  name="CAN-FD Controller"/>
         </device>
 
         <device Dname="AE302F80C1557LE">
+            <!-- DebugConfig for E3(1.5MiB MRAM) -->
+          <debugconfig sdf="Debug/SDF/E3 (1.5MiB MRAM)/Ensemble E3 (1.5MiB MRAM).sdf" dormant="true"/>  
 		  <!-- On-chip NVM Region -->
           <memory name="MRAM" start="0x80000000" size="0x00180000" access="rx" default="1"/>
 
@@ -470,12 +498,16 @@
           <memory name="SRAM4" start="0x58000000" size="0x00040000" access="rwx" default="1"/>
           <memory name="SRAM5" start="0x58800000" size="0x00040000" access="rwx" default="1"/>
           <!-- processor & Compile headers-->
-		      <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
-		      <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+	  <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
+          <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE302F80C1557LE_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE302F80C1557LE_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
           <feature type="CoreOther" n="1" name="Neural Processing Unit (NPU) Ethos-U55 HP"/>
         </device>
-		<device Dname="AE302F40C1537LE">
+	<device Dname="AE302F40C1537LE">
+	    <!-- DebugConfig for E3(1.5MiB MRAM) -->
+          <debugconfig sdf="Debug/SDF/E3 (1.5MiB MRAM)/Ensemble E3 (1.5MiB MRAM).sdf" dormant="true"/>  
 		  <!-- On-chip NVM Region -->
           <memory name="MRAM" start="0x80000000" size="0x00180000" access="rx" default="1"/>
 
@@ -486,9 +518,11 @@
           <memory name="SRAM4" start="0x58000000" size="0x00040000" access="rwx" default="1"/>
           <memory name="SRAM5" start="0x58800000" size="0x00040000" access="rwx" default="1"/>
           <!-- processor & Compile headers-->
-		  <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
-		  <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
-           <feature type="BGA" n="194" name="FBGA Package"/>
+	  <compile Pname="M55_HP" header="Device/core/M55_HP/include/M55_HP.h" define="M55_HP"/>
+	  <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+	  <debug svd="Debug/SVD/AE302F40C1537LE_CM55_HP_View.svd" Pname="M55_HP" __apid="0"/>
+          <debug svd="Debug/SVD/AE302F40C1537LE_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
+          <feature type="BGA" n="194" name="FBGA Package"/>
         </device>
 
       </subFamily>
@@ -498,10 +532,11 @@
 
         <!-- Device processor attributes -->
         <processor Dcore="Cortex-M55" DcoreVersion="r1p0" Dfpu="DP_FPU" Dmpu="MPU" Dmve="FP_MVE" Ddsp="DSP" Dtz="TZ" Dendian="Little-endian" Dclock="160000000" Pname="M55_HE"/>
+         <!-- DebugConfig for E1 -->
+        <debugconfig sdf="Debug/SDF/E1/Ensemble E1.sdf" dormant="true"/>
         <compile Pname="M55_HE" Pdefine="M55_HE"/>
         <!-- Cortex-M55 Access Ports -->
         <accessportV2 __apid="0" address="0x00300000"/>
-        <debug Pname="M55_HE" __apid="0"/>
         <!-- Documents -->
         <book name="https://alifsemi.com/download/ADTS0008" title="E1 Datasheet"/>
         <book name="https://alifsemi.com/download/AHRM0008" title="E1 HWRM"/>
@@ -566,6 +601,7 @@
           <memory name="SRAM4" start="0x58000000" size="0x00040000" access="rwx" default="1"/>
           <memory name="SRAM5" start="0x58800000" size="0x00040000" access="rwx" default="1"/>
           <compile Pname="M55_HE" header="Device/core/M55_HE/include/M55_HE.h" define="M55_HE"/>
+          <debug svd="Debug/SVD/AE101F4071542LH_CM55_HE_View.svd" Pname="M55_HE" __apid="1"/>
           <feature type="BGA" n="194" name="FBGA Package"/>
           <feature type="CoreOther" n="1" name="Neural Processing Unit (NPU) Ethos-U55 HE"/>
           <feature type="CAN" n="1" name="CAN-FD Controller"/>
@@ -911,7 +947,7 @@
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/PDM_baremetal.c" attr="template" select="PDM Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/ADC_Potentiometer_Baremetal.c" attr="template" select="Potentiometer Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/Demo_pm_baremetal.c" attr="template" select="Power Management Baremetal Demo"/>
-        <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/QEC_Baremetal.c" attr="template" select="QEC Baremetal Demo"/>
+        <!--<file category="source" name="Boards/DevKit-e7/Templates/Baremetal/QEC_Baremetal.c" attr="template" select="QEC Baremetal Demo"/>-->
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/RTC_Baremetal.c" attr="template" select="RTC Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/Demo_SDIO_Baremetal.c" attr="template" select="SDIO Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/Demo_SD_Baremetal.c" attr="template" select="SDMMC Baremetal Demo"/>
@@ -951,7 +987,7 @@
         <file category="header" name="Boards/DevKit-e7/Templates/bayer2rgb/bayer.h" attr="template" select="MT9M114 Camera Sensor FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/Flash_ISSI_FreeRTOS_app.c" attr="template" select="OSPI Flash FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/PDM_testApp.c" attr="template" select="PDM FreeRTOS Demo"/>
-        <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/QEC_app.c" attr="template" select="QEC FreeRTOS Demo"/>
+        <!--<file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/QEC_app.c" attr="template" select="QEC FreeRTOS Demo"/>-->
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/rtc_testApp.c" attr="template" select="RTC FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/SPI0_SPI1_app.c" attr="template" select="SPI FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/uart2_testapp.c" attr="template" select="UART2 FreeRTOS Demo"/>
@@ -1028,7 +1064,7 @@
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/PDM_baremetal.c" attr="template" select="PDM Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/ADC_Potentiometer_Baremetal.c" attr="template" select="Potentiometer Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/Demo_pm_baremetal.c" attr="template" select="Power Management Baremetal Demo"/>
-        <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/QEC_Baremetal.c" attr="template" select="QEC Baremetal Demo"/>
+        <!--<file category="source" name="Boards/DevKit-e7/Templates/Baremetal/QEC_Baremetal.c" attr="template" select="QEC Baremetal Demo"/>-->
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/RTC_Baremetal.c" attr="template" select="RTC Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/Demo_SDIO_Baremetal.c" attr="template" select="SDIO Baremetal Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/Baremetal/Demo_SD_Baremetal.c" attr="template" select="SDMMC Baremetal Demo"/>
@@ -1073,7 +1109,7 @@
         <file category="header" name="Boards/DevKit-e7/Templates/bayer2rgb/bayer.h" attr="template" select="MT9M114 Camera Sensor FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/Flash_ISSI_FreeRTOS_app.c" attr="template" select="OSPI Flash FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/PDM_testApp.c" attr="template" select="PDM FreeRTOS Demo"/>
-        <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/QEC_app.c" attr="template" select="QEC FreeRTOS Demo"/>
+        <!--<file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/QEC_app.c" attr="template" select="QEC FreeRTOS Demo"/>-->
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/rtc_testApp.c" attr="template" select="RTC FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/SPI0_SPI1_app.c" attr="template" select="SPI FreeRTOS Demo"/>
         <file category="source" name="Boards/DevKit-e7/Templates/FreeRTOS/uart2_testapp.c" attr="template" select="UART2 FreeRTOS Demo"/>
@@ -1657,7 +1693,7 @@
       </files>
     </component>
 
-    <component Cclass="Device" Cgroup="SOC Peripherals" Csub="MHU" Cversion="0.83.0" condition="SE SERVICES MHU">
+    <component Cclass="Device" Cgroup="SOC Peripherals" Csub="MHU" Cversion="1.0.0" condition="SE SERVICES MHU">
       <description>Message Handling Unit driver for Alif Soc</description>
       <files>
         <file category="header" name="drivers/include/drivers_common.h"/>
@@ -1679,10 +1715,10 @@
       </files>
     </component> -->
 
-    <component Cclass="Device" Cgroup="SE runtime Services" Csub="core" Cvariant="Source" Cversion="0.83.0" condition="SE SERVICES SRC">
+    <component Cclass="Device" Cgroup="SE runtime Services" Csub="core" Cvariant="Source" Cversion="1.0.0" condition="SE SERVICES SRC">
       <description>SE runtime Services for RTSS cores</description>
       <files>
-        <file category="doc" name="se_services/document/se-sw-services-user_guide-v041.pdf"/>
+        <file category="doc" name="se_services/document/SE_Host_Services_API_v0.42.0.pdf"/>
         <file category="include" name="se_services/include/"/>
         <file category="source" name="se_services/source/services_host_application.c"/>
         <file category="source" name="se_services/source/services_host_boot.c"/>

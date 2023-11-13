@@ -905,7 +905,7 @@ SDMMC_HC_STATUS hc_dma_config(sd_handle_t *pHsd, uint32_t buff, uint32_t sector,
     }
 
     else
-        pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal(buff);
+        pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal((const volatile void *)buff);
 
     return SDMMC_HC_STATUS_OK;
 }
@@ -1151,7 +1151,7 @@ SDMMC_HC_STATUS hc_io_rw_extended(sd_handle_t *pHsd, uint32_t rwFlag, uint32_t f
     }
 
     /* Configure DMA */
-    pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal((void *)buf);
+    pHsd->regs->SDMMC_ADMA_SA_LOW_R = (uint32_t)LocalToGlobal((const volatile void *)buf);
 
     sdio_cmd.cmdidx    = SDIO_RW_EXTENDED;
     sdio_cmd.arg       = rwFlag ? SDIO_RW_FLAG_Msk : 0x00000000;

@@ -80,11 +80,11 @@ volatile int32_t call_back_event = 0;
 volatile uint32_t call_back_counter = 0;
 
 /**
- * @fn          void cmp_pinmux_config(void)
+ * @fn          int32_t cmp_pinmux_config(void)
  * @brief       Initialize the pinmux for CMP output
  * @return      status
 */
-int32_t cmp_pinmux_config(void)
+static int32_t cmp_pinmux_config(void)
 {
     int32_t status;
 
@@ -120,7 +120,7 @@ int32_t cmp_pinmux_config(void)
  * @param[in]  None
  * return      status
  */
-int32_t led_init(void)
+static int32_t led_init(void)
 {
     int32_t ret1 = 0;
 
@@ -177,7 +177,7 @@ error_uninitialize_LED:
  * @param[in]  None
  * return      status
  */
-int32_t led_toggle(void)
+static int32_t led_toggle(void)
 {
     int32_t ret1 = 0;
 
@@ -224,12 +224,11 @@ static void CMP_filter_callback(uint32_t event)
     call_back_counter++;
 }
 
-void CMP_demo_entry()
+static void CMP_demo_entry()
 {
     int32_t ret = 0;
     uint32_t loop_count = 10;
     ARM_DRIVER_VERSION version;
-    ARM_COMPARATOR_CAPABILITIES capabilities;
 
     printf("\r\n >>> Comparator demo threadX starting up!!! <<< \r\n");
 

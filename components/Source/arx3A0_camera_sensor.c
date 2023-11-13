@@ -1691,7 +1691,7 @@ static int32_t ARX3A0_Camera_Gain(const uint32_t gain)
   \param[in]    cam_resolution  : Camera Resolution \ref ARM_CAMERA_RESOLUTION
   \return       \ref execution_status
   */
-int32_t ARX3A0_Init(void)
+static int32_t ARX3A0_Init(void)
 {
     int32_t  ret = 0;
     uint32_t rcv_data = 0;
@@ -1767,7 +1767,7 @@ int32_t ARX3A0_Init(void)
   \param[in]    none
   \return       \ref execution_status
   */
-int32_t ARX3A0_Start(void)
+static int32_t ARX3A0_Start(void)
 {
     /* Start streaming */
     return ARX3A0_WRITE_REG(ARX3A0_MODE_SELECT_REGISTER, 0x01, 1);;
@@ -1779,7 +1779,7 @@ int32_t ARX3A0_Start(void)
   \param[in]    none
   \return       \ref execution_status
   */
-int32_t ARX3A0_Stop(void)
+static int32_t ARX3A0_Stop(void)
 {
     /* Suspend any stream */
     return ARX3A0_WRITE_REG(ARX3A0_MODE_SELECT_REGISTER, 0x00, 1);;
@@ -1792,7 +1792,7 @@ int32_t ARX3A0_Stop(void)
   \param[in]    arg      : Argument of operation
   \return       \ref execution_status
   */
-int32_t ARX3A0_Control(uint32_t control, uint32_t arg)
+static int32_t ARX3A0_Control(uint32_t control, uint32_t arg)
 {
 
     switch (control)
@@ -1806,8 +1806,6 @@ int32_t ARX3A0_Control(uint32_t control, uint32_t arg)
         default:
             return ARM_DRIVER_ERROR_PARAMETER;
     }
-
-    return ARM_DRIVER_OK;
 }
 
 /**
@@ -1816,7 +1814,7 @@ int32_t ARX3A0_Control(uint32_t control, uint32_t arg)
   \param[in]    none
   \return       \ref execution_status
   */
-int32_t ARX3A0_Uninit(void)
+static int32_t ARX3A0_Uninit(void)
 {
     /*Disable camera sensor clock source config*/
     ARX3A0_Sensor_Disable_Clk_Src();

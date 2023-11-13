@@ -209,7 +209,7 @@ int main(void)
     {
         if (ptr[i] != (i % 255))
         {
-            printf("Data error at addr %x, got %x, expected %x\n", i, ptr[i], i);
+            printf("Data error at addr %x, got %x, expected %x\n", i, ptr[i], i % 255);
             total_errors++;
         }
     }

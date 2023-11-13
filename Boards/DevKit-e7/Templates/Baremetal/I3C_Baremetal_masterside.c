@@ -220,7 +220,7 @@ void i3c_master_loopback_demo(void)
     if(ret != ARM_DRIVER_OK)
     {
         printf("\r\n Error: I3C Power Up failed.\r\n");
-        goto error_poweroff;
+        goto error_uninitialize;
     }
 
     /* i3c Speed Mode Configuration:

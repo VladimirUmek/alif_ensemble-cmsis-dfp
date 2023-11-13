@@ -179,22 +179,26 @@ static int32_t ARM_LPI2C_SlaveTransmit(LPI2C_RESOURCES *LPI2C,
   if ((data == NULL) || (num > 8U))
     return ARM_DRIVER_ERROR_PARAMETER;
 
-  if (LPI2C->busy == 1U)
+  if (LPI2C->status.busy == 1U)
     return ARM_DRIVER_ERROR;
 
   /* Set busy state */
-  LPI2C->busy = 1U;
+  LPI2C->status.busy = 1U;
 
   LPI2C->transfer.tx_buf       = data;
   LPI2C->transfer.tx_total_num = num;
   LPI2C->transfer.tx_curr_cnt  = 0U;
+
+  LPI2C->transfer.rx_buf       = NULL;
+  LPI2C->transfer.rx_total_num = 0U;
+  LPI2C->transfer.rx_curr_cnt  = 0U;
 
   /* Writing data to fifo */
   lpi2c_send(LPI2C->regs, &LPI2C->transfer);
 
   if(LPI2C->transfer.status & LPI2C_XFER_STAT_COMPLETE)
   {
-      LPI2C->busy = 0U;
+      LPI2C->status.busy = 0U;
       /* receive complete successfully. */
       LPI2C->cb_event(ARM_I2C_EVENT_TRANSFER_DONE);
   }
@@ -220,7 +224,6 @@ static int32_t ARM_LPI2C_SlaveReceive(LPI2C_RESOURCES *LPI2C,
                                       uint8_t *data,
                                       uint32_t num)
 {
-
   /* check lpi2c driver is initialized or not */
   if (LPI2C->state.initialized == 0)
       return ARM_DRIVER_ERROR;
@@ -232,17 +235,55 @@ static int32_t ARM_LPI2C_SlaveReceive(LPI2C_RESOURCES *LPI2C,
   if ((data == NULL) || (num > 8U))
     return ARM_DRIVER_ERROR_PARAMETER;
 
-  if (LPI2C->busy == 1U)
+  if (LPI2C->status.busy == 1U)
     return ARM_DRIVER_ERROR;
 
   /* Set busy state */
-  LPI2C->busy = 1U;
+  LPI2C->status.busy = 1U;
 
   LPI2C->transfer.rx_buf       = data;
   LPI2C->transfer.rx_total_num = num;
   LPI2C->transfer.rx_curr_cnt  = 0U;
 
+  LPI2C->transfer.tx_buf       = NULL;
+  LPI2C->transfer.tx_total_num = 0U;
+  LPI2C->transfer.tx_curr_cnt  = 0U;
+
   return ARM_DRIVER_OK;
+}
+
+/**
+ * @brief  : CMSIS-Driver lpi2c get transfer data count
+ * @note   : it can be either transmit or receive data count which perform last
+ *           (useful only in interrupt mode)
+ * @param  : LPI2C   : Pointer to lpi2c resources structure
+ * @retval : transfer data count
+ */
+static int32_t ARM_LPI2C_GetDataCount(const LPI2C_RESOURCES *LPI2C)
+{
+    int32_t ret;
+
+    if (LPI2C->transfer.tx_buf != NULL)
+    {
+        ret = LPI2C->transfer.tx_curr_cnt;
+    }
+    else
+    {
+        ret = LPI2C->transfer.rx_curr_cnt;
+    }
+
+    return ret;
+}
+
+/**
+ * @brief  : CMSIS-Driver lpi2c get status
+ * @note   : none
+ * @param  : LPI2C : Pointer to lpi2c resources structure
+ * @retval : ARM_i2c_STATUS
+ */
+static ARM_I2C_STATUS ARM_LPI2C_GetStatus(const LPI2C_RESOURCES *LPI2C)
+{
+    return LPI2C->status;
 }
 
 /* LPI2C Driver Instance */
@@ -269,7 +310,7 @@ void LPI2C_IRQHandler(void)
 
       if (transfer->rx_curr_cnt == (transfer->rx_total_num))
       {
-         res->busy = 0U;
+         res->status.busy = 0U;
          /* receive complete successfully. */
          res->cb_event(ARM_I2C_EVENT_TRANSFER_DONE);
       }
@@ -293,15 +334,24 @@ static int32_t LPI2C_PowerControl(ARM_POWER_STATE state)
 static int32_t LPI2C_MasterTransmit(uint32_t addr, const uint8_t *data,
                                    uint32_t num, bool xfer_pending)
 {
-  /* lpi2c is salve-only */
+    ARG_UNUSED(addr);
+    ARG_UNUSED(data);
+    ARG_UNUSED(num);
+    ARG_UNUSED(xfer_pending);
+  /* lpi2c is slave-only */
   return ARM_DRIVER_ERROR;
 }
 
 static int32_t LPI2C_MasterReceive(uint32_t addr, uint8_t *data,
                                   uint32_t num, bool xfer_pending)
 {
-  /* lpi2c is salve-only */
-  return ARM_DRIVER_ERROR;
+
+    ARG_UNUSED(addr);
+    ARG_UNUSED(data);
+    ARG_UNUSED(num);
+    ARG_UNUSED(xfer_pending);
+    /* lpi2c is slave-only */
+    return ARM_DRIVER_ERROR;
 }
 
 static int32_t LPI2C_SlaveTransmit(const uint8_t *data, uint32_t num)
@@ -312,6 +362,23 @@ static int32_t LPI2C_SlaveTransmit(const uint8_t *data, uint32_t num)
 static int32_t LPI2C_SlaveReceive(uint8_t *data, uint32_t num)
 {
   return (ARM_LPI2C_SlaveReceive(&LPI2C_RES, data, num));
+}
+
+static int32_t LPI2C_GetDataCount(void)
+{
+  return (ARM_LPI2C_GetDataCount(&LPI2C_RES));
+}
+
+static int32_t LPI2C_Control(uint32_t control, uint32_t arg)
+{
+    ARG_UNUSED(control);
+    ARG_UNUSED(arg);
+    return ARM_DRIVER_ERROR;
+}
+
+static ARM_I2C_STATUS LPI2C_GetStatus(void)
+{
+  return (ARM_LPI2C_GetStatus(&LPI2C_RES));
 }
 
 /* LPI2C Driver Control Block */
@@ -325,7 +392,10 @@ ARM_DRIVER_I2C Driver_LPI2C = {
   LPI2C_MasterTransmit,
   LPI2C_MasterReceive,
   LPI2C_SlaveTransmit,
-  LPI2C_SlaveReceive
+  LPI2C_SlaveReceive,
+  LPI2C_GetDataCount,
+  LPI2C_Control,
+  LPI2C_GetStatus
 };
 
 #endif /*(RTE_LPI2C)*/

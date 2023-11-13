@@ -1,6 +1,6 @@
 /* This file was ported to work on Alif Semiconductor Ensemble family of devices. */
 
-/* Copyright (C) 2022 Alif Semiconductor - All Rights Reserved.
+/* Copyright (C) 2023 Alif Semiconductor - All Rights Reserved.
  * Use, distribution and modification of this code is permitted under the
  * terms stated in the Alif Semiconductor Software License Agreement
  *
@@ -30,8 +30,8 @@
 __STACK_SIZE    = 0x00002000;
 __HEAP_SIZE     = 0x00004000;
 __APP_HEAP_SIZE = 0x00004000;
-__ROM_BASE      = 0x80000000;
-__ROM_SIZE      = 0x0057F000;
+__ROM_BASE      = 0x80200000;
+__ROM_SIZE      = 0x00200000;
 
 MEMORY
 {
@@ -50,16 +50,17 @@ SECTIONS
   {
     KEEP(*(.vectors))
 
-    *startup_M55_*.c.obj(.text .rodata*)
-    *system_M55.c.obj(.text .rodata*)
-    *system_utils.c.obj(.text .rodata*)
-    *pm.c.obj(.text .rodata*)
-    *tgu_M55.c.obj(.text .rodata*)
-    *mpu_M55.c.obj(.text .rodata*)
+    *startup_*(.text .rodata*)
+    *system_*(.text .rodata*)
+    *system_utils*(.text .rodata*)
+    *pm*(.text .rodata*)
+    *tgu_*(.text .rodata*)
+    *mpu_*(.text .rodata*)
 
-    *lv_*.c.obj(.text .rodata*)
+    *lv_*(.text .rodata*)
 
     *(startup_ro_data)
+    . = ALIGN(16);
   } > MRAM
 
   .copy.table : ALIGN(4)
@@ -72,6 +73,7 @@ SECTIONS
     LONG ( ADDR(.code.at_itcm) )
     LONG ( SIZEOF(.code.at_itcm)/4 )
     __copy_table_end__ = .;
+    . = ALIGN(16);
   } > MRAM
 
   .zero.table : ALIGN(4)
@@ -82,11 +84,13 @@ SECTIONS
     LONG (ADDR(.bss.at_sram0))
     LONG (SIZEOF(.bss.at_sram0)/4)
     __zero_table_end__ = .;
+    . = ALIGN(16);
   } > MRAM
 
   .code.at_itcm : ALIGN(8)
   {
     *(.text*)
+    . = ALIGN(16);
   } > ITCM AT > MRAM
 
   .data.at_dtcm : ALIGN(8)
@@ -94,7 +98,7 @@ SECTIONS
     *(vtable)
     *(.data)
     *(.data*)
-    *arm_common_tables.c.obj(.data* .rodata*)
+    *arm_common_tables*(.data* .rodata*)
 
     KEEP(*(.jcr*))
 
@@ -104,8 +108,8 @@ SECTIONS
     __exidx_start = .;
     *(.ARM.exidx* .gnu.linkonce.armexidx.*)
     __exidx_end = .;
-
-  } > DTCM AT> MRAM
+    . = ALIGN(16);
+  } > DTCM AT > MRAM
 
   .bss.at_sram0 (NOLOAD) : ALIGN(8)
   {
@@ -195,6 +199,7 @@ SECTIONS
     *(.rodata*)
 
     KEEP(*(.eh_frame*))
+    . = ALIGN(16);
   } > MRAM
 
   /* Check if data + heap + stack exceeds RAM limit */

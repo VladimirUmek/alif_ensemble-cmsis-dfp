@@ -29,6 +29,8 @@ extern "C" {
  ******************************************************************************/
 /**
  * Version   JIRA         Description
+ * 0.0.42   SE-2176       Reduce the size of the packet buffer in the services
+ *                        examples
  * 0.0.41
  * 0.0.40   SE-2111       [aiPM] Define the parameter VDD_IOFLEX_3V3 as an enum
  * 0.0.39   SE-2077       SERVICES switch to CMSIS V0.9.4
@@ -83,7 +85,7 @@ extern "C" {
  * 0.0.2    SE-708        First re-factoring
  * 0.0.1                  First implementation
  */
-#define SE_SERVICES_VERSION_STRING                 "0.0.41"
+#define SE_SERVICES_VERSION_STRING                 "0.0.42"
 
 #define IMAGE_NAME_LENGTH                          8
 #define VERSION_RESPONSE_LENGTH                    80
@@ -209,8 +211,9 @@ typedef struct {
 
 // Get Random Data
 
-// Same as MBEDTLS_CTR_DRBG_MAX_REQUEST in cryptocell-rt
-#define MAX_RND_LENGTH 1024
+// MBEDTLS_CTR_DRBG_MAX_REQUEST in cryptocell-rt is 1024,
+// it was decided that we will use a smaller buffer
+#define MAX_RND_LENGTH 256
 typedef struct
 {
   service_header_t header;

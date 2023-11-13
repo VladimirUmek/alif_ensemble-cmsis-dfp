@@ -64,14 +64,14 @@ void i2s_tx_irq_handler(I2S_Type *i2s, i2s_transfer_t *transfer)
             {
                 if(transfer->mono_mode)
                 {
-                    i2s->I2S_LTHR0 = (uint32_t)(*(const uint16_t*)(buff + transfer->tx_current_cnt));
+                    i2s->I2S_LTHR0 = (uint32_t)(*(const uint16_t*)((uint8_t*)buff + transfer->tx_current_cnt));
                     i2s->I2S_RTHR0 = 0U;
                     transfer->tx_current_cnt += num_bytes;
                 }
                 else
                 {
-                    i2s->I2S_LTHR0 = (uint32_t)(*(const uint16_t*)(buff + transfer->tx_current_cnt));
-                    i2s->I2S_RTHR0 = (uint32_t)(*(const uint16_t*)(buff + transfer->tx_current_cnt + num_bytes));
+                    i2s->I2S_LTHR0 = (uint32_t)(*(const uint16_t*)((uint8_t*)buff + transfer->tx_current_cnt));
+                    i2s->I2S_RTHR0 = (uint32_t)(*(const uint16_t*)((uint8_t*)buff + transfer->tx_current_cnt + num_bytes));
                     transfer->tx_current_cnt += (2 * num_bytes);
                 }
             }
@@ -79,14 +79,14 @@ void i2s_tx_irq_handler(I2S_Type *i2s, i2s_transfer_t *transfer)
             {
                 if(transfer->mono_mode)
                 {
-                    i2s->I2S_LTHR0 = *(const uint32_t*)(buff + transfer->tx_current_cnt);
+                    i2s->I2S_LTHR0 = *(const uint32_t*)((uint8_t*)buff + transfer->tx_current_cnt);
                     i2s->I2S_RTHR0 = 0U;
                     transfer->tx_current_cnt += num_bytes;
                 }
                 else
                 {
-                    i2s->I2S_LTHR0 = *(const uint32_t*)(buff + transfer->tx_current_cnt);
-                    i2s->I2S_RTHR0 = *(const uint32_t*)(buff + transfer->tx_current_cnt + num_bytes);
+                    i2s->I2S_LTHR0 = *(const uint32_t*)((uint8_t*)buff + transfer->tx_current_cnt);
+                    i2s->I2S_RTHR0 = *(const uint32_t*)((uint8_t*)buff + transfer->tx_current_cnt + num_bytes);
                     transfer->tx_current_cnt += (2 * num_bytes);
                 }
             }
@@ -97,14 +97,14 @@ void i2s_tx_irq_handler(I2S_Type *i2s, i2s_transfer_t *transfer)
             if(num_bytes == I2S_16BIT_BUF_TYPE_BYTES)
             {
                 /* Write the Left sample and fill right with 0 */
-                i2s->I2S_LTHR0 = (uint32_t)(*(const uint16_t*)(buff + transfer->tx_current_cnt));
+                i2s->I2S_LTHR0 = (uint32_t)(*(const uint16_t*)((uint8_t*)buff + transfer->tx_current_cnt));
                 i2s->I2S_RTHR0 = 0U;
                 transfer->tx_current_cnt += num_bytes;
             }
             else
             {
                 /* Write the Left sample and fill right with 0 */
-                i2s->I2S_LTHR0 = *(const uint32_t*)(buff + transfer->tx_current_cnt);
+                i2s->I2S_LTHR0 = *(const uint32_t*)((uint8_t*)buff + transfer->tx_current_cnt);
                 i2s->I2S_RTHR0 = 0U;
                 transfer->tx_current_cnt += num_bytes;
             }
@@ -185,14 +185,14 @@ void i2s_rx_irq_handler(I2S_Type *i2s, i2s_transfer_t *transfer)
             {
                 if(transfer->mono_mode)
                 {
-                    (*(uint16_t*)(buff + transfer->rx_current_cnt)) = (uint16_t)(i2s->I2S_LRBR0);
+                    (*(uint16_t*)((uint8_t*)buff + transfer->rx_current_cnt)) = (uint16_t)(i2s->I2S_LRBR0);
                     (void)i2s->I2S_RRBR0;
                     transfer->rx_current_cnt += num_bytes;
                 }
                 else
                 {
-                    (*(uint16_t*)(buff + transfer->rx_current_cnt)) = (uint16_t)(i2s->I2S_LRBR0);
-                    (*(uint16_t*)(buff + transfer->rx_current_cnt + num_bytes)) = (uint16_t)(i2s->I2S_RRBR0);
+                    (*(uint16_t*)((uint8_t*)buff + transfer->rx_current_cnt)) = (uint16_t)(i2s->I2S_LRBR0);
+                    (*(uint16_t*)((uint8_t*)buff + transfer->rx_current_cnt + num_bytes)) = (uint16_t)(i2s->I2S_RRBR0);
                     transfer->rx_current_cnt += (2 * num_bytes);
                 }
             }
@@ -200,14 +200,14 @@ void i2s_rx_irq_handler(I2S_Type *i2s, i2s_transfer_t *transfer)
             {
                 if(transfer->mono_mode)
                 {
-                    (*(uint32_t*)(buff + transfer->rx_current_cnt)) = i2s->I2S_LRBR0;
+                    (*(uint32_t*)((uint8_t*)buff + transfer->rx_current_cnt)) = i2s->I2S_LRBR0;
                     (void)i2s->I2S_RRBR0;
                     transfer->rx_current_cnt += num_bytes;
                 }
                 else
                 {
-                    (*(uint32_t*)(buff + transfer->rx_current_cnt)) = i2s->I2S_LRBR0;
-                    (*(uint32_t*)(buff + transfer->rx_current_cnt + num_bytes)) = i2s->I2S_RRBR0;
+                    (*(uint32_t*)((uint8_t*)buff + transfer->rx_current_cnt)) = i2s->I2S_LRBR0;
+                    (*(uint32_t*)((uint8_t*)buff + transfer->rx_current_cnt + num_bytes)) = i2s->I2S_RRBR0;
                     transfer->rx_current_cnt += (2 * num_bytes);
                 }
             }
@@ -218,14 +218,14 @@ void i2s_rx_irq_handler(I2S_Type *i2s, i2s_transfer_t *transfer)
             if(num_bytes == I2S_16BIT_BUF_TYPE_BYTES)
             {
                 /* Read the last sample from left */
-                (*(uint16_t*)(buff + transfer->rx_current_cnt)) = (uint16_t)(i2s->I2S_LRBR0);
+                (*(uint16_t*)((uint8_t*)buff + transfer->rx_current_cnt)) = (uint16_t)(i2s->I2S_LRBR0);
                 (void)i2s->I2S_RRBR0;
                 transfer->rx_current_cnt = transfer->rx_current_cnt + num_bytes;
             }
             else
             {
                 /* Read the last sample from left */
-                (*(uint32_t*)(buff + transfer->rx_current_cnt)) = i2s->I2S_LRBR0;
+                (*(uint32_t*)((uint8_t*)buff + transfer->rx_current_cnt)) = i2s->I2S_LRBR0;
                 (void)i2s->I2S_RRBR0;
                 transfer->rx_current_cnt = transfer->rx_current_cnt + num_bytes;
             }

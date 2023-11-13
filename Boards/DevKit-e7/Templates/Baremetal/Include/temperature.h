@@ -427,7 +427,7 @@ const float tempData[][2] = {
  */
 float get_temperature (uint32_t adc_value)
 {
-    int i;
+    uint32_t i;
 
     /* check for temperature operating range */
     if (adc_value < tempData[0][0] || (adc_value > tempData[MAX_TEMP_RANGE][0]))

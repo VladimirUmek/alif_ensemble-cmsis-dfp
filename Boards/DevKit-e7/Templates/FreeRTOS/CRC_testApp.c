@@ -153,7 +153,7 @@ void crc_demo_Thread_entry(void *pvParameters)
     ARM_DRIVER_VERSION version;
     BaseType_t xReturned;
 
-    printf("\r\n >>> CRC demo threadX starting up!!! <<< \r\n");
+    printf("\r\n >>> Demo FreeRTOS app using CRC is starting <<< \r\n");
 
     version = CRCdrv->GetVersion();
     printf("\r\n CRC version api:%X driver:%X...\r\n", version.api, version.drv);

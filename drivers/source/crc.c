@@ -175,7 +175,7 @@ void crc_calculate_32bit_unaligned_sw(CRC_Type *crc, crc_transfer_t *transfer)
 {
     uint32_t  polynomial_status, control_val;
     uint32_t  custom;
-    const uint8_t *input = transfer->data_in + transfer->aligned_len;
+    const uint8_t *input = (const uint8_t *)transfer->data_in + transfer->aligned_len;
 
     if(transfer->unaligned_len > 0)
     {

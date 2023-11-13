@@ -205,7 +205,7 @@ CAMERA_SENSOR_SLAVE_I2C_CONFIG mt9m114_camera_sensor_i2c_cnfg =
         camera_sensor_i2c_read(&mt9m114_camera_sensor_i2c_cnfg, \
                                 reg_addr,  \
                                 reg_value, \
-                                reg_size);
+                                reg_size)
 
 /* Wrapper function for i2c write
  *  write register value to MT9M114 Camera Sensor registers
@@ -218,7 +218,7 @@ CAMERA_SENSOR_SLAVE_I2C_CONFIG mt9m114_camera_sensor_i2c_cnfg =
         camera_sensor_i2c_write(&mt9m114_camera_sensor_i2c_cnfg, \
                                  reg_addr,  \
                                  reg_value, \
-                                 reg_size);
+                                 reg_size)
 
 /**
   \fn           int32_t mt9m114_bulk_write_reg(const MT9M114_REG mt9m114_reg[],
@@ -480,7 +480,7 @@ static __inline int32_t mt9m114_stream_stop(void)
   \param[in]    cam_resolution  : Camera Resolution \ref ARM_CAMERA_RESOLUTION
   \return       \ref execution_status
 */
-int32_t mt9m114_Init(void)
+static int32_t mt9m114_Init(void)
 {
   int32_t  ret = 0;
   uint32_t rcv_data = 0;
@@ -552,7 +552,7 @@ int32_t mt9m114_Init(void)
   \param[in]    none
   \return       \ref execution_status
 */
-int32_t mt9m114_Start(void)
+static int32_t mt9m114_Start(void)
 {
   int32_t ret = 0;
 
@@ -580,7 +580,7 @@ int32_t mt9m114_Start(void)
   \param[in]    none
   \return       \ref execution_status
 */
-int32_t mt9m114_Stop(void)
+static int32_t mt9m114_Stop(void)
 {
   int32_t ret = 0;
 
@@ -599,8 +599,10 @@ int32_t mt9m114_Stop(void)
   \param[in]    arg      : Argument of operation
   \return       \ref execution_status
 */
-int32_t mt9m114_Control(uint32_t control, uint32_t arg)
+static int32_t mt9m114_Control(uint32_t control, uint32_t arg)
 {
+  ARG_UNUSED(control);
+  ARG_UNUSED(arg);
   return ARM_DRIVER_OK;
 }
 
@@ -610,7 +612,7 @@ int32_t mt9m114_Control(uint32_t control, uint32_t arg)
   \param[in]    none
   \return       \ref execution_status
 */
-int32_t mt9m114_Uninit(void)
+static int32_t mt9m114_Uninit(void)
 {
   return ARM_DRIVER_OK;
 }
@@ -619,7 +621,7 @@ int32_t mt9m114_Uninit(void)
 \brief MT9M114 Camera Sensor Operations
         \ref CAMERA_SENSOR_OPERATIONS
 */
-CAMERA_SENSOR_OPERATIONS mt9m114_ops =
+static CAMERA_SENSOR_OPERATIONS mt9m114_ops =
 {
   .Init    = mt9m114_Init,
   .Uninit  = mt9m114_Uninit,
@@ -633,7 +635,7 @@ CAMERA_SENSOR_OPERATIONS mt9m114_ops =
 \brief CPI MT9M114 Camera Sensor Configurations
         \ref CPI_INFO
 */
-CPI_INFO cpi_mt9m114_config =
+static CPI_INFO cpi_mt9m114_config =
 {
   .interface       = CPI_INTERFACE_PARALLEL,
   .vsync_wait      = RTE_MT9M114_CAMERA_SENSOR_CPI_VSYNC_WAIT,
@@ -671,7 +673,7 @@ CAMERA_SENSOR(cpi_mt9m114_camera_sensor)
 \brief LPCPI MT9M114 Camera Sensor Configurations
         \ref CAMERA_SENSOR_CONFIG
 */
-CPI_INFO lpcpi_mt9m114_config =
+static CPI_INFO lpcpi_mt9m114_config =
 {
   .interface       = CPI_INTERFACE_PARALLEL,
   .pixelclk_pol    = RTE_MT9M114_CAMERA_SENSOR_LPCPI_PIXEL_CLK_POL,

@@ -137,13 +137,19 @@ static inline void adc_set_differential_ctrl(uint8_t instance,
         case ADC_INSTANCE_ADC12_0:
         {
             value |= (differential_en << ADC120_DIFFERENTIAL_EN_Pos |
-                    vcm_en << ADC120_VCM_DIV_Pos);
+                      vcm_en << ADC120_VCM_DIV_Pos);
             break;
         }
         case ADC_INSTANCE_ADC12_1:
         {
             value |= (differential_en << ADC121_DIFFERENTIAL_EN_Pos |
-                    vcm_en << ADC121_VCM_DIV_Pos);
+                      vcm_en << ADC121_VCM_DIV_Pos);
+            break;
+        }
+        case ADC_INSTANCE_ADC12_2:
+        {
+            value |= (differential_en << ADC122_DIFFERENTIAL_EN_Pos |
+                      vcm_en << ADC122_VCM_DIV_Pos);
             break;
         }
         case ADC_INSTANCE_ADC24_0:
@@ -187,7 +193,7 @@ void adc_set_comparator_ctrl(uint8_t instance,
         case ADC_INSTANCE_ADC12_2:
         {
             value |= (comparator_en << ADC122_COMPARATOR_EN_Pos |
-                      comparator_bias << ADC121_COMPARATOR_BIAS_Pos);
+                      comparator_bias << ADC122_COMPARATOR_BIAS_Pos);
             break;
         }
         case ADC_INSTANCE_ADC24_0:

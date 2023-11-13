@@ -1775,8 +1775,9 @@ static uint32_t test_services_dcdc_voltage(char *p_test_name,
   uint32_t error_code = SERVICES_REQ_SUCCESS;
   uint32_t service_error_code;
 
-  uint32_t dcdc_vout_sel  = 0x0;
-  uint32_t dcdc_vout_trim = 0x0;
+  // same values as during cold boot
+  uint32_t dcdc_vout_sel  = DCDC_VOUT_0825;
+  uint32_t dcdc_vout_trim = 4;
 
   error_code = SERVICES_power_dcdc_voltage_control(services_handle,
                                                    dcdc_vout_sel,

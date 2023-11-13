@@ -2235,8 +2235,8 @@
 //    <0=> CLK_38.4MHz
 //    <1=> CLK_100MHz
 // <i> Defines UART2 clock source.
-// <i> Default: CLK_38.4MHz
-#define RTE_UART2_CLK_SOURCE    0
+// <i> Default: CLK_100MHz
+#define RTE_UART2_CLK_SOURCE    1
 
 // <o> UART2 DMA ENABLE
 //    <0=> DISABLE

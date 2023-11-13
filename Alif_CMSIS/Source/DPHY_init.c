@@ -530,10 +530,6 @@ static void DPHY_DSI_Write_Mask (uint16_t address,
 */
 static void DPHY_PowerEnable (void)
 {
-    enable_mipi_dphy_power();
-
-    disable_mipi_dphy_isolation();
-
     enable_dphy_pll_reference_clock();
 
     enable_txdphy_configure_clock();
@@ -566,10 +562,6 @@ static void DPHY_PowerDisable (void)
     disable_txdphy_configure_clock();
 
     disable_dphy_pll_reference_clock();
-
-    disable_mipi_dphy_power();
-
-    enable_mipi_dphy_isolation();
 
 }
 
@@ -611,7 +603,7 @@ static int32_t DPHY_ConfigurePLL(uint32_t clock_frequency)
 
     pll_p = pll_p_factor[range].p;
 
-    pll_m = ((frequency_in_mhz * pll_n * pll_p * 2) / DPHY_FCLKIN_MHZ);
+    pll_m = (uint32_t)((frequency_in_mhz * pll_n * pll_p * 2) / DPHY_FCLKIN_MHZ);
 
     set_dphy_pll_clksel(DPHY_PLL_CLKSEL_CLOCK_GENERAT);
 

@@ -80,6 +80,7 @@ typedef struct _CANFD_Type
 
 /* Hardware related configuration */
 
+#define CANFD_MAX_BITRATE                        10000000U
 #define CANFD_MAX_ACCEPTANCE_FILTERS             3U
 #define CANFD_MAX_ERROR_WARN_LIMIT               128U
 #define CANFD_NOM_DATA_FRAME_SIZE_MIN            0U

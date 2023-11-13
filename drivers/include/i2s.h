@@ -624,7 +624,7 @@ static inline void i2s_disable_rx_overflow_interrupt(I2S_Type *i2s)
 */
 static inline void* i2s_get_dma_tx_addr(I2S_Type *i2s)
 {
-    return ((void*)i2s + I2S_TXDMA_OFFSET);
+    return ((uint8_t*)i2s + I2S_TXDMA_OFFSET);
 }
 
 /**
@@ -635,7 +635,7 @@ static inline void* i2s_get_dma_tx_addr(I2S_Type *i2s)
 */
 static inline void* i2s_get_dma_rx_addr(I2S_Type *i2s)
 {
-    return ((void*)i2s + I2S_RXDMA_OFFSET);
+    return ((uint8_t*)i2s + I2S_RXDMA_OFFSET);
 }
 
 /**

@@ -66,45 +66,45 @@ typedef struct {                                         /*!< (@ 0x43002000) PDM
   volatile PDM_PDM_CHANNEL_CFG_Type PDM_CHANNEL_CFG[8];  /*!< (@ 0x00000040) [0..7]                                                     */
 } PDM_Type;                                              /*!< Size = 2112 (0x840)                                                       */
 
-#define PDM0_IRQ_ENABLE               (0xFF03)                  /* To enable the interrupt status register */
-#define PDM_BYPASS_IIR                (1 << 2)                  /* Bypass DC blocking IIR filter           */
-#define PDM_BYPASS_FIR                (1 << 3)                  /* Bypass FIR filter                       */
-#define PDM_PEAK_DETECT_NODE          (1 << 4)                  /* Peak detection node                     */
-#define PDM_DMA_HANDSHAKE             (1 << 24)                 /* DMA handshaking signals for flow control*/
-#define PDM_SAMPLE_ADV                (1 << 17)                 /* Sample advance                          */
+#define PDM0_IRQ_ENABLE               (0xFF03U)                   /* To enable the interrupt status register */
+#define PDM_BYPASS_IIR                (1U << 2U)                  /* Bypass DC blocking IIR filter           */
+#define PDM_BYPASS_FIR                (1U << 3U)                  /* Bypass FIR filter                       */
+#define PDM_PEAK_DETECT_NODE          (1U << 4U)                  /* Peak detection node                     */
+#define PDM_DMA_HANDSHAKE             (1U << 24U)                 /* DMA handshaking signals for flow control*/
+#define PDM_SAMPLE_ADV                (1U << 17U)                 /* Sample advance                          */
 
-#define PDM_INTERRUPT_STATUS_VALUE    (0x1)                     /* To check the interrupt status           */
+#define PDM_INTERRUPT_STATUS_VALUE    (0x1U)                      /* To check the interrupt status           */
 
-#define PDM_FIFO_ALMOST_FULL_IRQ      (0x1 << 0)                /* FIFO almost full Interrupt              */
-#define PDM_FIFO_OVERFLOW_IRQ         (0x1 << 1)                /* FIFO overflow interrupt                 */
-#define PDM_AUDIO_DETECT_IRQ_STAT     (0xFF << 8)               /* Audio detect interrupt                  */
-#define PDM_CHANNEL_ENABLE            (0xFF)                    /* To check the which channel is enabled   */
-#define PDM_MODES                     (0xFF << 16)              /* To check for the PDM modes              */
+#define PDM_FIFO_ALMOST_FULL_IRQ      (0x1U << 0U)                /* FIFO almost full Interrupt              */
+#define PDM_FIFO_OVERFLOW_IRQ         (0x1U << 1U)                /* FIFO overflow interrupt                 */
+#define PDM_AUDIO_DETECT_IRQ_STAT     (0xFFU << 8U)               /* Audio detect interrupt                  */
+#define PDM_CHANNEL_ENABLE            (0xFFU)                     /* To check the which channel is enabled   */
+#define PDM_MODES                     (0xFFU << 16U)              /* To check for the PDM modes              */
 
-#define PDM_FIFO_CLEAR                (1 << 31)                 /* To clear FIFO clear bit                 */
+#define PDM_FIFO_CLEAR                (1U << 31U)                 /* To clear FIFO clear bit                 */
 
-#define PDM_MAX_FIR_COEFFICIENT       18                        /* PDM channel FIR length                  */
-#define PDM_MAX_DMA_CHANNEL           1                         /* PDM DMA maximum channel                 */
+#define PDM_MAX_FIR_COEFFICIENT       18                          /* PDM channel FIR length                  */
+#define PDM_MAX_DMA_CHANNEL           1U                          /* PDM DMA maximum channel                 */
 
-#define PDM_AUDIO_CH_0_1              0                         /* PDM audio channel 0 and 1               */
-#define PDM_AUDIO_CH_2_3              1                         /* PDM audio channel 2 and 3               */
-#define PDM_AUDIO_CH_4_5              2                         /* PDM audio channel 4 and 5               */
-#define PDM_AUDIO_CH_6_7              3                         /* PDM audio channel 6 and 7               */
-#define PDM_CLK_MODE                  16                        /* PDM clock frequency mode                */
+#define PDM_AUDIO_CH_0_1              0U                          /* PDM audio channel 0 and 1               */
+#define PDM_AUDIO_CH_2_3              1U                          /* PDM audio channel 2 and 3               */
+#define PDM_AUDIO_CH_4_5              2U                          /* PDM audio channel 4 and 5               */
+#define PDM_AUDIO_CH_6_7              3U                          /* PDM audio channel 6 and 7               */
+#define PDM_CLK_MODE                  16U                         /* PDM clock frequency mode                */
 
-#define PDM_AUDIO_CHANNEL             (0x3)
-#define PDM_CHANNEL_0_1               (PDM_AUDIO_CHANNEL << 0)  /* check for channel 0 and 1               */
-#define PDM_CHANNEL_2_3               (PDM_AUDIO_CHANNEL << 2)  /* check for channel 2 and 3               */
-#define PDM_CHANNEL_4_5               (PDM_AUDIO_CHANNEL << 4)  /* check for channel 4 and 5               */
-#define PDM_CHANNEL_6_7               (PDM_AUDIO_CHANNEL << 6)  /* check for channel 6 and 7               */
-#define PDM_CHANNEL_0                 (1 << 0)
-#define PDM_CHANNEL_1                 (1 << 1)
-#define PDM_CHANNEL_2                 (1 << 2)
-#define PDM_CHANNEL_3                 (1 << 3)
-#define PDM_CHANNEL_4                 (1 << 4)
-#define PDM_CHANNEL_5                 (1 << 5)
-#define PDM_CHANNEL_6                 (1 << 6)
-#define PDM_CHANNEL_7                 (1 << 7)
+#define PDM_AUDIO_CHANNEL             (0x3U)
+#define PDM_CHANNEL_0_1               (PDM_AUDIO_CHANNEL << 0U)   /* check for channel 0 and 1               */
+#define PDM_CHANNEL_2_3               (PDM_AUDIO_CHANNEL << 2U)   /* check for channel 2 and 3               */
+#define PDM_CHANNEL_4_5               (PDM_AUDIO_CHANNEL << 4U)   /* check for channel 4 and 5               */
+#define PDM_CHANNEL_6_7               (PDM_AUDIO_CHANNEL << 6U)   /* check for channel 6 and 7               */
+#define PDM_CHANNEL_0                 (1U << 0U)
+#define PDM_CHANNEL_1                 (1U << 1U)
+#define PDM_CHANNEL_2                 (1U << 2U)
+#define PDM_CHANNEL_3                 (1U << 3U)
+#define PDM_CHANNEL_4                 (1U << 4U)
+#define PDM_CHANNEL_5                 (1U << 5U)
+#define PDM_CHANNEL_6                 (1U << 6U)
+#define PDM_CHANNEL_7                 (1U << 7U)
 
 typedef enum _PDM_TRANSFER_STATUS
 {

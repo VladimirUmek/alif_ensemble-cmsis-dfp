@@ -273,11 +273,6 @@ static int32_t ARM_LPTIMER_Stop (LPTIMER_RESOURCES *LPTIMER_RES, uint8_t channel
         return ARM_DRIVER_ERROR_PARAMETER;
     }
 
-    if (LPTIMER_RES->ch_info[channel].state.started == 0)
-    {
-        return ARM_DRIVER_OK;
-    }
-
     /* disable channel counter */
     lptimer_disable_counter (LPTIMER_RES->regs, channel);
 
@@ -290,7 +285,7 @@ static int32_t ARM_LPTIMER_Stop (LPTIMER_RESOURCES *LPTIMER_RES, uint8_t channel
  * @fn      int32_t ARM_LPTIMER_Uninitialize (LPTIMER_RESOURCES *LPTIMER, uint8_t channel)
  * @brief   Un-Initialize the LPTIMER.
  * @note    none.
- * @param   LPTIMER_RES : Pointer to spi resources structure.
+ * @param   LPTIMER_RES : Pointer to lptimer resources structure.
  * @param   channel : used LPTIMER channel.
  * @retval  \ref execution_status
  */
@@ -317,7 +312,7 @@ static int32_t ARM_LPTIMER_Uninitialize (LPTIMER_RESOURCES *LPTIMER_RES, uint8_t
  * @fn      int32_t LPTIMER_Irq_Handler (LPTIMER_RESOURCES *LPTIMER_RES, uint8_t channel)
  * @brief   LPTIMER interrupt handler.
  * @note    none.
- * @param   LPTIMER_RES : Pointer to spi resources structure.
+ * @param   LPTIMER_RES : Pointer to lptimer resources structure.
  * @param   channel : used LPTIMER channel.
  * @retval  \ref execution_status
  */

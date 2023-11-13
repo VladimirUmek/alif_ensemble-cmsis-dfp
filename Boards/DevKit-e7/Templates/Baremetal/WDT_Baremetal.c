@@ -34,7 +34,7 @@
 extern ARM_DRIVER_WDT Driver_WDT0;
 static ARM_DRIVER_WDT *WDTdrv = &Driver_WDT0;
 
-void watchdog_demo_thread_entry();
+void watchdog_demo_entry();
 
 
 void NMI_Handler(void)
@@ -44,7 +44,7 @@ void NMI_Handler(void)
 }
 
 /**
-  \fn          void watchdog_demo_thread_entry()
+  \fn          void watchdog_demo_entry()
   \brief       TestApp to verify watchdog peripheral,
                This demo thread does:
                  - initialize watchdog with timeout value
@@ -55,7 +55,7 @@ void NMI_Handler(void)
   \param[in]   none
   \return      none
 */
-void watchdog_demo_thread_entry()
+void watchdog_demo_entry()
 {
 	uint32_t wdog_timeout_msec = 0;   /* watchdog timeout value in msec        */
 	uint32_t time_to_reset = 0;       /* watchdog remaining time before reset. */
@@ -63,7 +63,7 @@ void watchdog_demo_thread_entry()
 	int32_t  ret = 0;
 	ARM_DRIVER_VERSION version;
 
-	printf("\r\n >>> watchdog demo threadx starting up!!! <<< \r\n");
+	printf("\r\n >>> watchdog demo starting up!!! <<< \r\n");
 
 	version = WDTdrv->GetVersion();
 	printf("\r\n watchdog version api:%X driver:%X...\r\n",version.api, version.drv);
@@ -89,7 +89,7 @@ void watchdog_demo_thread_entry()
 	ret = WDTdrv->Control(ARM_WATCHDOG_UNLOCK, 0);
 	if(ret != ARM_DRIVER_OK){
 		printf("\r\n Error: watchdog unlock failed\n");
-		goto error_stop;
+		goto error_poweroff;
 	}
 
 	/* Start the watchDog Timer. */
@@ -167,7 +167,7 @@ int main()
     }
     #endif
 
-	watchdog_demo_thread_entry();
+    watchdog_demo_entry();
 }
 
 /************************ (C) COPYRIGHT ALIF SEMICONDUCTOR *****END OF FILE****/

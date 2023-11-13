@@ -23,19 +23,6 @@
 static ospi_flash_cfg_t ospi_flash_config;
 
 /**
-  \fn         static void issi_flash_reset(ospi_flash_cfg_t *ospi_cfg)
-  \brief      This function resets the ISSI NOR Flash to the default state
-  \param[in]  ospi_cfg : OSPI configuration structure
-  \return     none
- */
-static void issi_flash_reset(ospi_flash_cfg_t *ospi_cfg)
-{
-    ospi_setup_write(ospi_cfg, ADDR_LENGTH_0_BITS);
-    ospi_send_blocking(ospi_cfg, ISSI_RESET_ENABLE);
-    ospi_send_blocking(ospi_cfg, ISSI_RESET_MEMORY);
-}
-
-/**
   \fn         static void issi_write_enable(ospi_flash_cfg_t *ospi_cfg)
   \brief      Write enable for ISSI Flash before any write / program / erase
   \param[in]  ospi_cfg : OSPI configuration structure
@@ -79,23 +66,6 @@ static uint8_t issi_decode_id(ospi_flash_cfg_t *ospi_cfg, uint8_t *buffer)
 }
 
 /**
-  \fn         static uint8_t issi_flash_ReadID_DDR(ospi_flash_cfg_t *ospi_cfg)
-  \brief      This function reads the Device ID , if the ISSI NOR Flash boots up in DDR mode
-  \param[in]  ospi_cfg : OSPI configuration structure
-  \return     Device ID of NOR Flash
- */
-static uint8_t issi_flash_ReadID_DDR(ospi_flash_cfg_t *ospi_cfg)
-{
-    uint8_t buffer;
-    ospi_cfg->ddr_en = 1;
-
-    ospi_setup_read(ospi_cfg, ADDR_LENGTH_0_BITS, 1, 8);
-    ospi_recv_blocking(ospi_cfg, ISSI_READ_ID, &buffer);
-
-    return buffer;
-}
-
-/**
   \fn        uint8_t ospi_flash_ReadID(ospi_flash_cfg_t *ospi_cfg)
   \brief     This function reads the Device ID , if the ISSI NOR Flash boots up in SDR mode
   \param[in] ospi_cfg : OSPI configuration structure
@@ -129,53 +99,6 @@ static void issi_flash_set_configuration_register_SDR(ospi_flash_cfg_t *ospi_cfg
     ospi_push(ospi_cfg, 0x00);
     ospi_push(ospi_cfg, address);
     ospi_send_blocking(ospi_cfg, value);
-}
-
-/**
-  \fn      static void issi_flash_set_configuration_register_DDR(ospi_flash_cfg_t *ospi_cfg, uint8_t cmd, uint8_t address, uint8_t value)
-  \brief   This function sets the configuration register of the ISSI NOR Flash in DDR mode
-  \param[in] ospi_cfg : OSPI configuration structure
-  \param[in] cmd : Command
-  \param[in] address : Address of register
-  \param[in] value : Value to be set
-  \return    none
- */
-static void issi_flash_set_configuration_register_DDR(ospi_flash_cfg_t *ospi_cfg, uint8_t cmd, uint32_t address, uint8_t value)
-{
-    issi_write_enable(ospi_cfg);
-    ospi_setup_write(ospi_cfg, ADDR_LENGTH_32_BITS);
-    ospi_push(ospi_cfg, cmd);
-    ospi_push(ospi_cfg, address);
-    ospi_push(ospi_cfg, value);
-    ospi_send_blocking(ospi_cfg, value);
-}
-
-/**
-  \fn      static int32_t issi_flash_read_configuration_register_ddr(ospi_flash_cfg_t *ospi_cfg, uint32_t reg_type, uint32_t address)
-  \brief   This function reads the configuration register of the ISSI NOR Flash in DDR mode
-  \param[in]  ospi_cfg : OSPI configuration structure
-  \param[in]  cmd : Command
-  \param[in]  address : Address of register
-  \return     Value of register
- */
-static uint32_t issi_flash_read_configuration_register_ddr(ospi_flash_cfg_t *ospi_cfg, uint32_t reg_type, uint32_t address)
-{
-    uint8_t val;
-
-    ospi_setup_read(ospi_cfg, ADDR_LENGTH_32_BITS, 1, 8);
-
-    if (reg_type == VOLATILE_CONFIG_REG)
-    {
-        ospi_push(ospi_cfg, ISSI_READ_VOLATILE_CONFIG_REG);
-    }
-    else if (reg_type == NONVOLATILE_CONFIG_REG)
-    {
-        ospi_push(ospi_cfg, ISSI_READ_NONVOLATILE_CONFIG_REG);
-    }
-
-    ospi_recv_blocking(ospi_cfg, address, &val);
-
-    return val ;
 }
 
 /**

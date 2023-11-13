@@ -464,6 +464,8 @@ static int32_t GPIO_Uninitialize (GPIO_RESOURCES *GPIO, uint8_t pin_no)
 
     GPIO->cb_event[pin_no] = NULL;
 
+    GPIO->state.initialized = 0;
+
     return ARM_DRIVER_OK;
 }
 

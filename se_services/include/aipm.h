@@ -137,7 +137,7 @@ typedef enum
   SCALED_FREQ_XO_HIGH_DIV_38_4_MHZ = 24,  /* HFXO frequencies using the HIGH divider */
   SCALED_FREQ_XO_HIGH_DIV_19_2_MHZ,
   SCALED_FREQ_XO_HIGH_DIV_9_6_MHZ,
-  SCALED_FREQ_XO_HIGH_DIV_4_8_MHZ,
+  SCALED_FREQ_XO_HIGH_DIV_2_4_MHZ,
   SCALED_FREQ_XO_HIGH_DIV_0_6_MHZ,
   SCALED_FREQ_XO_HIGH_DIV_0_3_MHZ,
   SCALED_FREQ_XO_HIGH_DIV_0_15_MHZ,
@@ -281,7 +281,7 @@ typedef enum
 #define CAMERA_MASK       (1 << CAMERA)   // bit10
 #define MIPI_DSI_MASK     (1 << MIPI_DSI) // bit11
 #define MIPI_CSI_MASK     (1 << MIPI_CSI) // bit12
-#define LP_PERIPH_MASK    (1 << LP_PERIPH // bit13
+#define LP_PERIPH_MASK    (1 << LP_PERIPH)// bit13
 
 typedef enum
 {
@@ -310,7 +310,7 @@ typedef struct {
     uint32_t memory_blocks;         /* Memories blocks to be retained/powered */
     uint32_t ip_clock_gating;       /* IP Clock Gating */
     uint32_t phy_pwr_gating;        /* PHY Power Gating */
-    uint32_t vdd_ioflex_3V3;        /* Enable 3.3V GPIOs */
+    ioflex_mode_t vdd_ioflex_3V3;   /* Enable 3.3V GPIOs */
     uint32_t wakeup_events;
     uint32_t ewic_cfg;
     uint32_t vtor_address;

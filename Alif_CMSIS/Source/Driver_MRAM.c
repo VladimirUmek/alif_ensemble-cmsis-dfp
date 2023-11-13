@@ -305,6 +305,10 @@ static int32_t MRAM_ProgramData(uint32_t addr, const void *data, uint32_t cnt)
 */
 static int32_t MRAM_EraseSector(uint32_t addr)
 {
+    /* Added to fix Warning:
+     *  unused parameter [-Wunused-parameter] */
+    ARG_UNUSED(addr);
+
     return ARM_DRIVER_OK;
 }
 

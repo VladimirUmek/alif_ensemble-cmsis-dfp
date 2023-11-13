@@ -21,7 +21,6 @@
 
 #include <string.h>
 #include "CANFD_Private.h"
-#include "RTE_Components.h"
 
 #if !(RTE_CANFD)
     #error "CANFD is not enabled in RTE_Device.h"
@@ -209,7 +208,7 @@ __STATIC_INLINE ARM_CAN_STATUS ARM_CAN_GetStatus(CANFD_RESOURCES *CANFD)
 }
 
 /**
- * @fn      uint8_t CANFD_CalculateBitrate(CANFD_RESOURCES* CANFD,
+ * @fn      uint8_t CANFD_CalculatePrescaler(CANFD_RESOURCES* CANFD,
  *                          uint32_t bitrate, uint8_t seg1, uint8_t seg2)
  * @brief   Calculates the Prescaler for bitrate
  * @note    none.
@@ -218,7 +217,7 @@ __STATIC_INLINE ARM_CAN_STATUS ARM_CAN_GetStatus(CANFD_RESOURCES *CANFD)
  * @param   seg2    : Bit segment 2
  * @return  \ref canfd driver Bitrate prescaler.
  */
-static uint8_t CANFD_CalculateBitrate(uint32_t bitrate,
+static uint8_t CANFD_CalculatePrescaler(uint32_t bitrate,
                                       uint8_t seg1, uint8_t seg2)
 {
     /* Calculates and returns the prescaler */
@@ -234,7 +233,8 @@ static uint8_t CANFD_CalculateBitrate(uint32_t bitrate,
  * @param   CANFD       : Pointer to CANFD resources structure.
  * @param   select      : Bitrate option
  * @param   bitrate     : Bitrate value
- * @param   bit_segments: Segments present in a bit time (propagation, sampling segment 1 and 2)
+ * @param   bit_segments: Segments present in a bit time
+ *                        (propagation, sampling segment 1 and 2)
  * @return  \ref canfd driver Bitrate set status.
  */
 static int32_t ARM_CAN_SetBitrate(CANFD_RESOURCES* CANFD, ARM_CAN_BITRATE_SELECT select,
@@ -256,10 +256,15 @@ static int32_t ARM_CAN_SetBitrate(CANFD_RESOURCES* CANFD, ARM_CAN_BITRATE_SELECT
         return ARM_DRIVER_ERROR;
     }
 
+    /* If bitrate is less than 1b or greater than 10Mb returns an error */
+    if((bitrate < 0x1U) || (bitrate > CANFD_MAX_BITRATE))
+    {
+        return ARM_CAN_INVALID_BITRATE_SELECT;
+    }
     /* Stores segmets of a bit time */
     sjw  = ((bit_segments & ARM_CAN_BIT_SJW_Msk) >> ARM_CAN_BIT_SJW_Pos);
     seg1 = ((bit_segments & ARM_CAN_BIT_PHASE_SEG1_Msk) >> ARM_CAN_BIT_PHASE_SEG1_Pos) +
-                         ((bit_segments & ARM_CAN_BIT_PROP_SEG_Msk) >> ARM_CAN_BIT_PROP_SEG_Pos);
+           ((bit_segments & ARM_CAN_BIT_PROP_SEG_Msk) >> ARM_CAN_BIT_PROP_SEG_Pos);
     seg2 = ((bit_segments & ARM_CAN_BIT_PHASE_SEG2_Msk) >> ARM_CAN_BIT_PHASE_SEG2_Pos);
 
     /* Checks for the validity of the Signal Jump Width*/
@@ -277,11 +282,11 @@ static int32_t ARM_CAN_SetBitrate(CANFD_RESOURCES* CANFD, ARM_CAN_BITRATE_SELECT
                 return ARM_CAN_INVALID_BIT_PHASE_SEG1;
             }
             /* Checks for the validity of the Segment 2*/
-            if((seg2 < 0x1U) || (seg2 > 0x8U))
+            if((seg2 < 0x1U) || (seg2 > 0x20U))
             {
                 return ARM_CAN_INVALID_BIT_PHASE_SEG2;
             }
-            prescaler = CANFD_CalculateBitrate(bitrate, seg1, seg2);
+            prescaler = CANFD_CalculatePrescaler(bitrate, seg1, seg2);
             if((prescaler < 0x1U) || (prescaler > 0x4U))
             {
                 return ARM_CAN_INVALID_BITRATE;
@@ -298,11 +303,11 @@ static int32_t ARM_CAN_SetBitrate(CANFD_RESOURCES* CANFD, ARM_CAN_BITRATE_SELECT
                 return ARM_CAN_INVALID_BIT_PHASE_SEG1;
             }
             /* Checks for the validity of the Segment 2*/
-            if((seg2 < 0x1U) || (seg2 > 0x20U))
+            if((seg2 < 0x1U) || (seg2 > 0x8U))
             {
                 return ARM_CAN_INVALID_BIT_PHASE_SEG2;
             }
-            prescaler = CANFD_CalculateBitrate(bitrate, seg1, seg2);
+            prescaler = CANFD_CalculatePrescaler(bitrate, seg1, seg2);
             if((prescaler < 0x1U) || (prescaler > 0x4U))
             {
                 return ARM_CAN_INVALID_BITRATE;
@@ -313,14 +318,14 @@ static int32_t ARM_CAN_SetBitrate(CANFD_RESOURCES* CANFD, ARM_CAN_BITRATE_SELECT
             break;
         default:
             return ARM_CAN_INVALID_BITRATE_SELECT;
-            break;
     }
     return ARM_DRIVER_OK;
 }
 
 /**
- * @fn      int32_t ARM_CAN_Initialize(CANFD_RESOURCES *CANFD, ARM_CAN_SignalUnitEvent_t cb_unit_event,
-                                       ARM_CAN_SignalObjectEvent_t cb_object_event)
+ * @fn      int32_t ARM_CAN_Initialize(CANFD_RESOURCES *CANFD,
+ *                                     ARM_CAN_SignalUnitEvent_t cb_unit_event,
+ *                                     ARM_CAN_SignalObjectEvent_t cb_object_event)
  * @brief   Initializes CANFD instance.
  * @note    none.
  * @param   CANFD           : Pointer to CANFD resources structure.
@@ -328,7 +333,8 @@ static int32_t ARM_CAN_SetBitrate(CANFD_RESOURCES* CANFD, ARM_CAN_BITRATE_SELECT
  * @param   cb_object_event : Object event callback
  * @return  \ref canfd Initialized status.
  */
-static int32_t ARM_CAN_Initialize(CANFD_RESOURCES* CANFD, ARM_CAN_SignalUnitEvent_t cb_unit_event,
+static int32_t ARM_CAN_Initialize(CANFD_RESOURCES* CANFD,
+                                  ARM_CAN_SignalUnitEvent_t cb_unit_event,
                                   ARM_CAN_SignalObjectEvent_t cb_object_event)
 {
     /* If CANFD node is already initialized then sends driver OK*/
@@ -438,7 +444,8 @@ static int32_t ARM_CAN_PowerControl(CANFD_RESOURCES* CANFD, ARM_POWER_STATE stat
             {
                return ARM_DRIVER_OK;
             }
-            /* Clears Pending IRQs, sets priority and enables it. Enables CANFD clock */
+            /* Clears Pending IRQs, sets priority and enables it.
+             * Enables CANFD clock */
             NVIC_ClearPendingIRQ(CANFD->irq_num);
             NVIC_SetPriority(CANFD->irq_num, CANFD->irq_priority);
             NVIC_EnableIRQ(CANFD->irq_num);
@@ -579,7 +586,7 @@ static int32_t ARM_CAN_SetMode(CANFD_RESOURCES* CANFD, ARM_CAN_MODE mode)
             return ARM_DRIVER_ERROR_UNSUPPORTED;
     }
 
-    if(CANFD->op_mode != (CANFD_OP_MODE) ARM_CAN_MODE_INITIALIZATION)
+    if(CANFD->op_mode != CANFD_OP_MODE_INIT)
     {
         /* Sets the CAN Error warning state */
         canfd_set_err_warn_limit(CANFD->regs, CANFD_ERROR_WARNING_LIMIT);
@@ -641,7 +648,8 @@ static int32_t ARM_CAN_ObjectSetFilter(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
                 if(canfd_get_acpt_fltr_status(CANFD->regs, filter_num) == CANFD_ACPT_FLTR_STATUS_FREE)
                 {
                     /* If the filter is available, then stores the values*/
-                    canfd_enable_acpt_fltr(CANFD->regs, filter_num, id, 0x0U, CANFD_ACPT_FLTR_OP_ADD_EXACT_ID);
+                    canfd_enable_acpt_fltr(CANFD->regs, filter_num, id,
+                                           0x0U, CANFD_ACPT_FLTR_OP_ADD_EXACT_ID);
                     filter_avail = true;
                     break;
                 }
@@ -651,8 +659,9 @@ static int32_t ARM_CAN_ObjectSetFilter(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
         case ARM_CAN_FILTER_ID_EXACT_REMOVE:
             for(filter_num = 0x0U; filter_num < CANFD_MAX_ACCEPTANCE_FILTERS; filter_num++)
             {
-                canfd_get_acpt_fltr_data(CANFD->regs, filter_num, &acceptance_code,
-                                         &acceptance_mask, CANFD_ACPT_FLTR_OP_REMOVE_EXACT_ID);
+                canfd_get_acpt_fltr_data(CANFD->regs, filter_num,
+                                         &acceptance_code, &acceptance_mask,
+                                         CANFD_ACPT_FLTR_OP_REMOVE_EXACT_ID);
                 if((acceptance_code == id) && (acceptance_mask == 0x0U))
                 {
                     /* If the filter is found with the same ID and mask as requested,
@@ -676,7 +685,8 @@ static int32_t ARM_CAN_ObjectSetFilter(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
                 if(canfd_get_acpt_fltr_status(CANFD->regs, filter_num) == CANFD_ACPT_FLTR_STATUS_FREE)
                 {
                     /* If the filter is available, then configures the values*/
-                    canfd_enable_acpt_fltr(CANFD->regs, filter_num, id, arg, CANFD_ACPT_FLTR_OP_ADD_MASKABLE_ID);
+                    canfd_enable_acpt_fltr(CANFD->regs, filter_num, id, arg,
+                                           CANFD_ACPT_FLTR_OP_ADD_MASKABLE_ID);
                     filter_avail = true;
                     break;
                 }
@@ -687,7 +697,8 @@ static int32_t ARM_CAN_ObjectSetFilter(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
             for(filter_num = 0x0U; filter_num < CANFD_MAX_ACCEPTANCE_FILTERS; filter_num++)
             {
                 canfd_get_acpt_fltr_data(CANFD->regs, filter_num, &acceptance_code,
-                                         &acceptance_mask, CANFD_ACPT_FLTR_OP_REMOVE_MASKABLE_ID);
+                                         &acceptance_mask,
+                                         CANFD_ACPT_FLTR_OP_REMOVE_MASKABLE_ID);
                 if((acceptance_code == id) && (acceptance_mask == arg))
                 {
                     /* If the filter is found with the same ID and mask as requested,
@@ -716,7 +727,8 @@ static int32_t ARM_CAN_ObjectSetFilter(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
         CANFD->state.filter_configured = 0x0U;
     }
 
-    /* If either the filter is not available or the requested configuration is unavailable
+    /* If either the filter is not available or
+     * the requested configuration is unavailable
      * then returns Specific error */
     if(!(filter_avail))
     {
@@ -736,7 +748,8 @@ static int32_t ARM_CAN_ObjectSetFilter(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
  * @param   obj_cfg  : Type of configuration.
  * @return  \ref execution_status
  */
-static int32_t ARM_CAN_ObjectConfigure(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
+static int32_t ARM_CAN_ObjectConfigure(CANFD_RESOURCES* CANFD,
+                                       uint32_t obj_idx,
                                        ARM_CAN_OBJ_CONFIG obj_cfg)
 {
     /* Only 2 objects supported -> obj0 and obj1*/
@@ -793,7 +806,8 @@ static int32_t ARM_CAN_ObjectConfigure(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
  * @return  \ref execution_status
  */
 static int32_t ARM_CAN_MessageSend(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
-                                   ARM_CAN_MSG_INFO *msg_info, const uint8_t *data, uint8_t size)
+                                   ARM_CAN_MSG_INFO *msg_info,
+                                   const uint8_t *data, uint8_t size)
 {
     if(CANFD->state.powered == 0x0U)
     {
@@ -828,14 +842,15 @@ static int32_t ARM_CAN_MessageSend(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
     }
 
     /* Returns error if the payload size not equal to src buffer size*/
-    if((msg_info->dlc > 15U) || (size != canfd_dlc_to_payload_map[msg_info->dlc]))
+    if(size != canfd_dlc_to_payload_map[msg_info->dlc])
     {
         return ARM_DRIVER_ERROR_PARAMETER;
     }
 
     /* Returns error if data message length is greater than 8 bytes
      * when its a classical can data or fd mode is disabled */
-    if((size > 0x8U) && ((msg_info->edl == 0x0U) || (canfd_in_fd_mode() == false)))
+    if((size > 0x8U) && ((msg_info->edl == 0x0U) ||
+       (canfd_in_fd_mode() == false)))
     {
         return ARM_DRIVER_ERROR_PARAMETER;
     }
@@ -860,7 +875,8 @@ static int32_t ARM_CAN_MessageSend(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
     CANFD->data_transfer.tx_header.frame_type   = (msg_info->id  >> ARM_CAN_ID_IDE_Pos);
     if(CANFD->data_transfer.tx_header.frame_type)
     {
-        CANFD->data_transfer.tx_header.id       = (ARM_CAN_EXTENDED_ID(msg_info->id) & (~ARM_CAN_ID_IDE_Msk));
+        CANFD->data_transfer.tx_header.id       = (ARM_CAN_EXTENDED_ID(msg_info->id)
+                                                   & (~ARM_CAN_ID_IDE_Msk));
     }
     else
     {
@@ -929,7 +945,8 @@ static int32_t ARM_CAN_MessageRead(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
     canfd_receive(CANFD->regs, &CANFD->data_transfer);
 
     msg_info->id                    = (CANFD->data_transfer.rx_header.id |
-                                      (CANFD->data_transfer.rx_header.frame_type << ARM_CAN_ID_IDE_Pos));
+                                      (CANFD->data_transfer.rx_header.frame_type
+                                       << ARM_CAN_ID_IDE_Pos));
     msg_info->rtr                   = CANFD->data_transfer.rx_header.rtr;
     msg_info->edl                   = CANFD->data_transfer.rx_header.edl;
     msg_info->brs                   = CANFD->data_transfer.rx_header.brs;
@@ -944,7 +961,8 @@ static int32_t ARM_CAN_MessageRead(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
 
 /**
  * @fn      int32_t ARM_CAN_Control(CANFD_RESOURCES* CANFD,
- *                  uint32_t control, uint32_t arg)
+ *                                  uint32_t control,
+ *                                  uint32_t arg)
  * @brief   Controls CANFD nodes' operation
  * @note    none.
  * @param   CANFD   : Pointer to canfd resources structure.
@@ -952,7 +970,9 @@ static int32_t ARM_CAN_MessageRead(CANFD_RESOURCES* CANFD, uint32_t obj_idx,
  * @param   arg     : Argument for control operation
  * @return  \ref execution_status
  */
-static int32_t ARM_CAN_Control(CANFD_RESOURCES* CANFD, uint32_t control, uint32_t arg)
+static int32_t ARM_CAN_Control(CANFD_RESOURCES* CANFD,
+                               uint32_t control,
+                               uint32_t arg)
 {
     if(CANFD->state.powered == 0x0U)
     {
@@ -1098,7 +1118,8 @@ void CANFD_IRQHandler(void)
     if (irq_event & CANFD_RBUF_OVERRUN_EVENT)
     {
         /* If the Rbuf is overrun then performs below operation */
-        CANFD_RES.cb_obj_event(CANFD_RES.objs[ARM_CAN_OBJ_RX - 0x1U].obj_id, ARM_CAN_EVENT_RECEIVE_OVERRUN);
+        CANFD_RES.cb_obj_event(CANFD_RES.objs[ARM_CAN_OBJ_RX - 0x1U].obj_id,
+                               ARM_CAN_EVENT_RECEIVE_OVERRUN);
         irq_event = (CANFD_RBUF_OVERRUN_EVENT    |
                      CANFD_RBUF_FULL_EVENT       |
                      CANFD_RBUF_ALMOST_FULL_EVENT|
@@ -1107,7 +1128,8 @@ void CANFD_IRQHandler(void)
     else if(irq_event & CANFD_RBUF_AVAILABLE_EVENT)
     {
         /* If the Rx msg available then performs below operation */
-        CANFD_RES.cb_obj_event(CANFD_RES.objs[ARM_CAN_OBJ_RX - 0x1U].obj_id, ARM_CAN_EVENT_RECEIVE);
+        CANFD_RES.cb_obj_event(CANFD_RES.objs[ARM_CAN_OBJ_RX - 0x1U].obj_id,
+                               ARM_CAN_EVENT_RECEIVE);
         irq_event = (CANFD_RBUF_AVAILABLE_EVENT  |
                      CANFD_RBUF_FULL_EVENT       |
                      CANFD_RBUF_ALMOST_FULL_EVENT);
@@ -1116,7 +1138,8 @@ void CANFD_IRQHandler(void)
     {
         /* If the Tx interrupt is occurred then performs below operation */
         CANFD_RES.state.tx_busy = false;
-        CANFD_RES.cb_obj_event(CANFD_RES.objs[ARM_CAN_OBJ_TX - 0x1U].obj_id, ARM_CAN_EVENT_SEND_COMPLETE);
+        CANFD_RES.cb_obj_event(CANFD_RES.objs[ARM_CAN_OBJ_TX - 0x1U].obj_id,
+                               ARM_CAN_EVENT_SEND_COMPLETE);
         irq_event = CANFD_TX_COMPLETE_EVENT;
     }
 
@@ -1178,3 +1201,4 @@ ARM_DRIVER_CAN Driver_CANFD = {
         ARM_CANx_Control,
         ARM_CANx_GetStatus,
 };
+

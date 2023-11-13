@@ -134,16 +134,6 @@ static int32_t DSI_Initialize (ARM_MIPI_DSI_SignalEvent_t cb_event,
         return ARM_DRIVER_ERROR_PARAMETER;
     }
 
-    /* Check cdc pixel format and dsi color coding related informations */
-    if(!((RTE_CDC200_PIXEL_FORMAT == CDC_PIXEL_FORMAT_RGB565 &&
-       dsi_info->color_coding == DSI_COLOR_CODING_16_BIT) ||
-       (RTE_CDC200_PIXEL_FORMAT == CDC_PIXEL_FORMAT_RGB888) ||
-       (RTE_CDC200_PIXEL_FORMAT == CDC_PIXEL_FORMAT_ARGB8888) ||
-       (RTE_CDC200_PIXEL_FORMAT == CDC_PIXEL_FORMAT_RGBA8888)))
-    {
-        return ARM_DRIVER_ERROR_PARAMETER;
-    }
-
     /* LCD Manufacturer provides the Frame timing values
      *     HTOTAL = WIDTH + HSYNC + HFP + HBP
      *     VTOTAL = HEIGHT + VSYNC + VFP + VBP

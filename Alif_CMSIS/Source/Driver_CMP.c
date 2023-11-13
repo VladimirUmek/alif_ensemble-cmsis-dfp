@@ -474,7 +474,7 @@ static int32_t CMP0_Stop(void)
  */
 void CMP0_IRQHandler(void)
 {
-    return CMP_IRQ_handler(&HSCMP0);
+    CMP_IRQ_handler(&HSCMP0);
 }
 
 extern ARM_DRIVER_CMP Driver_CMP0;
@@ -578,7 +578,7 @@ static int32_t CMP1_Stop(void)
  */
 void CMP1_IRQHandler (void)
 {
-    return CMP_IRQ_handler(&HSCMP1);
+    CMP_IRQ_handler(&HSCMP1);
 }
 
 extern ARM_DRIVER_CMP Driver_CMP1;
@@ -682,7 +682,7 @@ static int32_t CMP2_Stop(void)
  */
 void CMP2_IRQHandler(void)
 {
-    return CMP_IRQ_handler(&HSCMP2);
+    CMP_IRQ_handler(&HSCMP2);
 }
 
 extern ARM_DRIVER_CMP Driver_CMP2;
@@ -786,7 +786,7 @@ static int32_t CMP3_Stop(void)
  */
 void CMP3_IRQHandler(void)
 {
-    return CMP_IRQ_handler(&HSCMP3);
+    CMP_IRQ_handler(&HSCMP3);
 }
 
 extern ARM_DRIVER_CMP Driver_CMP3;
@@ -811,7 +811,7 @@ ARM_DRIVER_CMP Driver_CMP3 =
 static CMP_RESOURCES LPCMP = {
     .cb_event           = NULL,
     .drv_instance       = CMP_INSTANCE_LP,
-    .state              = 0,
+    .state              = {0},
     .irq_num            = (IRQn_Type)LPCMP_IRQ_IRQn,
     .config             = (RTE_LPCMP_SEL_POSITIVE << 25)      |
                           (RTE_LPCMP_SEL_NEGATIVE << 27)      |
@@ -860,6 +860,8 @@ static int32_t LPCMP_PowerControl(ARM_POWER_STATE state)
  */
 static int32_t LPCMP_Control(uint32_t control, uint32_t arg)
 {
+    ARG_UNUSED(control);
+    ARG_UNUSED(arg);
     return ARM_DRIVER_ERROR;
 }
 
@@ -889,7 +891,7 @@ static int32_t LPCMP_Stop(void)
  */
 void LPCMP_IRQHandler(void)
 {
-    return CMP_IRQ_handler(&LPCMP);
+    CMP_IRQ_handler(&LPCMP);
 }
 
 extern ARM_DRIVER_CMP Driver_LPCMP;

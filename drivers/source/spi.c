@@ -761,7 +761,7 @@ void spi_irq_handler(SPI_Type *spi, spi_transfer_t *transfer)
             {
                 *((uint32_t *) transfer->rx_buff) = spi->SPI_DR[0];
 
-                transfer->rx_buff += sizeof(uint32_t);
+                transfer->rx_buff = ((uint32_t *)transfer->rx_buff) + 1U;
                 transfer->rx_current_cnt++;
             }
         }
@@ -771,7 +771,7 @@ void spi_irq_handler(SPI_Type *spi, spi_transfer_t *transfer)
             {
                 *((uint16_t *) transfer->rx_buff) = (uint16_t) (spi->SPI_DR[0]);
 
-                transfer->rx_buff += sizeof(uint16_t);
+                transfer->rx_buff = ((uint16_t *)transfer->rx_buff) + 1U;
                 transfer->rx_current_cnt++;
             }
         }
@@ -781,7 +781,7 @@ void spi_irq_handler(SPI_Type *spi, spi_transfer_t *transfer)
             {
                 *((uint8_t *) transfer->rx_buff) = (uint8_t) (spi->SPI_DR[0]);
 
-                transfer->rx_buff += sizeof(uint8_t);
+                transfer->rx_buff = ((uint8_t *)transfer->rx_buff) + 1U;
                 transfer->rx_current_cnt++;
             }
         }

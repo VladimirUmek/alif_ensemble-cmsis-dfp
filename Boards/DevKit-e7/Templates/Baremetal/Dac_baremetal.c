@@ -56,11 +56,11 @@ static ARM_DRIVER_DAC *DACdrv = &Driver_DAC0;
 #define SUCCESS   0
 
 /**
- * @fn          void dac_pinmux_config(void)
+ * @fn          int32_t dac_pinmux_config(void)
  * @brief       Initialize the pinmux for DAC output
  * @return      status
 */
-int32_t dac_pinmux_config(void)
+static int32_t dac_pinmux_config(void)
 {
     int32_t status;
 
@@ -77,8 +77,6 @@ int32_t dac_pinmux_config(void)
     return SUCCESS;
 }
 
-void dac_demo();
-
 /**
  @fn           void dac_demo()
  @brief        DAC demo :
@@ -91,7 +89,7 @@ void dac_demo();
                than the maximum dac input value then input value will be incremented by 1000.
  @return       none
 */
-void dac_demo()
+static void dac_demo(void)
 {
     uint32_t input_value = 0;
     int32_t  ret         = 0;
@@ -127,7 +125,7 @@ void dac_demo()
     ret = DACdrv->Start();
     if(ret != ARM_DRIVER_OK){
         printf("\r\n Error: DAC Start failed\n");
-        goto error_uninitialize;
+        goto error_poweroff;
     }
 
     input_value = 0;

@@ -118,17 +118,13 @@ static int32_t CDC200_Init (ARM_CDC200_SignalEvent_t cb_event,
 
     /*Error checking on timing parameters*/
     if(((display_panel->hsync_time + display_panel->hbp_time +
-       display_panel->hactive_time + display_panel->hfp_time - 1) < 0) ||
-       ((display_panel->hsync_time + display_panel->hbp_time +
-       display_panel->hactive_time + display_panel->hfp_time - 1) > 0xFFFF))
+       display_panel->hactive_time + display_panel->hfp_time - 1) > 0xFFFFU))
     {
          return ARM_DRIVER_ERROR_PARAMETER;
      }
 
     if(((display_panel->vsync_line + display_panel->vbp_line +
-       display_panel->vactive_line + display_panel->vfp_line - 1) < 0) ||
-       ((display_panel->vsync_line + display_panel->vbp_line +
-       display_panel->vactive_line + display_panel->vfp_line - 1) > 0xFFFF))
+       display_panel->vactive_line + display_panel->vfp_line - 1) > 0xFFFFU))
     {
         return ARM_DRIVER_ERROR_PARAMETER;
     }

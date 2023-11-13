@@ -23,10 +23,10 @@ static void i2c_set_scl_cnt(I2C_Type *i2c,uint32_t clk_khz, uint8_t speed_mode)
   uint32_t clk_ns;
   clk_ns = 1000000 / clk_khz;
 
-  uint32_t standard_speed_scl_hcnt;       /* value for I2C_SS_SCL_HCNT */
-  uint32_t standard_speed_scl_lcnt;       /* value for ic_ss_scl_lcnt */
-  uint32_t fast_speed_scl_hcnt;           /* value for ic_fs_scl_hcnt */
-  uint32_t fast_speed_scl_lcnt;           /* value for I2C_FS_SCL_LCNT */
+  uint32_t standard_speed_scl_hcnt = 0;       /* value for I2C_SS_SCL_HCNT */
+  uint32_t standard_speed_scl_lcnt = 0;       /* value for ic_ss_scl_lcnt */
+  uint32_t fast_speed_scl_hcnt = 0;           /* value for ic_fs_scl_hcnt */
+  uint32_t fast_speed_scl_lcnt = 0;           /* value for I2C_FS_SCL_LCNT */
 
   if (clk_khz <= 1000000) {
     if (speed_mode == I2C_SPEED_STANDARD)
@@ -846,7 +846,6 @@ void i2c_slave_tx_isr(I2C_Type *i2c, i2c_transfer_info_t *transfer)
  */
 void i2c_slave_rx_isr(I2C_Type *i2c, i2c_transfer_info_t *transfer)
 {
-    static uint8_t iter = 0;
     uint32_t i2c_int_status;
 
     i2c_int_status = (i2c->I2C_INTR_STAT);

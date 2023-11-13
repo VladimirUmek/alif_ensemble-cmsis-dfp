@@ -127,6 +127,7 @@ SD_CARD_STATE sd_state(sd_handle_t *);
 SD_DRV_STATUS sd_init(uint8_t, uint8_t, uint8_t);
 SD_DRV_STATUS sd_uninit(uint8_t);
 SD_DRV_STATUS sd_io_init(sd_handle_t *);
+SD_DRV_STATUS sdio_read_cia(uint8_t *pcia, uint8_t fn, uint8_t offset);
 SD_DRV_STATUS sd_host_init(sd_handle_t *, uint8_t, uint8_t);
 SD_DRV_STATUS sd_card_init(sd_handle_t *);
 SD_DRV_STATUS sd_write(uint32_t, uint32_t, volatile unsigned char *);

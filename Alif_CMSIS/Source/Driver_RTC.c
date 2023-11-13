@@ -166,6 +166,13 @@ static int32_t LPRTC_PowerControl (LPRTC_RESOURCES *LPRTC_RES, ARM_POWER_STATE s
             /* Set the IRQ priority */
             NVIC_SetPriority (LPRTC_RES->irq_num, LPRTC_RES->irq_priority);
 
+            /* Enable LPRTC IRQ*/
+            NVIC_ClearPendingIRQ (LPRTC_RES->irq_num);
+            NVIC_EnableIRQ (LPRTC_RES->irq_num);
+
+            /* Unmask Interrupt. */
+            lprtc_interrupt_unmask (LPRTC_RES->regs);
+
             /* Set the power state enabled */
             LPRTC_RES->state.powered = 1;
             break;
@@ -248,11 +255,7 @@ static int32_t LPRTC_Control (LPRTC_RESOURCES *LPRTC_RES, uint32_t control, uint
             lprtc_load_counter_match_register (LPRTC_RES->regs, arg);
 
             /* Enable LPRTC IRQ*/
-            NVIC_ClearPendingIRQ (LPRTC_RES->irq_num);
             NVIC_EnableIRQ (LPRTC_RES->irq_num);
-
-            /* Unmask Interrupt. */
-            lprtc_interrupt_unmask (LPRTC_RES->regs);
 
             /* set lprtc alarm state. */
             LPRTC_RES->state.alarm = 1;
@@ -323,9 +326,6 @@ static int32_t LPRTC_LoadCounter (LPRTC_RESOURCES *LPRTC_RES, uint32_t loadvalue
 static void RTC_IRQHandler (LPRTC_RESOURCES *LPRTC_RES)
 {
     uint32_t event = 0U;    /* callback event */
-
-    /* mask the interrupt */
-    lprtc_interrupt_mask (LPRTC_RES->regs);
 
     /* Acknowledge the interrupt */
     lprtc_interrupt_ack (LPRTC_RES->regs);

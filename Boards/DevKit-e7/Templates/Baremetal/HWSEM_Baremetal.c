@@ -105,6 +105,8 @@ static void myUART_callback(uint32_t event)
  */
 static void myHWSEM_callback(int32_t event, uint8_t sem_id)
 {
+    (void) sem_id;
+
     if (event & HWSEM_AVAILABLE_CB_EVENT)
     {
         /* HWSEM available */

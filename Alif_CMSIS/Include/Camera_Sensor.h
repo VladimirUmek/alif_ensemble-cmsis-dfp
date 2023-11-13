@@ -82,7 +82,7 @@ typedef struct _CSI_INFO {
     uint32_t                frequency;                /* CSI clock frequency */
     CSI_DATA_TYPE           dt;                       /* CSI data type */
     DPHY_CLK_MODE           clk_mode;                 /* CSI Clock mode */
-    CSI_N_LANES             n_lanes;                  /* CSI number of data lanes */
+    uint8_t                 n_lanes;                  /* CSI number of data lanes */
     CSI_VC_ID               vc_id;                    /* CSI virtual channel ID */
     CSI_OVERRIDE_CPI_COLOR  cpi_cfg;                  /* CSI override CPI color mode */
 } CSI_INFO;

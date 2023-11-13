@@ -61,6 +61,24 @@ extern "C" {
 #define CRYPTOCELL_ERROR_INVALID_KEY_TYPE          0xFFFFFFFDul
 #define CRYPTOCELL_ERROR_INVALID_SEND_DIRECTION    0xFFFFFFFCul
 
+/**
+ * Clocks services error codes
+ */
+#define PLL_SUCCESS                                0x0
+#define PLL_ERROR_INVALID_PARAMETER                0x200
+#define PLL_ERROR_PLL_NOT_RUNNING                  0x201
+#define PLL_ERROR_PLL_ALREADY_RUNNING              0x202
+#define PLL_ERROR_XTAL_NOT_RUNNING                 0x203
+#define PLL_ERROR_XTAL_ALREADY_RUNNING             0x204
+
+/**
+ * Boot services error codes (returned by SERVICES_boot_process_toc_entry())
+ */
+#define BOOT_OK                                    0x00 // BL_STATUS_OK
+#define BOOT_ERROR_INVALID_TOC                     0x12 // BL_ERROR_INVALID_TOC
+#define BOOT_ERROR_INVALID_TOC_ENTRY_ID            0x15 // BL_ERROR_INVALID_TOC_ENTRY_ID
+#define BOOT_ERROR_INVALID_TOC_CPU_ID              0x16 // BL_ERROR_INVALID_TOC_CPU_ID
+
 
 
 /**
@@ -84,7 +102,7 @@ extern "C" {
 #define OTP_OSPI_KEY_OSPI1                         0x64
 #define OSPI_KEY_LENGTH_BYTES                      16
 
-#define SERVICES_MAX_PACKET_BUFFER_SIZE            2048
+#define SERVICES_MAX_PACKET_BUFFER_SIZE            600
 
 /**
  * MBED TLS

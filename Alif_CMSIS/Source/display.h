@@ -56,7 +56,7 @@ typedef struct _CDC_INFO
 typedef struct _DSI_INFO
 {
     uint32_t            max_bitrate;        /* Maximum bitrate Panel supports */
-    DSI_N_LANES         n_lanes;            /* Number of lanes */
+    uint8_t             n_lanes;            /* Number of lanes */
     DSI_VC_ID           vc_id;              /* Virtual channel ID */
     DPHY_CLK_MODE       clk_mode;           /* DSI DPHY clock mode */
     DSI_COLOR_CODING    color_coding;       /* color coding */

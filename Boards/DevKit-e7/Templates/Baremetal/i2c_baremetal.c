@@ -51,8 +51,8 @@ static ARM_DRIVER_I2C *I2C_MstDrv = &Driver_I2C1;
 extern ARM_DRIVER_I2C Driver_I2C0;
 static ARM_DRIVER_I2C *I2C_SlvDrv = &Driver_I2C0;
 
-volatile uint32_t mst_cb_status = 0;
-volatile uint32_t slv_cb_status = 0;
+static volatile uint32_t mst_cb_status = 0;
+static volatile uint32_t slv_cb_status = 0;
 
 #if (ADDRESS_MODE == ADDRESS_MODE_10BIT)
     #define TAR_ADDRS       (0X2D0)  /* 10 bit Target(Slave) Address, use by Master */
@@ -74,13 +74,13 @@ volatile uint32_t slv_cb_status = 0;
 /* Master parameter set */
 
 /* Master TX Data (Any random value). */
-uint8_t MST_TX_BUF[MST_BYTE_TO_TRANSMIT] =
+static uint8_t MST_TX_BUF[MST_BYTE_TO_TRANSMIT] =
 {
     "!*!Test Message from Master!*!"
 };
 
 /* master receive buffer */
-uint8_t MST_RX_BUF[SLV_BYTE_TO_TRANSMIT];
+static uint8_t MST_RX_BUF[SLV_BYTE_TO_TRANSMIT];
 
 /* Master parameter set END  */
 
@@ -88,10 +88,10 @@ uint8_t MST_RX_BUF[SLV_BYTE_TO_TRANSMIT];
 /* Slave parameter set */
 
 /* slave receive buffer */
-uint8_t SLV_RX_BUF[MST_BYTE_TO_TRANSMIT];
+static uint8_t SLV_RX_BUF[MST_BYTE_TO_TRANSMIT];
 
 /* Slave TX Data (Any random value). */
-uint8_t SLV_TX_BUF[SLV_BYTE_TO_TRANSMIT] =
+static uint8_t SLV_TX_BUF[SLV_BYTE_TO_TRANSMIT] =
 {
     "!*!Test Message from Slave!*!"
 };
@@ -116,7 +116,8 @@ static void i2c_slv_conversion_callback(uint32_t event)
 }
 
 /* Pinmux for B0 */
-void hardware_init()
+extern void hardware_init(void);
+void hardware_init(void)
 {
     /* I2C0_SDA_A */
     pinconf_set(PORT_0, PIN_2, PINMUX_ALTERNATE_FUNCTION_3,
@@ -135,12 +136,11 @@ void hardware_init()
          (PADCTRL_READ_ENABLE | PADCTRL_DRIVER_DISABLED_PULL_UP));
 }
 
-void I2C_demo()
+extern void I2C_demo(void);
+void I2C_demo(void)
 {
-    unsigned long events   = 0;
     int   ret      = 0;
     ARM_DRIVER_VERSION version;
-    ARM_I2C_CAPABILITIES capabilities;
 
     printf("\r\n >>> I2C demo starting up!!! <<< \r\n");
 
@@ -187,7 +187,7 @@ void I2C_demo()
     if (ret != ARM_DRIVER_OK)
     {
         printf("\r\n Error: I2C master control failed\n");
-        goto error_uninitialize;
+        goto error_poweroff;
     }
 
     /* I2C Slave Control */

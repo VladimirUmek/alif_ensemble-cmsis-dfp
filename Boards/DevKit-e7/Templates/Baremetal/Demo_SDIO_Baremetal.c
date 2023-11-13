@@ -49,9 +49,6 @@ const diskio_t  *p_SD_Driver = &SD_Driver;
 */
 void BareMetalSDIOTest(){
 
-    int j;
-    uint32_t *p = (uint32_t *)sdbuffer;
-
     /* SD Clock and Board Pin mux Configurations */
     pinconf_set(PORT_7, PIN_0, PINMUX_ALTERNATE_FUNCTION_6, PADCTRL_READ_ENABLE); //cmd
     pinconf_set(PORT_7, PIN_1, PINMUX_ALTERNATE_FUNCTION_6, PADCTRL_READ_ENABLE); //clk
@@ -74,7 +71,7 @@ void BareMetalSDIOTest(){
     }
 
     for(int i=0x0; i<0x1000; i++){
-        sdio_read_cia(&sdbuffer[i], 0, i); //cccr
+        sdio_read_cia((uint8_t *)&sdbuffer[i], 0, i); //cccr
         printf("0x%x: 0x%x\n",i,sdbuffer[i]);
     }
 

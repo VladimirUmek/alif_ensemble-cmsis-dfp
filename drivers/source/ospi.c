@@ -489,7 +489,7 @@ void ospi_irq_handler(OSPI_Type *ospi, ospi_transfer_t *transfer)
             {
                 *((uint32_t *) transfer->rx_buff) = ospi->OSPI_DR0;
 
-                transfer->rx_buff += sizeof(uint32_t);
+                transfer->rx_buff = (uint8_t *) transfer->rx_buff + sizeof(uint32_t);
                 transfer->rx_current_cnt++;
             }
         }
@@ -499,7 +499,7 @@ void ospi_irq_handler(OSPI_Type *ospi, ospi_transfer_t *transfer)
             {
                 *((uint16_t *) transfer->rx_buff) = (uint16_t) (ospi->OSPI_DR0);
 
-                transfer->rx_buff += sizeof(uint16_t);
+                transfer->rx_buff = (uint8_t *) transfer->rx_buff + sizeof(uint16_t);
                 transfer->rx_current_cnt++;
             }
         }
@@ -515,14 +515,14 @@ void ospi_irq_handler(OSPI_Type *ospi, ospi_transfer_t *transfer)
                 uint32_t val = ospi->OSPI_DR0;
 
                 *((uint8_t *) transfer->rx_buff) = (uint8_t) ((val >> 8) & 0xff);
-                transfer->rx_buff += sizeof(uint8_t);
+                transfer->rx_buff = (uint8_t *) transfer->rx_buff + sizeof(uint8_t);
                 transfer->rx_current_cnt++;
 
                 if (transfer->rx_current_cnt == transfer->rx_total_cnt)
                     break;
 
                 *((uint8_t *) transfer->rx_buff) = (uint8_t) (val & 0xff);
-                transfer->rx_buff += sizeof(uint8_t);
+                transfer->rx_buff = (uint8_t *) transfer->rx_buff + sizeof(uint8_t);
                 transfer->rx_current_cnt++;
             }
         }

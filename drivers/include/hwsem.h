@@ -64,12 +64,12 @@ static inline void hwsem_release(HWSEM_Type *hwsem, uint32_t master_id)
 }
 
 /**
-  \fn          static void hwsem_reset(HWSEM_Type *hwsem)
+  \fn          static inline void hwsem_reset(HWSEM_Type *hwsem)
   \brief       Reset a hwsem instance.
   \param[in]   hwsem     Pointer to the HWSEM register map
   \return      none
 */
-static void hwsem_reset(HWSEM_Type *hwsem)
+static inline void hwsem_reset(HWSEM_Type *hwsem)
 {
     hwsem->HWSEM_RST_REG = 0x1U;
 }
