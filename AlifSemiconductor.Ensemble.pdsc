@@ -886,21 +886,21 @@
     <condition id="Retarget IO STDIN">
       <description>Requirement for Retarget IO STDIN</description>
       <require condition="Ensemble CMSIS_Driver"/>
-      <require Cclass="Device" Cgroup="SOC Peripherals" Csub="USART"/>
+      <require Cclass="CMSIS Driver" Cgroup="USART"/>
       <require Cclass="CMSIS-Compiler" Cgroup="STDIN" Csub="Custom"/>
     </condition>
 
     <condition id="Retarget IO STDOUT">
       <description>Requirement for Retarget IO STDOUT</description>
       <require condition="Ensemble CMSIS_Driver"/>
-      <require Cclass="Device" Cgroup="SOC Peripherals" Csub="USART"/>
+      <require Cclass="CMSIS Driver" Cgroup="USART"/>
       <require Cclass="CMSIS-Compiler" Cgroup="STDOUT" Csub="Custom"/>
     </condition>
 
     <condition id="Retarget IO STDERR">
       <description>Requirement for Retarget IO STDERR</description>
       <require condition="Ensemble CMSIS_Driver"/>
-      <require Cclass="Device" Cgroup="SOC Peripherals" Csub="USART"/>
+      <require Cclass="CMSIS Driver" Cgroup="USART"/>
       <require Cclass="CMSIS-Compiler" Cgroup="STDERR" Csub="Custom"/>
     </condition>
 
@@ -1176,17 +1176,17 @@
 <!-- Add HE CM55 ENDS -->
 
 <!-- Driver components  -->
-    <component Cclass="Device" Cgroup="SOC Peripherals" Csub="USART" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
+    <component Cclass="CMSIS Driver" Cgroup="USART" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
       <description>UART Driver for Alif Semiconductor SOC</description>
       <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
-		#define RTE_Drivers_USART0   1           /* Driver UART0 */
+        #define RTE_Drivers_USART0   1           /* Driver UART0 */
         #define RTE_Drivers_USART1   1           /* Driver UART1 */
-	    #define RTE_Drivers_USART2   1           /* Driver UART2 */
-	    #define RTE_Drivers_USART3   1           /* Driver UART3 */
-	    #define RTE_Drivers_USART4   1           /* Driver UART4 */
-	    #define RTE_Drivers_USART5   1           /* Driver UART5 */
-	    #define RTE_Drivers_USART6   1           /* Driver UART6 */
-	    #define RTE_Drivers_USART7   1           /* Driver UART7 */
+        #define RTE_Drivers_USART2   1           /* Driver UART2 */
+        #define RTE_Drivers_USART3   1           /* Driver UART3 */
+        #define RTE_Drivers_USART4   1           /* Driver UART4 */
+        #define RTE_Drivers_USART5   1           /* Driver UART5 */
+        #define RTE_Drivers_USART6   1           /* Driver UART6 */
+        #define RTE_Drivers_USART7   1           /* Driver UART7 */
       </RTE_Components_h>
       <files>
         <file category="source" name="Alif_CMSIS/Source/Driver_USART.c"/>
@@ -1198,7 +1198,7 @@
       </files>
     </component>
 
-   <component Cclass="Device" Cgroup="SOC Peripherals" Csub="I2S" Cversion="1.1.0" condition="I2S Driver">
+   <component Cclass="CMSIS Driver" Cgroup="SAI" Cversion="1.1.0" condition="I2S Driver">
      <description>I2S Driver for Alif Semiconductor SOC</description>
      <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
         #define RTE_Drivers_SAI   1           /* Driver SAI */
@@ -1213,7 +1213,7 @@
      </files>
    </component>
 
-   <component Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
+   <component Cclass="CMSIS Driver" Cgroup="I2C" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
      <description>I2C Driver for Alif Semiconductor SOC</description>
      <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
         #define RTE_Drivers_I2C   1           /* Driver I2C */
@@ -1221,20 +1221,20 @@
      <files>
        <file category="source" name="Alif_CMSIS/Source/Driver_I2C.c"/>
        <file category="header" name="Alif_CMSIS/Source/Driver_I2C_Private.h"/>
-	   <file category="header" name="Alif_CMSIS/Include/Driver_I2C.h"/>
-	   <file category="source" name="drivers/source/i2c.c"/>
-	   <file category="header" name="drivers/include/i2c.h"/>
+       <file category="header" name="Alif_CMSIS/Include/Driver_I2C.h"/>
+       <file category="source" name="drivers/source/i2c.c"/>
+       <file category="header" name="drivers/include/i2c.h"/>
      </files>
    </component>
 
-   <component Cclass="Device" Cgroup="SOC Peripherals" Csub="LPI2C" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
+   <component Cclass="CMSIS Driver" Cgroup="I2C" Csub="LPI2C" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
      <description>LPI2C Driver for Alif Semiconductor SOC</description>
      <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
         #define RTE_Drivers_LPI2C   1           /* Driver LPI2C */
      </RTE_Components_h>
      <files>
        <file category="source" name="Alif_CMSIS/Source/Driver_LPI2C.c"/>
-       <file category="header" name="	Alif_CMSIS/Source/Driver_LPI2C_Private.h"/>
+       <file category="header" name="Alif_CMSIS/Source/Driver_LPI2C_Private.h"/>
        <file category="header" name="drivers/include/lpi2c.h"/>
        <file category="source" name="drivers/source/lpi2c.c"/>
      </files>
@@ -1251,7 +1251,7 @@
      </files>
    </component>
 
-   <component Cclass="Device" Cgroup="SOC Peripherals" Csub="Ethernet MAC" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
+   <component Cclass="CMSIS Driver" Cgroup="Ethernet MAC" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
      <description>Ethernet MAC driver for Alif Semiconductor SOC</description>
      <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
         #define RTE_Drivers_ETH_MAC           /* Driver ETH MAC */
@@ -1359,13 +1359,12 @@
       </files>
     </component>
 
-    <component Cclass="Device" Cgroup="SOC Peripherals" Csub="SPI" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
+    <component Cclass="CMSIS Driver" Cgroup="SPI" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
       <description>SPI Driver for Alif Semiconductor SOC</description>
       <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
         #define RTE_Drivers_SPI   1           /* Driver SPI */
       </RTE_Components_h>
       <files>
-	    <file category="header" name="Alif_CMSIS/Include/Driver_SPI.h"/>
         <file category="source" name="Alif_CMSIS/Source/Driver_SPI.c"/>
         <file category="header" name="Alif_CMSIS/Source/Driver_SPI_Private.h"/>
 		<file category="header" name="drivers/include/spi.h"/>
@@ -1644,13 +1643,12 @@
       </files>
     </component>
 
-    <component Cclass="Device" Cgroup="SOC Peripherals" Csub="CAN-FD" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
+    <component Cclass="CMSIS Driver" Cgroup="CAN" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
       <description>CAN-FD Driver for Alif Semiconductor SOC</description>
       <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
         #define RTE_Drivers_CANFD   1           /* Driver CAN-FD */
       </RTE_Components_h>
       <files>
-        <file category="header" name="Alif_CMSIS/Include/Driver_CAN.h"/>
         <file category="header" name="Alif_CMSIS/Source/CANFD_Private.h"/>
         <file category="source" name="Alif_CMSIS/Source/Driver_CAN.c"/>
         <file category="header" name="drivers/include/canfd.h"/>
