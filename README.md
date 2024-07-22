@@ -21,7 +21,7 @@
       SPI          | SPI
   - see [commit](https://github.com/VladimirUmek/alif_ensemble-cmsis-dfp/commit/c69f2c3b8bd99402dc75e3a92e514d7366c5048d)
 
-### - Added GPIO driver using CMSIS Driver API specification
+### - Added GPIO driver using CMSIS Driver API specification (also branch: cmsis_driver_gpio)
   - GPIO driver using Alif defined API was removed
   - extension that would cover functionality gap between CMSIS and Alif API is not yet implemented
   - see [commit](https://github.com/VladimirUmek/alif_ensemble-cmsis-dfp/commit/5b2799267d27ebffa2ba6d96270ecb223fcfe821)
