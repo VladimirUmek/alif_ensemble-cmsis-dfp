@@ -1190,14 +1190,14 @@
     <component Cclass="CMSIS Driver" Cgroup="USART" Cversion="1.1.0" condition="Ensemble CMSIS_Driver">
       <description>UART Driver for Alif Semiconductor SOC</description>
       <RTE_Components_h>  <!-- the following content goes into file 'RTE_Components.h' -->
-        #define RTE_Drivers_USART0   1           /* Driver UART0 */
+		#define RTE_Drivers_USART0   1           /* Driver UART0 */
         #define RTE_Drivers_USART1   1           /* Driver UART1 */
-        #define RTE_Drivers_USART2   1           /* Driver UART2 */
-        #define RTE_Drivers_USART3   1           /* Driver UART3 */
-        #define RTE_Drivers_USART4   1           /* Driver UART4 */
-        #define RTE_Drivers_USART5   1           /* Driver UART5 */
-        #define RTE_Drivers_USART6   1           /* Driver UART6 */
-        #define RTE_Drivers_USART7   1           /* Driver UART7 */
+	    #define RTE_Drivers_USART2   1           /* Driver UART2 */
+	    #define RTE_Drivers_USART3   1           /* Driver UART3 */
+	    #define RTE_Drivers_USART4   1           /* Driver UART4 */
+	    #define RTE_Drivers_USART5   1           /* Driver UART5 */
+	    #define RTE_Drivers_USART6   1           /* Driver UART6 */
+	    #define RTE_Drivers_USART7   1           /* Driver UART7 */
       </RTE_Components_h>
       <files>
         <file category="source" name="Alif_CMSIS/Source/Driver_USART.c"/>
@@ -1205,7 +1205,6 @@
 		<file category="header" name="drivers/include/uart.h"/>
 		<file category="header" name="drivers/include/sys_ctrl_uart.h"/>
 	    <file category="header" name="Alif_CMSIS/Source/Driver_USART_Private.h"/>
-        <file category="header" name="Alif_CMSIS/Include/Driver_USART.h"/>
       </files>
     </component>
 
@@ -1232,9 +1231,8 @@
      <files>
        <file category="source" name="Alif_CMSIS/Source/Driver_I2C.c"/>
        <file category="header" name="Alif_CMSIS/Source/Driver_I2C_Private.h"/>
-       <file category="header" name="Alif_CMSIS/Include/Driver_I2C.h"/>
-       <file category="source" name="drivers/source/i2c.c"/>
-       <file category="header" name="drivers/include/i2c.h"/>
+	   <file category="source" name="drivers/source/i2c.c"/>
+	   <file category="header" name="drivers/include/i2c.h"/>
      </files>
    </component>
 
@@ -1245,7 +1243,7 @@
      </RTE_Components_h>
      <files>
        <file category="source" name="Alif_CMSIS/Source/Driver_LPI2C.c"/>
-       <file category="header" name="Alif_CMSIS/Source/Driver_LPI2C_Private.h"/>
+       <file category="header" name="	Alif_CMSIS/Source/Driver_LPI2C_Private.h"/>
        <file category="header" name="drivers/include/lpi2c.h"/>
        <file category="source" name="drivers/source/lpi2c.c"/>
      </files>
