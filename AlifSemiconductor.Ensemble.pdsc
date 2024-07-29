@@ -1290,9 +1290,9 @@
         #define RTE_Drivers_GPIO   1           /* Driver GPIO */
       </RTE_Components_h>
       <files>
-        <file category="source" name="Alif_CMSIS/Source/Driver_GPIO.c"/>
-        <file category="source" name="Alif_CMSIS/Source/Driver_GPIO_Private.h"/>
-	    <file category="header" name="Alif_CMSIS/Include/Driver_GPIO.h"/>
+        <file category="source" name="Alif_CMSIS/Source/Driver_IO.c"/>
+        <file category="source" name="Alif_CMSIS/Source/Driver_IO_Private.h"/>
+	    <file category="header" name="Alif_CMSIS/Include/Driver_IO.h"/>
 	    <file category="header" name="drivers/include/sys_ctrl_gpio.h"/>
       </files>
     </component>

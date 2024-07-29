@@ -551,7 +551,7 @@ static const MT9M114_REG mt9m114_speedup_awb_ae[] = {
 
 #if(RTE_MT9M114_CAMERA_SENSOR_MIPI_ENABLE)
 
-#include "Driver_GPIO.h"
+#include "Driver_IO.h"
 #include "sys_ctrl_cpi.h"
 /* MT9M114 Camera reset GPIO port */
 extern ARM_DRIVER_GPIO ARM_Driver_GPIO_(RTE_MT9M114_CAMERA_SENSOR_MIPI_RESET_GPIO_PORT);

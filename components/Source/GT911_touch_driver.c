@@ -28,7 +28,7 @@
 #include "system_utils.h"
 
 /* GPIO Driver */
-#include "Driver_GPIO.h"
+#include "Driver_IO.h"
 
 /* I2C Driver */
 #include "Driver_I2C.h"

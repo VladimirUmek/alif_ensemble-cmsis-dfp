@@ -25,7 +25,7 @@
 #include "setup_flash_xip.h"
 #include "ospi_xip_user.h"
 #include "pinconf.h"
-#include "Driver_GPIO.h"
+#include "Driver_IO.h"
 #if OSPI_XIP_ENABLE_AES_DECRYPTION
 #include "se_services_port.h"
 #include "services_lib_api.h"

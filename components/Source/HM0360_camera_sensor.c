@@ -22,7 +22,7 @@
 #include CMSIS_device_header
 #include "Camera_Sensor.h"
 #include "Camera_Sensor_i2c.h"
-#include "Driver_GPIO.h"
+#include "Driver_IO.h"
 #include "Driver_CPI.h"
 #include "sys_ctrl_cpi.h"
 

@@ -69,7 +69,7 @@ extern "C"
 #endif
 
 #if SPI_USE_MASTER_SS_SW
-#include "Driver_GPIO.h"
+#include "Driver_IO.h"
 #endif
 
 /** \brief SPI Driver states. */

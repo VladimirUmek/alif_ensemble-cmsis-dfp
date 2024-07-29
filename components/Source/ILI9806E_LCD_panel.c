@@ -27,7 +27,7 @@
 #if RTE_MIPI_DSI_ILI9806E_PANEL
 
 #include "DSI_DCS.h"
-#include "Driver_GPIO.h"
+#include "Driver_IO.h"
 #include "display.h"
 
 #if (!defined(RTE_Drivers_MIPI_DSI_ILI9806E_PANEL))
