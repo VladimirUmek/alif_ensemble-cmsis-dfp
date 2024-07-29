@@ -821,7 +821,8 @@
       <description>Requirement for GT911 Touch Driver</description>
       <require condition="Ensemble CMSIS_Driver"/>
       <require Cclass="Device" Cgroup="SOC Peripherals" Csub="GPIO"/>
-      <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C"/>
+      <!-- <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C"/> -->
+      <accept Cclass="CMSIS Driver" Cgroup="I2C"/>
       <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C_I3C"/>
       <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I3C"/>
     </condition>
@@ -855,7 +856,8 @@
       <require Cclass="Device" Cgroup="SOC Peripherals" Csub="PINCONF"/>
       <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I3C"/>
       <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C_I3C"/>
-      <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C"/>
+      <!-- <accept Cclass="Device" Cgroup="SOC Peripherals" Csub="I2C"/> -->
+      <accept Cclass="CMSIS Driver" Cgroup="I2C"/>
       <require Cclass="Device" Cgroup="SOC Peripherals" Csub="CPI"/>
       <require Cclass="Device" Cgroup="SOC Peripherals" Csub="GPIO"/>
       <require Cclass="Device" Cgroup="SOC Peripherals" Csub="MIPI CSI2"/>
