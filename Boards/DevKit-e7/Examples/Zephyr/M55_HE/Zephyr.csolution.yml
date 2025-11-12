@@ -1,6 +1,6 @@
 # A solution is a collection of related projects that share same base configuration.
 solution:
-  created-for: CMSIS-Toolbox@2.10.0
+  created-for: CMSIS-Toolbox@2.12.0
   cdefault: # use CMSIS-Toolbox default Compiler options
 
   # Compilers that can be selected
@@ -18,30 +18,41 @@ solution:
     - type: DevKit-E7
       board: Alif Semiconductor::DevKit-E7
       device: Alif Semiconductor::AE722F80F55D5LS
+      variables:
+        - west-board: alif_e7_dk_rtss
+      west-defs:
+        - SE_SERVICES: OFF
       target-set:
         - set:
           debugger:
             name: CMSIS-DAP
             protocol: swd
             clock: 10000000
-
           images:
-            # Update path to point to the correct ELF file for your project.
-            - image: path/to/.../sdk-alif-main/zephyr/build/zephyr/zephyr.elf
-            # Dummy image to avoid errors.
-            - project-context: Zephyr.Debug
+            # Update paths to point to the correct ELF files for your project.
+            - image: path/to/.../blinky/zephyr/zephyr.elf
+
+            # Dummy images to avoid errors.
+            - project-context: M55_HE.Debug
               load: none
 
   # List of different build configurations.
   build-types:
     - type: Debug
-      debug: on
-      optimize: none
-
+      west-defs:
+        - CONFIG_DEBUG: y
+        - CONFIG_DEBUG_THREAD_INFO: y
+        - CONFIG_DEBUG_OPTIMIZATIONS: y
     - type: Release
-      debug: off
-      optimize: balanced
+      west-defs:
+        - CONFIG_SIZE_OPTIMIZATIONS: y
 
   # List related projects.
   projects:
-    - project: Zephyr.cproject.yml
+    - west:
+        project-id: M55_HE
+        app-path: ./blinky
+        board: $west-board$_hp
+        device: :M55_HE
+        west-defs:
+          - RTSS_HE_MHU0: ON
