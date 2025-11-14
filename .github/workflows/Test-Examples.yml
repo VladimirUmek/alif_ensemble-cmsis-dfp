@@ -53,7 +53,7 @@ jobs:
       - name: Build Example
         working-directory: ./CI/DevKit-e7/Examples/Blinky_HE
         run: |
-          cbuild ./Blinky.csolution.yml --packs --toolchain AC6 
+          cbuild ./Blinky_HE.csolution.yml --packs --toolchain AC6 
 
       - name: Upload Artifact
         if: always()
