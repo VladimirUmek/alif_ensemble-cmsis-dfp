@@ -1,0 +1,66 @@
+name: Test-Examples   # BSP Examples
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  schedule:
+    - cron: '00 20 * * 6'
+
+jobs:
+  Test-Examples:                     # Install tools, build
+    strategy:
+      fail-fast: false
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout .ci folder
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: |
+            .ci
+
+      - name: Install tools
+        uses: ARM-software/cmsis-actions/vcpkg@v1
+        with:
+          config: "./.ci/vcpkg-configuration.json"
+
+      - name: Activate Arm tool license
+        uses: ARM-software/cmsis-actions/armlm@v1
+
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+        with:
+          path: ./DFP
+
+      - name: Initialize CMSIS pack root folder
+        run: |
+          cpackget init https://www.keil.com/pack/index.pidx
+          cpackget update-index
+
+      - name: Add local CMSIS packs
+        run: |
+          cpackget add ./DFP/AlifSemiconductor.Ensemble.pdsc
+
+      - name: Copy example to CI folder
+        working-directory: ./
+        run: |
+          mkdir -p ./CI/DevKit-e7/Examples/Blinky_HE
+          cp -a ./DFP/Boards/DevKit-e7/Examples/Blinky_HE/. ./CI/DevKit-e7/Examples/Blinky_HE/
+
+      - name: Build Example
+        working-directory: ./CI/DevKit-e7/Examples/Blinky_HE
+        run: |
+          cbuild ./Blinky.csolution.yml --packs --toolchain AC6 
+
+      - name: Upload Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: DevKit-e7/Examples/Blinky_HE
+          path: |
+            ./CI/DevKit-e7/Examples/Blinky_HE/
+            !./CI/DevKit-e7/Examples/Blinky_HE/tmp/
+          retention-days: 1
