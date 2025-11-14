@@ -55,20 +55,20 @@ jobs:
       - name: Copy example to CI folder
         working-directory: ./
         run: |
-          mkdir -p ./CI/{matrix.test.dir}
-          cp -a ./DFP/Boards/{matrix.test.dir}/. ./CI/{matrix.test.dir}
+          mkdir -p ./CI/${{ matrix.test.dir }}
+          cp -a ./DFP/Boards/${{ matrix.test.dir }}/. ./CI/${{ matrix.test.dir }}
 
       - name: Build Example
-        working-directory: ./CI/{matrix.test.dir}
+        working-directory: ./CI/${{ matrix.test.dir }}
         run: |
-          cbuild ./{matrix.test.proj}.csolution.yml --packs --toolchain {matrix.test.tool}
+          cbuild ./${{ matrix.test.proj }}.csolution.yml --packs --toolchain ${{ matrix.test.tool }}
 
       - name: Upload Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: {matrix.test.artifact}_{matrix.test.tool}
+          name: ${{ matrix.test.artifact }}_${{ matrix.test.tool }}
           path: |
-            ./CI/{matrix.test.dir}/
-            !./CI/{matrix.test.dir}/tmp/
+            ./CI/${{ matrix.test.dir }}/
+            !./CI/${{ matrix.test.dir }}/tmp/
           retention-days: 1
