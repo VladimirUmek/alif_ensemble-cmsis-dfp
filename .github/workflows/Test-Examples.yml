@@ -59,7 +59,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: DevKit-e7/Examples/Blinky_HE
+          name: DevKit-e7_Examples_Blinky_HE
           path: |
             ./CI/DevKit-e7/Examples/Blinky_HE/
             !./CI/DevKit-e7/Examples/Blinky_HE/tmp/
