@@ -11,6 +11,14 @@ on:
 jobs:
   Test-Examples:                     # Install tools, build
     strategy:
+      matrix:
+        test: [
+          { tool: GCC,   dir: ./DevKit-e7/Examples/Blinky_HE,            proj: Blinky_HE,           artifact: E7_Blinky_HE },
+          { tool: AC6,   dir: ./DevKit-e7/Examples/Blinky_HE,            proj: Blinky_HE,           artifact: E7_Blinky_HE },
+          { tool: GCC,   dir: ./DevKit-e7/Examples/Blinky_HP,            proj: Blinky_HP,           artifact: E7_Blinky_HP },
+          { tool: AC6,   dir: ./DevKit-e7/Examples/Blinky_HP,            proj: Blinky_HP,           artifact: E7_Blinky_HP }
+          ]
+
       fail-fast: false
 
     runs-on: ubuntu-latest
@@ -47,20 +55,20 @@ jobs:
       - name: Copy example to CI folder
         working-directory: ./
         run: |
-          mkdir -p ./CI/DevKit-e7/Examples/Blinky_HE
-          cp -a ./DFP/Boards/DevKit-e7/Examples/Blinky_HE/. ./CI/DevKit-e7/Examples/Blinky_HE/
+          mkdir -p ./CI/{matrix.test.dir}
+          cp -a ./DFP/Boards/{matrix.test.dir}/. ./CI/{matrix.test.dir}
 
       - name: Build Example
-        working-directory: ./CI/DevKit-e7/Examples/Blinky_HE
+        working-directory: ./CI/{matrix.test.dir}
         run: |
-          cbuild ./Blinky_HE.csolution.yml --packs --toolchain AC6 
+          cbuild ./{matrix.test.proj}.csolution.yml --packs --toolchain {matrix.test.tool}
 
       - name: Upload Artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: DevKit-e7_Examples_Blinky_HE
+          name: {matrix.test.artifact}_{matrix.test.tool}
           path: |
-            ./CI/DevKit-e7/Examples/Blinky_HE/
-            !./CI/DevKit-e7/Examples/Blinky_HE/tmp/
+            ./CI/{matrix.test.dir}/
+            !./CI/{matrix.test.dir}/tmp/
           retention-days: 1
