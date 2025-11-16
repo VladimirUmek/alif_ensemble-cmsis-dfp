@@ -3,9 +3,10 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - Boards/**
+      - .github/workflows/Test-Examples.yml  # Execute this workflow when workflow is being modified
+      - Boards/**                            # Execute this workflow when there are modifications inside Board directory
   push:
-    branches: [main]
+    branches: [main]                         # Execute this workflow when main branch is updated
   schedule:
     - cron: '00 20 * * 6'
 
