@@ -13,10 +13,18 @@ jobs:
     strategy:
       matrix:
         test: [
-          { tool: GCC,   dir: DevKit-e7/Examples/Blinky_HE,            proj: Blinky_HE,           artifact: DevKit_E7_Blinky_HE },
-          { tool: AC6,   dir: DevKit-e7/Examples/Blinky_HE,            proj: Blinky_HE,           artifact: DevKit_E7_Blinky_HE },
-          { tool: GCC,   dir: DevKit-e7/Examples/Blinky_HP,            proj: Blinky_HP,           artifact: DevKit_E7_Blinky_HP },
-          { tool: AC6,   dir: DevKit-e7/Examples/Blinky_HP,            proj: Blinky_HP,           artifact: DevKit_E7_Blinky_HP }
+          { tool: GCC,   dir: AppKit-e7-aiml/Examples/M55_HE/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HE },
+          { tool: AC6,   dir: AppKit-e7-aiml/Examples/M55_HE/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HE },
+          { tool: GCC,   dir: AppKit-e7-aiml/Examples/M55_HP/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HP },
+          { tool: AC6,   dir: AppKit-e7-aiml/Examples/M55_HP/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HP },
+          { tool: GCC,   dir: AppKit-e7-aiml/Examples/M55_HP_HE/DualCore,   proj: DualCore,       artifact: AppKit_E7_DualCore  },
+          { tool: AC6,   dir: AppKit-e7-aiml/Examples/M55_HP_HE/DualCore,   proj: DualCore,       artifact: AppKit_E7_DualCore  },
+          { tool: GCC,   dir: DevKit-e7/Examples/Blinky_HE,                 proj: Blinky_HE,      artifact: DevKit_E7_Blinky_HE },
+          { tool: AC6,   dir: DevKit-e7/Examples/Blinky_HE,                 proj: Blinky_HE,      artifact: DevKit_E7_Blinky_HE },
+          { tool: GCC,   dir: DevKit-e7/Examples/Blinky_HP,                 proj: Blinky_HP,      artifact: DevKit_E7_Blinky_HP },
+          { tool: AC6,   dir: DevKit-e7/Examples/Blinky_HP,                 proj: Blinky_HP,      artifact: DevKit_E7_Blinky_HP },
+          { tool: GCC,   dir: DevKit-e7/Examples/Dual_Core,                 proj: Dual_Core,      artifact: DevKit_E7_Dual_Core },
+          { tool: AC6,   dir: DevKit-e7/Examples/Dual_Core,                 proj: Dual_Core,      artifact: DevKit_E7_Dual_Core }
           ]
 
       fail-fast: false
