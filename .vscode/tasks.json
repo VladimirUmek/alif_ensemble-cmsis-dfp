@@ -1,0 +1,87 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "CMSIS Erase",
+            "type": "shell",
+            "command": [
+                "echo Connect > .cmd.jlink &&",
+                "echo Erase >> .cmd.jlink &&",
+                "echo Exit >> .cmd.jlink &&",
+                "JLink.exe -device AE722F80F55D5LS_M55_HE -if swd -speed 10000 -commandfile .cmd.jlink"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Boards/AppKit-e7-aiml/Examples/M55_HE/Blinky",
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                        "/d",
+                        "/c"
+                    ]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMSIS Load",
+            "type": "shell",
+            "command": [
+                "echo Connect > .cmd.jlink &&",
+                "echo LoadFile \"out/Blinky/AppKit-E7/Debug/Blinky.hex\" >> .cmd.jlink &&",
+                "echo Exit >> .cmd.jlink &&",
+                "JLink.exe -device AE722F80F55D5LS_M55_HE -if swd -speed 10000 -commandfile .cmd.jlink"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/Boards/AppKit-e7-aiml/Examples/M55_HE/Blinky",
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                        "/d",
+                        "/c"
+                    ]
+                }
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "CMSIS Run",
+            "type": "shell",
+            "command": "JLinkGDBServerCL.exe",
+            "options": {
+                "cwd": "${workspaceFolder}/Boards/AppKit-e7-aiml/Examples/M55_HE/Blinky",
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": [
+                        "/d",
+                        "/c"
+                    ]
+                }
+            },
+            "args": [
+                "-device",
+                "AE722F80F55D5LS_M55_HE",
+                "-endian",
+                "little",
+                "-if",
+                "swd-speed",
+                "10000",
+                "-nohalt",
+                "-noir",
+                "-nogui",
+                "-localhostonly",
+                "-port",
+                "3333"
+            ],
+            "problemMatcher": []
+        },
+        {
+            "label": "CMSIS Load+Run",
+            "dependsOn": [
+                "CMSIS Load",
+                "CMSIS Run"
+            ],
+            "dependsOrder": "sequence",
+            "problemMatcher": []
+        }
+    ]
+}
