@@ -1,7 +1,7 @@
 # A solution is a collection of related projects that share same base configuration.
 solution:
-  created-for: CMSIS-Toolbox@2.6.0
-  cdefault: # use CMSIS-Toolbox default Compiler options
+  created-for: CMSIS-Toolbox@2.12.0
+  cdefault:
 
   # Compilers that can be selected
   select-compiler:
@@ -18,7 +18,7 @@ solution:
 
   # List different hardware targets that are used to deploy the solution.
   target-types:
-    - type: AE722F80F55D5LS
+    - type: DevKit-E7
       board: DevKit-E7:Gen 2
       device: AE722F80F55D5LS
 
