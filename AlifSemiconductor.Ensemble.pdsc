@@ -8,7 +8,7 @@
   <license>License.txt</license>
 
   <releases>
-    <release version="2.1.0">
+    <release version="2.1.0-rc0">
       - Active development...
     </release>
     <release version="2.0.4"  tag="v2.0.4" url="https://github.com/alifsemi/alif_ensemble-cmsis-dfp/releases/download/v2.0.4/AlifSemiconductor.Ensemble.2.0.4.pack" date="2025-11-04">
