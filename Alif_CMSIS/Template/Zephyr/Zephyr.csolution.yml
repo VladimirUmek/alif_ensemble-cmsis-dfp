@@ -29,16 +29,16 @@ solution:
 # Add West projects as described in https://open-cmsis-pack.github.io/cmsis-toolbox/build-overview/#west-build-system-integration
   projects:
     #- west:
-    #  project-id: M55_HE
-    #  app-path: ./rtss_he
-    #  board: $west-board$_he
-    #  device: :M55_HE
-    #  west-defs:
-    #    - RTSS_HP_MHU0: ON
+    #    project-id: M55_HE
+    #    app-path: ./rtss_he
+    #    board: $west-board$_he
+    #    device: :M55_HE
+    #    west-defs:
+    #      - RTSS_HP_MHU0: ON
     #- west:
-    #  project-id: M55_HP
-    #  app-path: ./rtss_hp
-    #  board: $west-board$_hp
-    #  device: :M55_HP
-    #  west-defs:
-    #    - RTSS_HE_MHU0: ON
+    #    project-id: M55_HP
+    #    app-path: ./rtss_hp
+    #    board: $west-board$_hp
+    #    device: :M55_HP
+    #    west-defs:
+    #      - RTSS_HE_MHU0: ON
