@@ -76,4 +76,4 @@ J-Link debugger is connected to the J2 USB connector (PRG USB). Connect a USB-Mi
 the debug session in VS Code. Open a serial port connection to the board, run the application, and the Hello World
 message will be printed via the serial port.
 
-> NOTE: When using the J-Link debugger ensure that J-Link version 8.44 or higher is installed.
+> NOTE: When using the J-Link debugger ensure that J-Link version 8.84 or higher is installed.

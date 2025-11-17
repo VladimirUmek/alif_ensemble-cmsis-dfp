@@ -73,4 +73,4 @@ Now connect a CMSIS-DAP debugger such as ULINKplus to the J17 debug port of the 
 start the debug session in VS Code, and open a serial port connection to the board. Run the application, and the Hello World printf output
 will appear via the serial port.
 
-> NOTE: When using the J-Link debugger ensure that J-Link version 8.44 or higher is installed.
+> NOTE: When using the J-Link debugger ensure that J-Link version 8.84 or higher is installed.
