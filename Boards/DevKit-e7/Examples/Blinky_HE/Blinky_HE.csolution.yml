@@ -21,6 +21,10 @@ solution:
     - type: DevKit-E7
       board: DevKit-E7:Gen 2
       device: AE722F80F55D5LS
+      target-set:
+        - set:
+          images:
+            - project-context: M55_HE.Debug
 
   # List of different build configurations.
   build-types:
