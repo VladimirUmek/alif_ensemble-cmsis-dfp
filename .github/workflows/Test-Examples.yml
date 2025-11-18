@@ -15,6 +15,10 @@ jobs:
     strategy:
       matrix:
         test: [
+          { tool: GCC,   dir: DevKit-e8/Examples/Blinky_HE,                 proj: Blinky,         artifact: DevKit_E8_Blinky    },
+          { tool: AC6,   dir: DevKit-e8/Examples/Blinky_HE,                 proj: Blinky,         artifact: DevKit_E8_Blinky    },
+          { tool: GCC,   dir: DevKit-e8/Examples/Blinky_HP,                 proj: Blinky,         artifact: DevKit_E8_Blinky    },
+          { tool: AC6,   dir: DevKit-e8/Examples/Blinky_HP,                 proj: Blinky,         artifact: DevKit_E8_Blinky    },
           { tool: GCC,   dir: AppKit-e7-aiml/Examples/M55_HE/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HE },
           { tool: AC6,   dir: AppKit-e7-aiml/Examples/M55_HE/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HE },
           { tool: GCC,   dir: AppKit-e7-aiml/Examples/M55_HP/Blinky,        proj: Blinky,         artifact: AppKit_E7_Blinky_HP },
