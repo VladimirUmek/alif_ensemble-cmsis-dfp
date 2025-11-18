@@ -8,12 +8,6 @@ solution:
     - compiler: AC6
     - compiler: GCC
 
-  # Miscellaneous toolchain controls directly passed to the tools
-  misc:
-    - for-compiler: AC6
-      C-CPP:
-        - -gdwarf-5
-
   # List the packs that define the device and/or board.
   packs:
     - pack: AlifSemiconductor::Ensemble@^2.0.4-0
