@@ -35,10 +35,10 @@ The following packs are required for this DFP:
 
 The E8 DevKit Board Support (BSP) part provides the following examples and layers:
 
-Example                  | Tool           | Description
-:------------------------|:---------------|:--------------------------
-Csolution Project        | CMSIS-Toolbox  | Blinky examples configured for M55 High Performance or High Efficiency code
-DualCore_HE_HP           | CMSIS-Toolbox  | Dual Core example running on M55 High Efficiency and High Performance core
+Example                 | Tool           | Description
+:-----------------------|:---------------|:--------------------------
+Blinky_HP               | CMSIS-Toolbox  | Blinky example configured for M55 High Performance code
+Blinky_HE               | CMSIS-Toolbox  | Blinky example configured for M55 High Efficiency code
 
 Layer Type: Board       | Tool           | Description
 :-----------------------|:---------------|:--------------------------
@@ -52,6 +52,8 @@ Provided API Interface    | Description
  CMSIS_ETH                | CMSIS-Driver Ethernet connected to RJ45 connector
  CMSIS_VIO                | CMSIS-Driver VIO connected to RGB LED and Joystick
  CMSIS_VSTREAM_AUDIO_IN   | CMSIS-Driver for Audio input stream via I2S Microphones
+ CMSIS_VSTREAM_VIDEO_IN   | CMSIS-Driver for Video input stream via MIPI Camera
+ CMSIS_VSTREAM_VIDEO_OUT  | CMSIS-Driver for Video output stream via GLCD Display
  STDIN, STDOUT, STDERR    | Standard I/O connected to USART COM port
 
 ## E7 DevKit (BSP)
@@ -62,7 +64,8 @@ Example                  | Tool           | Description
 :------------------------|:---------------|:--------------------------
 Blinky_M55_HE            | uVision IDE    | Blinky example running on M55 High Efficiency core
 Blinky_M55_HE_TCM        | uVision IDE    | Blinky example running on M55 High Efficiency core from TCM
-Csolution Project        | CMSIS-Toolbox  | Blinky examples configured for M55 High Performance or High Efficiency code
+Blinky_HP                | CMSIS-Toolbox  | Blinky example configured for M55 High Performance code
+Blinky_HE                | CMSIS-Toolbox  | Blinky example configured for M55 High Efficiency code
 DualCore_HE_HP           | CMSIS-Toolbox  | Dual Core example running on M55 High Efficiency and High Performance core
 HelloWorld_M55_HP        | uVision IDE    | Hello World example running on M55 High Performance core
 
