@@ -20,10 +20,6 @@ solution:
     - type: AppKit-E7
       board: AppKit-E7-AIML
       device: AE722F80F55D5LS
-      target-set:
-        - set:
-          images:
-            - project-context: Blinky.Debug
 
   # List of different build configurations.
   build-types:
