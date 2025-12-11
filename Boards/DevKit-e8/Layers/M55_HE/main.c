@@ -90,7 +90,6 @@ void clock_init(void)
 {
     uint32_t rval;
     uint32_t error_code = 0;
-    run_profile_t runp = {0};
 
     /* Enable the HFOSCx2 (76.8MHz) clock used by I2S */
     rval = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_HFOSCx2, true, &error_code);

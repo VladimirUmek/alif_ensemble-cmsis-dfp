@@ -90,7 +90,6 @@ void clock_init(void)
 {
     uint32_t rval;
     uint32_t error_code = 0;
-    run_profile_t runp = {0};
 
     /* Enable USB_CLK */
     rval = SERVICES_clocks_enable_clock(se_services_s_handle, CLKEN_CLK_20M, true, &error_code);
